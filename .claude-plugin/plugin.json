@@ -1,0 +1,19 @@
+{
+  "name": "amplify",
+  "description": "A curated collection of AI coding agent skills for browser automation, frontend design, performance auditing, task tracking, and structured problem-solving workflows.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Petar"
+  },
+  "repository": "https://github.com/wunki/amplify",
+  "license": "MIT",
+  "keywords": [
+    "skills",
+    "browser-automation",
+    "frontend-design",
+    "web-performance",
+    "task-tracking",
+    "planning",
+    "problem-solving"
+  ]
+}

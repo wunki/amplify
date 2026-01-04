@@ -1,0 +1,6 @@
+node_modules/
+bun.lock
+package-lock.json
+skills/dev-browser/profiles/
+skills/dev-browser/tmp/
+*.png

@@ -1,0 +1,93 @@
+{
+  "name": "amplify",
+  "owner": {
+    "name": "Petar"
+  },
+  "metadata": {
+    "description": "Curated skills and commands for AI coding agents. Works across Claude Code, OpenCode, Codex, and Amp.",
+    "version": "1.0.0",
+    "pluginRoot": "./skills"
+  },
+  "plugins": [
+    {
+      "name": "dev-browser",
+      "source": "./dev-browser",
+      "description": "Browser automation with persistent page state. Navigate websites, fill forms, take screenshots, extract data, and test web apps. Supports standalone Chromium or connecting to your existing Chrome session.",
+      "category": "automation",
+      "tags": ["browser", "playwright", "scraping", "testing", "screenshots"],
+      "strict": false
+    },
+    {
+      "name": "frontend-design",
+      "source": "./frontend-design",
+      "description": "Create distinctive, production-grade frontend interfaces that avoid generic AI aesthetics. Build web components, landing pages, dashboards, and applications with exceptional design quality.",
+      "category": "development",
+      "tags": ["frontend", "design", "ui", "css", "react", "html"],
+      "strict": false
+    },
+    {
+      "name": "web-perf",
+      "source": "./web-perf",
+      "description": "Analyze web performance using Chrome DevTools MCP. Measure Core Web Vitals (FCP, LCP, TBT, CLS), identify render-blocking resources, and optimize page load performance.",
+      "category": "analysis",
+      "tags": ["performance", "lighthouse", "web-vitals", "optimization"],
+      "strict": false
+    },
+    {
+      "name": "beads",
+      "source": "./beads",
+      "description": "Graph-based issue tracker that survives conversation compaction. Track complex multi-session work with dependencies, priorities, and audit trails persisted in git.",
+      "category": "productivity",
+      "tags": ["tasks", "tracking", "dependencies", "memory", "git"],
+      "strict": false
+    },
+    {
+      "name": "ship",
+      "source": "./ship",
+      "description": "Create a SHIP.md document - a concrete plan for finishing a project. Analyzes the codebase, defines done, and breaks work into phases with small actionable steps.",
+      "category": "planning",
+      "tags": ["planning", "shipping", "productivity", "project-management"],
+      "strict": false
+    },
+    {
+      "name": "create-plan",
+      "source": "./create-plan",
+      "description": "Generate concise, actionable implementation plans for coding tasks. Outputs a structured checklist with scope, action items, and open questions.",
+      "category": "planning",
+      "tags": ["planning", "checklist", "requirements"],
+      "strict": false
+    },
+    {
+      "name": "solveit",
+      "source": "./solveit",
+      "description": "Generate structured learning guides using the Polya problem-solving method. Creates self-contained Markdown documents that guide users through building features themselves.",
+      "category": "learning",
+      "tags": ["learning", "teaching", "polya", "problem-solving", "guides"],
+      "strict": false
+    },
+    {
+      "name": "guide",
+      "source": "./guide",
+      "description": "Interactive teaching mode that guides users to complete tasks themselves through Socratic questioning and graduated hints, rather than doing the work for them.",
+      "category": "learning",
+      "tags": ["teaching", "learning", "socratic", "mentoring"],
+      "strict": false
+    },
+    {
+      "name": "skill-creator",
+      "source": "./skill-creator",
+      "description": "Guide for creating effective agent skills. Use when building new skills that extend Claude's capabilities with specialized knowledge, workflows, or tool integrations.",
+      "category": "meta",
+      "tags": ["skills", "development", "meta", "authoring"],
+      "strict": false
+    },
+    {
+      "name": "ask-questions-if-underspecified",
+      "source": "./ask-questions-if-underspecified",
+      "description": "Clarify requirements before implementing. Ask focused questions to avoid wrong work when requirements are ambiguous.",
+      "category": "workflow",
+      "tags": ["requirements", "clarification", "workflow"],
+      "strict": false
+    }
+  ]
+}
