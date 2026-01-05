@@ -12,7 +12,7 @@ Skills and configuration for AI coding agents. Works with Claude Code, OpenCode,
 | **frontend-design** | Build distinctive, production-grade interfaces that don't look like AI slop. Opinionated about typography, color, motion, and spatial composition. |
 | **web-perf** | Performance auditing via Chrome DevTools MCP. Core Web Vitals, render-blocking resources, network waterfalls, accessibility gaps. |
 | **beads** | Graph-based task tracker that survives conversation compaction. Dependencies, priorities, audit trails, git-backed persistence. |
-| **ship** | Create a SHIP.md document that breaks a project into phases with concrete steps. No motivational fluff, just what's left and in what order. |
+| **roadmap** | Create a ROADMAP.md for open source projects. Vision, milestones, timeline (Now/Next/Later/Future). Follows open source conventions. |
 | **create-plan** | Generate concise implementation plans. Scope, action items, open questions, documentation links. |
 | **guide** | Interactive teaching mode. Orchestrates clarification, planning, and guided execution. |
 | **skill-creator** | Meta-skill for building new skills. Structure, progressive disclosure, bundled resources. |
@@ -24,6 +24,12 @@ Skills and configuration for AI coding agents. Works with Claude Code, OpenCode,
 |---------|--------------|
 | **/commit** | Generate conventional commit messages from staged changes |
 | **/smart-commit** | Analyze unstaged changes, group into atomic commits, generate messages for each |
+
+### Scripts
+
+| Script | What It Does |
+|--------|--------------|
+| **wiggum** | Autonomous coding loop (Ralph Wiggum technique). Iterates through a plan until complete. |
 
 ## Skill Workflows
 
@@ -54,6 +60,92 @@ The **guide** skill orchestrates a full learning workflow:
 4. **Archive** — Moves completed plan to `history/YYYY-MM-DD-plan-<name>.md`
 
 For standalone planning without teaching, use **create-plan** directly.
+
+### Autonomous Execution: wiggum
+
+The **Ralph Wiggum technique** lets you run an AI agent in a loop until work is complete. Based on [Geoffrey Huntley's methodology](https://ghuntley.com/ralph/).
+
+Wiggum supports two modes:
+
+#### Plan Mode (default)
+
+Uses a `PLAN.md` file with checkboxes. Exits when all `[ ]` become `[x]`.
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                      Plan Mode Loop                                     │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                         │
+│  ┌──────────┐    ┌──────────┐    ┌──────────┐    ┌──────────┐          │
+│  │  Plan    │───▶│  Pick    │───▶│ Complete │───▶│  Commit  │──┐       │
+│  └──────────┘    └──────────┘    └──────────┘    └──────────┘  │       │
+│       │               │               │               │        │       │
+│       ▼               ▼               ▼               ▼        │       │
+│  create-plan     ONE task        Verify via       git commit   │       │
+│  ─▶ PLAN.md      from plan       tests/lint       (no push)   │       │
+│                                                                 │       │
+│                  ◀──────────────────────────────────────────────┘       │
+│                       Loop until all tasks [x] complete                 │
+│                                                                         │
+└─────────────────────────────────────────────────────────────────────────┘
+```
+
+**Step 1: Create a plan**
+
+```bash
+amp "create a plan for adding user authentication"
+# or
+claude "create a plan for adding user authentication"
+```
+
+**Step 2: Run the loop**
+
+```bash
+wiggum PLAN.md                      # Interactive (confirm each task)
+wiggum --auto PLAN.md               # Autonomous (let it run)
+wiggum --auto --max 20 PLAN.md      # With iteration limit
+```
+
+#### Promise Mode
+
+Uses a prompt string. Exits when Claude outputs `<promise>DONE</promise>`.
+
+Best for well-defined, verifiable tasks without a plan file:
+
+```bash
+# Fix lint errors until clean
+wiggum --prompt "Fix all ESLint errors. Run npm run lint to verify."
+
+# Make tests pass
+wiggum --auto --prompt "Make all tests in src/auth pass" --promise "TESTS_PASS"
+
+# Refactor with verification
+wiggum --prompt "Convert all class components to functional components"
+```
+
+**How it works:** Each iteration, Claude sees the current codebase state (including changes from previous iterations). The codebase carries the progress, even though each Claude instance is stateless.
+
+#### Options
+
+| Flag | Description |
+|------|-------------|
+| `-a, --auto` | Auto-continue without confirmation |
+| `-m, --max N` | Maximum iterations (cost control) |
+| `--prompt TEXT` | Task prompt (enables promise mode) |
+| `--promise TEXT` | Completion signal (default: `DONE`) |
+
+#### Key Behaviors
+
+- **Stateless iterations** — Each run re-reads full context, preventing drift
+- **Plan evolution** — Claude updates the plan when reality diverges (splits tasks, adds blockers)
+- **Operational learning** — Discoveries are written to AGENTS.md for future iterations
+- **Safe commits** — Commits after each task, never pushes (you review and push)
+
+#### Philosophy
+
+> "If Ralph falls off the slide, you don't just put him back — you put up a sign that says 'SLIDE DOWN, DON'T JUMP.'"
+
+Each failure teaches what guardrails to add. Tune the plan, tune AGENTS.md, iterate.
 
 ## Installation
 
