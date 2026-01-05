@@ -1,4 +1,4 @@
-.PHONY: all claude opencode codex amp
+.PHONY: all claude opencode codex amp scripts clean
 
 HAS_CLAUDE := $(shell command -v claude 2>/dev/null)
 HAS_OPENCODE := $(shell command -v opencode 2>/dev/null)
@@ -9,6 +9,7 @@ HAS_AMP := $(shell command -v amp 2>/dev/null)
 SKILLS := $(wildcard skills/*)
 COMMANDS := $(wildcard commands/*)
 AGENTS := $(wildcard agents/*)
+SCRIPTS := $(wildcard scripts/*)
 
 all:
 ifdef HAS_CLAUDE
@@ -23,6 +24,7 @@ endif
 ifdef HAS_AMP
 	@$(MAKE) amp
 endif
+	@$(MAKE) scripts
 
 claude:
 	@echo "Installing for Claude Code..."
@@ -73,3 +75,30 @@ amp:
 	@for skill in $(SKILLS); do \
 		rsync -a $(CURDIR)/$$skill/ ~/.config/amp/skills/$$(basename $$skill)/; \
 	done
+
+scripts:
+	@echo "Installing scripts to ~/.local/bin..."
+	mkdir -p ~/.local/bin
+	@for script in $(SCRIPTS); do \
+		ln -sf $(CURDIR)/$$script ~/.local/bin/$$(basename $$script); \
+	done
+	@echo "Ensure ~/.local/bin is in your PATH"
+
+clean:
+	@echo "Removing installed skills and commands..."
+ifdef HAS_CLAUDE
+	rm -rf ~/.claude/skills ~/.claude/commands ~/.claude/agents
+endif
+ifdef HAS_OPENCODE
+	rm -rf ~/.config/opencode/skills ~/.config/opencode/command
+endif
+ifdef HAS_CODEX
+	rm -rf ~/.codex/skills ~/.codex/commands
+endif
+ifdef HAS_AMP
+	rm -rf ~/.config/amp/skills ~/.config/amp/commands
+endif
+	@for script in $(SCRIPTS); do \
+		rm -f ~/.local/bin/$$(basename $$script); \
+	done
+	@echo "Done. Run 'make' to reinstall."
