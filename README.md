@@ -14,6 +14,7 @@ Skills and configuration for AI coding agents. Works with Claude Code, OpenCode,
 | **beads** | Graph-based task tracker that survives conversation compaction. Dependencies, priorities, audit trails, git-backed persistence. |
 | **roadmap** | Create a ROADMAP.md for open source projects. Vision, milestones, timeline (Now/Next/Later/Future). Follows open source conventions. |
 | **create-plan** | Generate concise implementation plans. Scope, action items, open questions, documentation links. |
+| **execute-plan** | Work through PLAN.md one task at a time. Questions before action, summaries after, learning persistence. |
 | **guide** | Interactive teaching mode. Orchestrates clarification, planning, and guided execution. |
 | **skill-creator** | Meta-skill for building new skills. Structure, progressive disclosure, bundled resources. |
 | **ask-questions-if-underspecified** | Requirement clarification. Ask focused questions before implementing. |
@@ -146,6 +147,55 @@ wiggum --prompt "Convert all class components to functional components"
 > "If Ralph falls off the slide, you don't just put him back — you put up a sign that says 'SLIDE DOWN, DON'T JUMP.'"
 
 Each failure teaches what guardrails to add. Tune the plan, tune AGENTS.md, iterate.
+
+### Manual Execution: execute-plan
+
+For **human-in-the-loop** execution where you want oversight and learning:
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                    Manual Execution Flow                                │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                         │
+│  ┌────────────┐    ┌────────────┐    ┌────────────┐                    │
+│  │create-plan │───▶│execute-plan│───▶│execute-plan│───▶ ... ───▶ Done │
+│  └────────────┘    └────────────┘    └────────────┘                    │
+│        │                 │                 │                 │          │
+│        ▼                 ▼                 ▼                 ▼          │
+│    PLAN.md          Task 1 done       Task 2 done       Archive to     │
+│    created          + summary         + summary         plans/         │
+│                                                                         │
+│  Human triggers each step. Reviews. Commits when ready.                 │
+│                                                                         │
+└─────────────────────────────────────────────────────────────────────────┘
+```
+
+**Workflow:**
+
+1. Create a plan: `"create a plan for adding OAuth support"`
+2. Execute tasks one at a time: `"execute the plan"` or `"continue the plan"`
+3. Agent asks clarifying questions before acting
+4. After each task: marks `[x]` and adds inline summary
+5. Commit when ready: `/smart-commit`
+6. Repeat until done, then plan archives to `plans/YYYY-MM-DD-<title>.md`
+
+**Key behaviors:**
+
+- **Questions first** — Unlike wiggum, asks before acting (human is present)
+- **One task at a time** — Complete focus, then hand back control
+- **Learning persistence** — Updates AGENTS.md with project conventions discovered
+- **Documentation updates** — Checks `docs/` and updates if building user-facing features
+- **Plan mutations** — Splits tasks, adds blockers, restructures as needed
+
+**When to use which:**
+
+| Scenario | Use |
+|----------|-----|
+| Well-defined tasks, want speed | `wiggum --auto` |
+| Learning a new codebase | `execute-plan` |
+| Complex decisions needed | `execute-plan` |
+| Repetitive refactoring | `wiggum` |
+| Building new features | `execute-plan` |
 
 ## Installation
 
