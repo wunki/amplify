@@ -1,6 +1,6 @@
 ---
 name: execute-plan
-description: Work through a PLAN.md one task at a time. Asks clarifying questions, marks tasks done with summaries, persists learnings to AGENTS.md, and archives completed plans. Triggers when user wants to continue, execute, or work on a plan. Key phrases include "continue", "execute", "work on", "next task", "pick up where I left off", combined with "plan" or when PLAN.md exists.
+description: Continue, resume, execute, or work on a PLAN.md. Handles "next task", "pick up where I left off", "let's continue", "work on the plan". One task at a time with human oversight.
 ---
 
 # Execute Plan
