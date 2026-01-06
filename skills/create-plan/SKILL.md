@@ -1,11 +1,16 @@
 ---
 name: create-plan
-description: Create a plan for a coding task. Interviews to extract intent, thinks deeply before planning, outputs PLAN.md. Triggers on "create a plan", "make a plan for", "plan out", "help me plan", or when user needs structured approach to a task.
+description: Create a plan for a coding task. Interviews to extract intent, thinks deeply before planning, writes a plan file. Triggers on "create a plan", "make a plan for", "plan out", "help me plan", or when user needs structured approach to a task.
 ---
 
 # Create Plan
 
-Turn a user's goal into a **single, actionable plan** saved to `PLAN.md`.
+Turn a user's goal into a **single, actionable plan**.
+
+**Output location:**
+- Default: `PLAN.md` in project root (for immediate execution)
+- If user specifies a different location, use that
+- Reference plans (not for immediate execution): `plans/<descriptive-name>.md`
 
 **Prerequisites**: Read and follow `$HOME/.config/opencode/AGENTS.md` throughout this workflow.
 
@@ -104,9 +109,13 @@ Do not rush to output. The plan quality depends on this thinking.
 
 **If you discover gaps:** Go back. If decomposition reveals you don't understand something, ask. If validation shows the approach is wrong, redesign. Planning is iterative, not linear.
 
-### 5) Write PLAN.md
+### 5) Write the Plan
 
-Save the plan to `PLAN.md` in the project root. If one exists, ask before overwriting.
+**Determine output location:**
+- If user specified a path, use it
+- If plan is for immediate execution: `PLAN.md` in project root
+- If plan is for reference only: `plans/<descriptive-name>.md`
+- If target file exists, ask before overwriting
 
 Use the template structure. Omit optional sections as instructed. Do not preface with meta explanations. Do not include placeholder text in the final plan.
 
