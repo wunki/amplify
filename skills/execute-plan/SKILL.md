@@ -183,12 +183,4 @@ mv PLAN.md plans/2025-01-05-add-user-authentication.md
 - **Don't hoard learnings** - If it's reusable, persist it
 - **Don't touch git** - User handles commits via `/smart-commit`
 
-## Trigger Patterns
 
-Any phrase combining these concepts should trigger this skill:
-
-- **continue/resume** + plan context ("continue", "let's continue", "resume work")
-- **execute/work on** + plan ("execute the plan", "work on the plan", "let's work on this")
-- **next task** ("next task", "what's next", "work on next task")
-- **pick up** ("pick up where I left off", "pick up from here")
-- **PLAN.md exists** + user wants to make progress
