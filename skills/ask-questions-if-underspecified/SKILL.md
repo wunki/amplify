@@ -1,6 +1,6 @@
 ---
 name: ask-questions-if-underspecified
-description: Clarify requirements before implementing. Do not use automatically, only when invoked explicitly.
+description: Clarify requirements before implementing. Use when a request is underspecified or ambiguous.
 ---
 
 # Ask Questions If Underspecified
