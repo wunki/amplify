@@ -1,6 +1,6 @@
 ---
 name: ask-questions-if-underspecified
-description: Clarify requirements before implementing. Use when a request is underspecified or ambiguous.
+description: Clarify requirements before implementing code. Ask focused questions to fill gaps in scope, constraints, or acceptance criteria. Use when a request is vague, ambiguous, has multiple interpretations, or when you need to understand "what does done look like?" before starting work.
 ---
 
 # Ask Questions If Underspecified
