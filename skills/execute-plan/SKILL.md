@@ -9,12 +9,6 @@ Work through a PLAN.md **one task at a time**, with human oversight. Unlike auto
 
 **Prerequisites**: Read and follow `$HOME/.config/opencode/AGENTS.md` throughout this workflow.
 
-## Must-Follow Guardrails
-
-- Ask before adding dependencies
-- No mocks, test behavior not implementation, run only tests you touched
-- Low-risk decisions can be made and noted, high-risk decisions must be confirmed
-
 ## Core Principles
 
 1. **One task per invocation** - Complete one checkbox, then stop
@@ -32,6 +26,7 @@ Read `PLAN.md` and locate the first unchecked `[ ]` item. If no PLAN.md exists, 
 
 Before writing any code:
 
+- **Verify the plan still fits** - If time has passed or earlier tasks changed assumptions, check that this task still makes sense. If not, propose adjustments before proceeding.
 - Read relevant files mentioned in the task
 - Check existing patterns in the codebase
 - Identify what "done" looks like for this specific task
