@@ -122,6 +122,7 @@ RULES:
 - Add a brief summary line below the completed task (indented with >)
 - Commit the change with a descriptive message
 - NEVER git push
+- Do not ask questions or wait for confirmation; if blocked, make the smallest reasonable assumption and record it in $PLAN_FILE, or add a BLOCKED task if the risk is high
 
 COMPLETION FORMAT:
 When marking a task done, add a summary line below it:
@@ -171,6 +172,7 @@ RULES:
 - Verify your work: run tests, typecheck, lint as applicable
 - Commit changes with descriptive messages
 - NEVER git push
+- Do not ask questions or wait for confirmation; make the smallest reasonable assumptions and proceed
 
 UPDATING AGENTS.md:
 If you discover critical operational details (build commands, environment setup, gotchas, patterns that work), add them to AGENTS.md so future iterations benefit.
