@@ -124,14 +124,14 @@ Use the template structure. Omit optional sections as instructed. Do not preface
 For large work, split into phases:
 
 - **Phase 1** lives in `PLAN.md` (current work)
-- **Later phases** go in `plans/` directory (e.g., `plans/phase-2-api-integration.md`)
+- **Later phases** go in `plans/` directory (e.g., `plans/2025-01-06-phase-2-api-integration.md`)
 - Each plan references the others so they're clearly connected
 
 Example header for a phased plan:
 ```markdown
 # Plan: User Authentication (Phase 1 of 3)
 
-> **Series:** Phase 1 (this) · [Phase 2: OAuth](plans/phase-2-oauth.md) · [Phase 3: SSO](plans/phase-3-sso.md)
+> **Series:** Phase 1 (this) · [Phase 2: OAuth](plans/2025-01-06-phase-2-oauth.md) · [Phase 3: SSO](plans/2025-01-06-phase-3-sso.md)
 ```
 
 When Phase 1 completes, move it to `plans/` and promote Phase 2 to `PLAN.md`.
