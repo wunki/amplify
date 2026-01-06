@@ -10,7 +10,7 @@ Turn a user's goal into a **single, actionable plan**.
 **Output location:**
 - Default: `PLAN.md` in project root (for immediate execution)
 - If user specifies a different location, use that
-- Reference plans (not for immediate execution): `plans/<descriptive-name>.md`
+- Reference plans (not for immediate execution): `plans/YYYY-MM-DD-<descriptive-title>.md`
 
 **Prerequisites**: Read and follow `$HOME/.config/opencode/AGENTS.md` throughout this workflow.
 
@@ -114,7 +114,7 @@ Do not rush to output. The plan quality depends on this thinking.
 **Determine output location:**
 - If user specified a path, use it
 - If plan is for immediate execution: `PLAN.md` in project root
-- If plan is for reference only: `plans/<descriptive-name>.md`
+- If plan is for reference only: `plans/YYYY-MM-DD-<descriptive-title>.md`
 - If target file exists, ask before overwriting
 
 Use the template structure. Omit optional sections as instructed. Do not preface with meta explanations. Do not include placeholder text in the final plan.
