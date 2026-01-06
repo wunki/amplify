@@ -112,48 +112,24 @@ count_completed() {
 
 build_plan_prompt() {
     cat <<EOF
-READ $PLAN_FILE completely. Understand the full context before acting.
+Use the execute-plan skill to complete ONE task from $PLAN_FILE.
 
-RULES:
-- Pick exactly ONE unchecked task ([ ]) from the plan
-- Complete that task fully
-- Verify your work: run tests, typecheck, lint as applicable
-- Mark the task as done in $PLAN_FILE with [x]
-- Add a brief summary line below the completed task (indented with >)
-- Commit the change with a descriptive message
+AUTONOMOUS MODE OVERRIDES:
+- Do not ask questions or wait for confirmation
+- If blocked, make the smallest reasonable assumption and record it in the plan, or mark the task as BLOCKED if the risk is high
+- Commit the change with a descriptive message after completing the task
 - NEVER git push
-- Do not ask questions or wait for confirmation; if blocked, make the smallest reasonable assumption and record it in $PLAN_FILE, or add a BLOCKED task if the risk is high
-
-COMPLETION FORMAT:
-When marking a task done, add a summary line below it:
-\`\`\`
-- [x] Original task description
-  > What was done: files changed, approach taken, any gotchas
-\`\`\`
-
-UPDATING THE PLAN ($PLAN_FILE):
-If during execution you discover:
-- A task is more complex than expected → split it into subtasks
-- A task is blocked by something not in the plan → add the blocker as a new task before it
-- A task is unnecessary or already done → mark it [x] with a note explaining why
-- New tasks are needed → add them in the appropriate place
-- The order needs to change → reorder tasks
-Keep the plan accurate to reality. The plan is a living document.
-
-UPDATING AGENTS.md:
-If you discover critical operational details (build commands, environment setup, gotchas, patterns that work), add them to AGENTS.md so future iterations benefit.
+- Exit after completing exactly one task
 
 AFTER COMPLETING THE TASK:
-- Output a summary block:
-  \`\`\`
-  ── Task Complete ──────────────────────────────────
-  Task: <the task you completed>
-  Done: <brief summary of what was done>
-  Files: <list of files changed>
-  ──────────────────────────────────────────────────
-  \`\`\`
-- Exit cleanly
-- Do not start another task
+Output a summary block:
+\`\`\`
+── Task Complete ──────────────────────────────────
+Task: <the task you completed>
+Done: <brief summary of what was done>
+Files: <list of files changed>
+──────────────────────────────────────────────────
+\`\`\`
 
 If all tasks are already complete, say "All tasks complete" and exit.
 EOF
