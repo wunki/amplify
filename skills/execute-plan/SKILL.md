@@ -1,6 +1,6 @@
 ---
 name: execute-plan
-description: Work through a PLAN.md one task at a time. Asks clarifying questions, marks tasks done with summaries, persists learnings to AGENTS.md, and archives completed plans. Triggers on "execute the plan", "continue the plan", "continue", "let's continue", "let's continue work", "continue work", "continue work on the plan", "work on next task", "pick up where I left off", or when a PLAN.md exists and user wants guided execution.
+description: Work through a PLAN.md one task at a time. Asks clarifying questions, marks tasks done with summaries, persists learnings to AGENTS.md, and archives completed plans. Triggers when user wants to continue, execute, or work on a plan. Key phrases include "continue", "execute", "work on", "next task", "pick up where I left off", combined with "plan" or when PLAN.md exists.
 ---
 
 # Execute Plan
@@ -183,15 +183,12 @@ mv PLAN.md plans/2025-01-05-add-user-authentication.md
 - **Don't hoard learnings** - If it's reusable, persist it
 - **Don't touch git** - User handles commits via `/smart-commit`
 
-## Trigger Phrases
+## Trigger Patterns
 
-- "execute the plan"
-- "continue the plan"
-- "continue"
-- "let's continue"
-- "let's continue work"
-- "continue work"
-- "continue work on the plan"
-- "work on next task"
-- "pick up where I left off"
-- "let's work through PLAN.md"
+Any phrase combining these concepts should trigger this skill:
+
+- **continue/resume** + plan context ("continue", "let's continue", "resume work")
+- **execute/work on** + plan ("execute the plan", "work on the plan", "let's work on this")
+- **next task** ("next task", "what's next", "work on next task")
+- **pick up** ("pick up where I left off", "pick up from here")
+- **PLAN.md exists** + user wants to make progress
