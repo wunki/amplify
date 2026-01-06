@@ -7,6 +7,8 @@ description: Create a plan for a coding task. Interviews to extract intent, thin
 
 Turn a user's goal into a **single, actionable plan** saved to `PLAN.md`.
 
+**Prerequisites**: Read and follow `$HOME/.config/opencode/AGENTS.md` throughout this workflow.
+
 The formula: **goal + thorough interview + deep thinking + plan**
 
 After creating the plan, the user can:

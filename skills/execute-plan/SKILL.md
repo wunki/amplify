@@ -7,21 +7,20 @@ description: Work through a PLAN.md one task at a time. Asks clarifying question
 
 Work through a PLAN.md **one task at a time**, with human oversight. Unlike automated loops, this skill encourages questions, explanations, and deliberate progress.
 
+**Prerequisites**: Read and follow `$HOME/.config/opencode/AGENTS.md` throughout this workflow.
+
+## Must-Follow Guardrails
+
+- Ask before adding dependencies
+- No mocks, test behavior not implementation, run only tests you touched
+- Low-risk decisions can be made and noted, high-risk decisions must be confirmed
+
 ## Core Principles
 
 1. **One task per invocation** - Complete one checkbox, then stop
 2. **Questions before action** - Clarify ambiguities using `ask-questions-if-underspecified` patterns
 3. **Learn and persist** - Update PLAN.md with discoveries, AGENTS.md with project conventions
 4. **Summarize work** - Every completed task gets an inline summary
-
-## Execution Guardrails
-
-- **Dependencies**: Ask before adding a new dependency, prefer well-maintained options
-- **Scripts**: Confirm before running `npm`, `pnpm`, or `bun` scripts
-- **Tests**: No mocks, test behavior not implementation, run only tests you touched
-- **CI**: If unsure how to run tests, check `.github/workflows` first
-- **Decisions**: Low-risk decisions can be made and noted, high-risk decisions must be confirmed
-- **Cleanup**: If deleting or moving code, do not leave breadcrumbs or relocation comments
 
 ## Workflow
 
@@ -62,11 +61,13 @@ Complete the work. Stay focused on just this one task.
 After each substantive change, simplify and clean up touched areas when appropriate.
 
 If the task is **bigger than expected**:
+
 - If it can be split into 2-3 subtasks, restructure PLAN.md inline
 - If it's substantially larger, propose creating a new dedicated PLAN.md for it
 - Ask the user which approach they prefer
 
 If you **discover something new**:
+
 - **Task-specific**: Add a note in PLAN.md near the relevant task
 - **Project-wide convention**: Update AGENTS.md
 - **User-facing feature**: Check if `docs/` exists and update relevant docs
@@ -83,6 +84,7 @@ After completing the task, update PLAN.md:
 ```
 
 Summary guidelines:
+
 - 1-3 lines, indented with `>`
 - What was done (not how)
 - Key files created/modified
@@ -104,8 +106,10 @@ Let the user decide when to continue. They may want to review, test, or commit f
 The plan is a living document. Update it when reality diverges:
 
 **Splitting a task:**
+
 ```markdown
 ## Action items
+
 - [x] Set up database schema
   > Created initial schema in `prisma/schema.prisma`
 - [ ] Add user table with email/password fields
@@ -114,15 +118,17 @@ The plan is a living document. Update it when reality diverges:
 ```
 
 **Adding discovered work:**
+
 ```markdown
 - [x] Add rate limiting to auth endpoints
   > Implemented using express-rate-limit. 5 attempts per 15min.
   > NOTE: Discovered Redis is not configured. Added task below.
-...
+  > ...
 - [ ] Configure Redis for distributed rate limiting (added: discovered during rate limiting work)
 ```
 
 **Blocking issues:**
+
 ```markdown
 - [ ] BLOCKED: Deploy to staging - waiting on DevOps to provision new env
 ```
@@ -139,6 +145,7 @@ Add to AGENTS.md when you discover **how this project works**:
 - Common gotchas
 
 Format as actionable guidance:
+
 ```markdown
 ## Project-Specific
 
@@ -149,6 +156,7 @@ Format as actionable guidance:
 ### Documentation Updates
 
 If the project has a `docs/` directory and you build user-facing features:
+
 - Check if relevant docs exist
 - Update them to reflect new functionality
 - Ask the user if unsure whether to document
