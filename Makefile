@@ -45,7 +45,7 @@ opencode:
 	mkdir -p ~/.config/opencode/command ~/.config/opencode/skills
 	ln -sf $(CURDIR)/config/AGENTS.md ~/.config/opencode/AGENTS.md
 	ln -sf $(CURDIR)/config/opencode/opencode.json ~/.config/opencode/opencode.json
-	ln -sf $(CURDIR)/config/opencode/themes ~/.config/opencode/themes
+	ln -sfn $(CURDIR)/config/opencode/themes ~/.config/opencode/themes
 	ln -sf $(CURDIR)/config/opencode/tool ~/.config/opencode/tool
 	@for cmd in $(COMMANDS); do \
 		rsync -a $(CURDIR)/$$cmd ~/.config/opencode/command/; \
