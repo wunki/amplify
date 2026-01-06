@@ -57,6 +57,7 @@ opencode:
 codex:
 	@echo "Installing for Codex..."
 	mkdir -p ~/.codex/skills ~/.codex/commands
+	ln -sf $(CURDIR)/config/AGENTS.md ~/.codex/AGENTS.md
 	ln -sf $(CURDIR)/config/codex/config.toml ~/.codex/config.toml
 	@for cmd in $(COMMANDS); do \
 		rsync -a $(CURDIR)/$$cmd ~/.codex/commands/; \
@@ -68,6 +69,7 @@ codex:
 amp:
 	@echo "Installing for Amp..."
 	mkdir -p ~/.config/amp/skills ~/.config/amp/commands
+	ln -sf $(CURDIR)/config/AGENTS.md ~/.config/amp/AGENTS.md
 	ln -sf $(CURDIR)/config/amp/settings.json ~/.config/amp/settings.json
 	@for cmd in $(COMMANDS); do \
 		rsync -a $(CURDIR)/$$cmd ~/.config/amp/commands/; \
