@@ -26,6 +26,7 @@ Read `PLAN.md` and locate the first unchecked `[ ]` item.
 **Tracking:** Create TodoItems from the Task Checklist (at the end of this skill) so progress is visible to the user.
 
 **If no PLAN.md exists:**
+
 - If the user specified a plan from `plans/` directory, check that no `PLAN.md` exists in the project root (do not overwrite an active plan). If clear, move the specified plan to `PLAN.md` in the project root and proceed.
 - Otherwise, ask the user to create one (suggest `create-plan` skill) or specify which plan from `plans/` to activate.
 
@@ -73,9 +74,9 @@ Use the `write-test` skill for guidance on what to test. Focus on user-facing be
 
 **Before marking complete, verify the code passes all checks:**
 
-1. **Format**: Run the formatter (e.g., `bun format`)
-2. **Lint**: Run the linter (e.g., `bun lint`)
-3. **Test**: Run the tests (e.g., `bun test`)
+1. **Format**: Run the formatter (e.g., `bun run format`)
+2. **Lint**: Run the linter (e.g., `bun run lint`)
+3. **Test**: Run the tests (e.g., `bun run test`)
 
 All three must pass. If any fail, fix the issues before proceeding.
 
@@ -131,6 +132,7 @@ The plan is a living document. Update it when reality diverges:
 ## Action items
 
 <!-- "Set up database schema" was too large, split into: -->
+
 - [ ] Define user table with email/password fields
 - [ ] Define session table for refresh tokens
 - [ ] Run migration and verify
