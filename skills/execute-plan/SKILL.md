@@ -20,7 +20,11 @@ Work through a PLAN.md **one task at a time**, with human oversight. Unlike auto
 
 ### 1) Find the Current Task
 
-Read `PLAN.md` and locate the first unchecked `[ ]` item. If no PLAN.md exists, ask the user to create one (suggest `create-plan` skill).
+Read `PLAN.md` and locate the first unchecked `[ ]` item.
+
+**If no PLAN.md exists:**
+- If the user specified a plan from `plans/` directory, check that no `PLAN.md` exists in the project root (do not overwrite an active plan). If clear, move the specified plan to `PLAN.md` in the project root and proceed.
+- Otherwise, ask the user to create one (suggest `create-plan` skill) or specify which plan from `plans/` to activate.
 
 ### 2) Understand Before Acting
 
