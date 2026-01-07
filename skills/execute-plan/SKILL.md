@@ -35,6 +35,13 @@ Before writing any code:
 - Check existing patterns in the codebase
 - Identify what "done" looks like for this specific task
 
+**Persist what you learn during research:**
+
+- **Plan-specific findings** (e.g., "this endpoint already exists", "the schema uses soft deletes"): Add a note in PLAN.md near the relevant task
+- **Project-wide conventions** (e.g., "all API routes use kebab-case", "tests require `DATABASE_URL` set"): Update AGENTS.md so future plans benefit
+
+Do not hoard context in your head. Write it down.
+
 If anything is unclear, **ask questions first**. Use the `ask-questions-if-underspecified` patterns:
 
 ```text
