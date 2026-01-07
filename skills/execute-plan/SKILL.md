@@ -71,7 +71,13 @@ After each substantive change, simplify and clean up touched areas when appropri
 
 Use the `write-test` skill for guidance on what to test. Focus on user-facing behavior, not implementation details. If existing tests break, fix them as part of the task.
 
-**Run the tests** before moving on. All tests must pass. If a test fails, fix it before proceeding.
+**Before marking complete, verify the code passes all checks:**
+
+1. **Format**: Run the formatter (e.g., `bun format`)
+2. **Lint**: Run the linter (e.g., `bun lint`)
+3. **Test**: Run the tests (e.g., `bun test`)
+
+All three must pass. If any fail, fix the issues before proceeding.
 
 ### 4) Reflect and Persist Learnings
 
@@ -210,7 +216,8 @@ For every task, complete ALL steps:
 - [ ] Split task in PLAN.md if too large (before writing any code)
 - [ ] Ask clarifying questions if anything unclear
 - [ ] Implement the change
-- [ ] Write and run tests (unit always, e2e if UI touched)
+- [ ] Write tests (unit always, e2e if UI touched)
+- [ ] Run format, lint, and tests (all must pass)
 - [ ] Reflect: what did I learn? Persist to PLAN.md, AGENTS.md, or docs/
 - [ ] Mark task complete with summary in PLAN.md
 - [ ] Report to user, state next task, stop
