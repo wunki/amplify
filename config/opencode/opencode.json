@@ -3,6 +3,9 @@
   "theme": "finde",
   "autoupdate": true,
   "model": "anthropic/claude-opus-4-5",
+  "experimental": {
+    "disable_paste_summary": true
+  },
   "mcp": {},
   "plugin": ["opencode-openai-codex-auth@4.2.0"],
   "lsp": {
