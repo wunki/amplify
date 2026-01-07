@@ -42,7 +42,7 @@ claude:
 
 opencode:
 	@echo "Installing for OpenCode..."
-	mkdir -p ~/.config/opencode/command ~/.config/opencode/skills
+	mkdir -p ~/.config/opencode/command ~/.config/opencode/skill
 	ln -sf $(CURDIR)/config/AGENTS.md ~/.config/opencode/AGENTS.md
 	ln -sf $(CURDIR)/config/opencode/opencode.json ~/.config/opencode/opencode.json
 	ln -sfn $(CURDIR)/config/opencode/themes ~/.config/opencode/themes
@@ -51,7 +51,7 @@ opencode:
 		rsync -a $(CURDIR)/$$cmd ~/.config/opencode/command/; \
 	done
 	@for skill in $(SKILLS); do \
-		rsync -a $(CURDIR)/$$skill/ ~/.config/opencode/skills/$$(basename $$skill)/; \
+		rsync -a $(CURDIR)/$$skill/ ~/.config/opencode/skill/$$(basename $$skill)/; \
 	done
 
 codex:
@@ -92,7 +92,7 @@ ifdef HAS_CLAUDE
 	rm -rf ~/.claude/skills ~/.claude/commands ~/.claude/agents
 endif
 ifdef HAS_OPENCODE
-	rm -rf ~/.config/opencode/skills ~/.config/opencode/command
+	rm -rf ~/.config/opencode/skill ~/.config/opencode/command
 endif
 ifdef HAS_CODEX
 	rm -rf ~/.codex/skills ~/.codex/commands
