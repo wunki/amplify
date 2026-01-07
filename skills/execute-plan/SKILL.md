@@ -76,7 +76,7 @@ Use the `write-test` skill for guidance on what to test. Focus on user-facing be
 
 1. **Format**: Run the formatter (e.g., `bun run format`)
 2. **Lint**: Run the linter (e.g., `bun run lint`)
-3. **Test**: Run the tests (e.g., `bun run test`)
+3. **Test**: Run the tests (e.g., `bun run test:all`)
 
 All three must pass. If any fail, fix the issues before proceeding.
 
