@@ -13,8 +13,9 @@ Work through a PLAN.md **one task at a time**, with human oversight. Unlike auto
 
 1. **One task per invocation** - Complete one checkbox, then stop
 2. **Questions before action** - Clarify ambiguities using `ask-questions-if-underspecified` patterns
-3. **Learn and persist** - Update PLAN.md with discoveries, AGENTS.md with project conventions
-4. **Summarize work** - Every completed task gets an inline summary
+3. **Tests are not optional** - Every behavior change needs tests; run them before marking complete
+4. **Learn and persist** - Update PLAN.md with discoveries, AGENTS.md with project conventions
+5. **Summarize work** - Every completed task gets an inline summary
 
 ## Workflow
 
@@ -35,12 +36,7 @@ Before writing any code:
 - Check existing patterns in the codebase
 - Identify what "done" looks like for this specific task
 
-**Persist what you learn during research:**
-
-- **Plan-specific findings** (e.g., "this endpoint already exists", "the schema uses soft deletes"): Add a note in PLAN.md near the relevant task
-- **Project-wide conventions** (e.g., "all API routes use kebab-case", "tests require `DATABASE_URL` set"): Update AGENTS.md so future plans benefit
-
-Do not hoard context in your head. Write it down.
+**If the task is too large:** Split it in PLAN.md before writing any code. Break it into atomic steps, then work only on the first one. A task is too large if it touches multiple unrelated areas or would take more than one focused session.
 
 If anything is unclear, **ask questions first**. Use the `ask-questions-if-underspecified` patterns:
 
@@ -66,19 +62,29 @@ Do not proceed until questions are answered or user says to use defaults.
 Complete the work. Stay focused on just this one task.
 After each substantive change, simplify and clean up touched areas when appropriate.
 
-If the task is **bigger than expected**:
+**Testing is not optional.** Every task that changes behavior must include tests:
 
-- If it can be split into 2-3 subtasks, restructure PLAN.md inline
-- If it's substantially larger, propose creating a new dedicated PLAN.md for it
-- Ask the user which approach they prefer
+- **Unit tests**: Always. Cover the behavior you added or changed.
+- **E2E tests**: If the task touches UI or user-facing workflows.
 
-If you **discover something new**:
+Use the `write-test` skill for guidance on what to test. Focus on user-facing behavior, not implementation details. If existing tests break, fix them as part of the task.
 
-- **Task-specific**: Add a note in PLAN.md near the relevant task
-- **Project-wide convention**: Update AGENTS.md
-- **User-facing feature**: Check if `docs/` exists and update relevant docs
+**Run the tests** before moving on. All tests must pass. If a test fails, fix it before proceeding.
 
-### 4) Mark Complete with Summary
+### 4) Reflect and Persist Learnings
+
+Before marking complete, ask yourself:
+
+- What did I learn about how this project works?
+- Would this knowledge help on future tasks?
+
+Persist learnings now (before context is lost):
+
+- **Plan-specific** (e.g., "this endpoint already exists", "the schema uses soft deletes"): Add a note in PLAN.md near the relevant task
+- **Project-wide** (e.g., "all API routes use kebab-case", "tests require `DATABASE_URL` set"): Update AGENTS.md so future plans benefit
+- **User-facing features**: If the project has a `docs/` directory, update relevant documentation
+
+### 5) Mark Complete with Summary
 
 After completing the task, update PLAN.md:
 
@@ -97,7 +103,7 @@ Summary guidelines:
 - Important decisions made
 - Gotchas for future reference
 
-### 5) Report and Stop
+### 6) Report and Stop
 
 After marking the task complete:
 
@@ -111,15 +117,14 @@ Let the user decide when to continue. They may want to review, test, or commit f
 
 The plan is a living document. Update it when reality diverges:
 
-**Splitting a task:**
+**Splitting a task (during research, before any code):**
 
 ```markdown
 ## Action items
 
-- [x] Set up database schema
-  > Created initial schema in `prisma/schema.prisma`
-- [ ] Add user table with email/password fields
-- [ ] Add session table for refresh tokens
+<!-- "Set up database schema" was too large, split into: -->
+- [ ] Define user table with email/password fields
+- [ ] Define session table for refresh tokens
 - [ ] Run migration and verify
 ```
 
@@ -194,4 +199,16 @@ mv PLAN.md plans/2025-01-05-add-user-authentication.md
 - **Don't hoard learnings** - If it's reusable, persist it
 - **Don't touch git** - User handles commits via `/smart-commit`
 
+## Task Checklist (Quick Reference)
 
+For every task, complete ALL steps:
+
+- [ ] Read PLAN.md, find first unchecked task
+- [ ] Research: read relevant code, check patterns
+- [ ] Split task in PLAN.md if too large (before writing any code)
+- [ ] Ask clarifying questions if anything unclear
+- [ ] Implement the change
+- [ ] Write and run tests (unit always, e2e if UI touched)
+- [ ] Reflect: what did I learn? Persist to PLAN.md, AGENTS.md, or docs/
+- [ ] Mark task complete with summary in PLAN.md
+- [ ] Report to user, state next task, stop
