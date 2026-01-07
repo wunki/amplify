@@ -23,6 +23,8 @@ Work through a PLAN.md **one task at a time**, with human oversight. Unlike auto
 
 Read `PLAN.md` and locate the first unchecked `[ ]` item.
 
+**Tracking:** Create TodoItems from the Task Checklist (at the end of this skill) so progress is visible to the user.
+
 **If no PLAN.md exists:**
 - If the user specified a plan from `plans/` directory, check that no `PLAN.md` exists in the project root (do not overwrite an active plan). If clear, move the specified plan to `PLAN.md` in the project root and proceed.
 - Otherwise, ask the user to create one (suggest `create-plan` skill) or specify which plan from `plans/` to activate.
