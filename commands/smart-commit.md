@@ -49,6 +49,26 @@ Group changes into atomic commits based on:
 - `docs`: Documentation only → standalone
 - `style`: Formatting → standalone or skip if mixed with other changes
 
+### Writing the Body
+
+The commit body appears in release notes and should be readable by non-technical users.
+
+**Guidelines:**
+- Describe the *user impact*, not the implementation
+- Write in plain language (no jargon, no code references)
+- One sentence is usually enough
+- Skip the body for `chore`/`style`/`ci` commits (filtered from release notes anyway)
+
+**Good bodies:**
+- "Users can now export their data as a CSV file."
+- "Fixes an issue where the app would freeze when uploading large images."
+- "Search results now load twice as fast."
+
+**Bad bodies:**
+- "Added exportToCSV function to DataService" (implementation detail)
+- "Fixed null pointer exception in handleUpload" (too technical)
+- "Optimized SQL query with proper indexing" (user doesn't care how)
+
 ## Step 3: Present Commit Plan
 
 Present the grouped commits in order of suggested execution:
@@ -62,7 +82,7 @@ Files:
 - src/auth/reset-password.test.ts
 - src/components/ResetPasswordForm.tsx
 
-Summary: Implements the password reset feature with email verification.
+Body: Users can now reset their password via email if they forget it.
 
 ---
 
@@ -70,7 +90,7 @@ Summary: Implements the password reset feature with email verification.
 Files:
 - src/api/users.ts
 
-Summary: Fixes crash when API returns null for deleted users.
+Body: Fixes a crash that occurred when viewing a deleted user's profile.
 
 ---
 
@@ -78,7 +98,7 @@ Summary: Fixes crash when API returns null for deleted users.
 Files:
 - .eslintrc.js
 
-Summary: Adds new linting rules for consistency.
+Body: (none — internal tooling change)
 ```
 
 ## Step 4: Get User Confirmation
@@ -97,8 +117,8 @@ For each commit group, in order:
 # Stage only the files for this commit
 git add <file1> <file2> ...
 
-# Create the commit
-git commit -m "<type>(<scope>): <description>"
+# Create the commit with subject and body
+git commit -m "<type>(<scope>): <description>" -m "<body>"
 
 # Repeat for next group
 ```
