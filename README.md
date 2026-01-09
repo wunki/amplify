@@ -18,6 +18,7 @@ Skills and configuration for AI coding agents. Works with Claude Code, OpenCode,
 | **guide** | Interactive teaching mode. Orchestrates clarification, planning, and guided execution. |
 | **skill-creator** | Meta-skill for building new skills. Structure, progressive disclosure, bundled resources. |
 | **ask-questions-if-underspecified** | Requirement clarification. Ask focused questions before implementing. |
+| **session-reviewer** | Extract learnings from sessions. Persists personal preferences globally, project knowledge locally. |
 
 ### Commands
 
@@ -196,6 +197,76 @@ For **human-in-the-loop** execution where you want oversight and learning:
 | Complex decisions needed | `execute-plan` |
 | Repetitive refactoring | `wiggum` |
 | Building new features | `execute-plan` |
+
+### Learning Loops: session-reviewer
+
+Knowledge gets lost between sessions. The **session-reviewer** skill extracts learnings and persists them so future sessions start smarter.
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                          Learning Loops                                 │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                         │
+│      GLOBAL LOOP                              PROJECT LOOP              │
+│    (all projects)                           (this project)              │
+│                                                                         │
+│   ┌───────────────┐                        ┌───────────────┐            │
+│   │~/.claude/     │                        │  CLAUDE.md    │            │
+│   │ CLAUDE.md     │                        │  (project)    │            │
+│   └───────┬───────┘                        └───────┬───────┘            │
+│           │                                        │                    │
+│           │ prefs loaded                           │ knowledge loaded   │
+│           ▼                                        ▼                    │
+│         ┌───────────────────────────────────────────────┐               │
+│         │                   SESSION                     │               │
+│         │                                               │               │
+│         │    Work → Friction → Discovery → Preferences  │               │
+│         │                                               │               │
+│         └─────────────────────┬─────────────────────────┘               │
+│                               │                                         │
+│                               ▼                                         │
+│                    ┌─────────────────────┐                              │
+│                    │  /session-reviewer  │                              │
+│                    │   (extract & route) │                              │
+│                    └─────────┬───────────┘                              │
+│                              │                                          │
+│           ┌──────────────────┴──────────────────┐                       │
+│           │                                     │                       │
+│           ▼                                     ▼                       │
+│   ┌───────────────┐                      ┌───────────────┐              │
+│   │  "Prefer      │                      │ "Run make     │              │
+│   │   early       │                      │  test-unit    │              │
+│   │   returns"    │                      │  not npm test"│              │
+│   └───────┬───────┘                      └───────┬───────┘              │
+│           │                                      │                      │
+│           ▼                                      ▼                      │
+│     Improves ALL                          Improves THIS                 │
+│   future sessions ─────────────────────▶ project's sessions             │
+│                        (loops continue)                                 │
+│                                                                         │
+│   Also captures: task context → PLAN.md, user docs → docs/              │
+│                                                                         │
+└─────────────────────────────────────────────────────────────────────────┘
+```
+
+**Run at session end:** `/session-reviewer` or "review this session"
+
+**The two loops:**
+
+| Loop | Storage | Scope | What it captures |
+|------|---------|-------|------------------|
+| **Global** | `~/.claude/CLAUDE.md` | All projects | Coding style, communication preferences, workflow habits |
+| **Project** | `CLAUDE.md` | This project | Commands, gotchas, patterns, conventions |
+
+**How to tell them apart:**
+- User says "I prefer X" or corrects your style → **Global** (applies everywhere)
+- You discover "this codebase does Y" → **Project** (specific to this repo)
+
+**Secondary outputs** (not loops):
+- `PLAN.md` — Task context for the current plan (temporary)
+- `docs/` — User-facing documentation when features complete (one-way)
+
+The skill presents recommendations and waits for approval before making changes.
 
 ## Installation
 

@@ -23,6 +23,7 @@ Without capturing these, the next session starts from zero. Your job is to extra
 Read these files if they exist (in parallel):
 - `PLAN.md` - Is there an active plan? Is it complete (all tasks checked)?
 - `CLAUDE.md` (project root) - What's already documented? Don't duplicate.
+- `~/.claude/CLAUDE.md` (global config) - User's personal preferences across all projects.
 - `docs/` directory - What user-facing documentation exists?
 
 ### 2) Review the Session
@@ -59,7 +60,8 @@ If any answer is "no", skip it.
 
 | Destination | What Goes There | Examples |
 |-------------|-----------------|----------|
-| **CLAUDE.md** | Project-specific knowledge for future Claude sessions | Commands, gotchas, patterns, conventions |
+| **~/.claude/CLAUDE.md** | Personal preferences that apply to all projects | Coding style, communication preferences, workflow habits |
+| **CLAUDE.md** (project) | Project-specific knowledge for future Claude sessions | Commands, gotchas, patterns, conventions |
 | **PLAN.md** | Context for remaining tasks in the current plan | Dependencies discovered, blockers, revised approaches |
 | **docs/** | User-facing documentation (features, APIs, setup) | New endpoints, changed config, new features |
 | **Nothing** | Generic knowledge, one-time issues, already documented | Standard debugging, temporary workarounds |
@@ -80,7 +82,17 @@ Use this format:
 
 ### Recommendations
 
-#### Add to CLAUDE.md
+#### Add to ~/.claude/CLAUDE.md (global)
+
+**Section:** [Coding Style | Communication | Workflow]
+
+> [Exact text to add, ready to copy-paste]
+
+**Why:** [User expressed this preference; applies to all projects]
+
+---
+
+#### Add to CLAUDE.md (project)
 
 **Section:** Commands (or Gotchas, Patterns, etc.)
 
@@ -120,7 +132,37 @@ Present recommendations. Do not make changes until the user approves. They may w
 - Skip some recommendations
 - Add context you missed
 
-## What Makes Good CLAUDE.md Content
+## What Makes Good Global Config (~/.claude/CLAUDE.md)
+
+Personal preferences that apply everywhere:
+
+**Coding Style**
+```markdown
+## Coding Style
+- Prefer explicit returns over implicit
+- No emojis in code or comments
+- Use descriptive variable names, never abbreviate
+```
+
+**Communication**
+```markdown
+## Communication
+- Be concise, skip pleasantries
+- Don't ask "shall I proceed?" - just do it or state what you'll do
+- When in doubt, ask clarifying questions
+```
+
+**Workflow**
+```markdown
+## Workflow
+- Always run tests before committing
+- Prefer small, atomic commits
+- Don't push to main without asking
+```
+
+**Key distinction:** If the user says "I prefer X" or corrects your behavior in a way that would apply to any project, that's global. If it's about how this specific codebase works, that's project-level.
+
+## What Makes Good Project CLAUDE.md Content
 
 Structure learnings by category:
 
@@ -164,7 +206,15 @@ When docs are needed, suggest running the `tech-docs-writer` skill with a specif
 
 ## Examples
 
-### Good Recommendation
+### Good Recommendation (Global Preference)
+
+> **Add to ~/.claude/CLAUDE.md (Coding Style):**
+>
+> "Prefer early returns over nested if/else blocks."
+>
+> **Why:** User corrected nested conditional code twice this session, expressing preference for guard clauses.
+
+### Good Recommendation (Project Knowledge)
 
 > **Add to CLAUDE.md (Gotchas):**
 >
