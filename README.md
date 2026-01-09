@@ -204,25 +204,25 @@ Knowledge gets lost between sessions. The **session-reviewer** skill extracts le
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
-│                          Learning Loops                                 │
+│                    Three Learning Loops                                 │
 ├─────────────────────────────────────────────────────────────────────────┤
 │                                                                         │
-│      GLOBAL LOOP                              PROJECT LOOP              │
-│    (all projects)                           (this project)              │
+│   GLOBAL LOOP          PROJECT LOOP           PLAN LOOP                 │
+│   (all projects)       (this project)         (this feature)            │
 │                                                                         │
-│   ┌───────────────┐                        ┌───────────────┐            │
-│   │~/.claude/     │                        │  CLAUDE.md    │            │
-│   │ CLAUDE.md     │                        │  (project)    │            │
-│   └───────┬───────┘                        └───────┬───────┘            │
-│           │                                        │                    │
-│           │ prefs loaded                           │ knowledge loaded   │
-│           ▼                                        ▼                    │
-│         ┌───────────────────────────────────────────────┐               │
-│         │                   SESSION                     │               │
-│         │                                               │               │
-│         │    Work → Friction → Discovery → Preferences  │               │
-│         │                                               │               │
-│         └─────────────────────┬─────────────────────────┘               │
+│   ┌─────────────┐      ┌─────────────┐       ┌─────────────┐            │
+│   │ ~/.claude/  │      │  CLAUDE.md  │       │   PLAN.md   │            │
+│   │  CLAUDE.md  │      │             │       │             │            │
+│   └──────┬──────┘      └──────┬──────┘       └──────┬──────┘            │
+│          │                    │                     │                   │
+│          │ prefs              │ knowledge           │ context           │
+│          ▼                    ▼                     ▼                   │
+│        ┌─────────────────────────────────────────────────┐              │
+│        │                    SESSION                      │              │
+│        │                                                 │              │
+│        │     Work → Friction → Discovery → Preferences   │              │
+│        │                                                 │              │
+│        └──────────────────────┬──────────────────────────┘              │
 │                               │                                         │
 │                               ▼                                         │
 │                    ┌─────────────────────┐                              │
@@ -230,41 +230,46 @@ Knowledge gets lost between sessions. The **session-reviewer** skill extracts le
 │                    │   (extract & route) │                              │
 │                    └─────────┬───────────┘                              │
 │                              │                                          │
-│           ┌──────────────────┴──────────────────┐                       │
-│           │                                     │                       │
-│           ▼                                     ▼                       │
-│   ┌───────────────┐                      ┌───────────────┐              │
-│   │  "Prefer      │                      │ "Run make     │              │
-│   │   early       │                      │  test-unit    │              │
-│   │   returns"    │                      │  not npm test"│              │
-│   └───────┬───────┘                      └───────┬───────┘              │
-│           │                                      │                      │
-│           ▼                                      ▼                      │
-│     Improves ALL                          Improves THIS                 │
-│   future sessions ─────────────────────▶ project's sessions             │
-│                        (loops continue)                                 │
+│          ┌───────────────────┼───────────────────┐                      │
+│          │                   │                   │                      │
+│          ▼                   ▼                   ▼                      │
+│   ┌─────────────┐     ┌─────────────┐     ┌─────────────┐               │
+│   │  "Prefer    │     │ "Run make   │     │ "Task 3     │               │
+│   │   early     │     │  test-unit" │     │  needs auth │               │
+│   │   returns"  │     │             │     │  first"     │               │
+│   └──────┬──────┘     └──────┬──────┘     └──────┬──────┘               │
+│          │                   │                   │                      │
+│          ▼                   ▼                   ▼                      │
+│    All future          This project's       This plan's                 │
+│    sessions            sessions             remaining tasks             │
 │                                                                         │
-│   Also captures: task context → PLAN.md, user docs → docs/              │
+│   ◀──────────────── loops continue ────────────────▶                    │
+│                                                                         │
+│   When plan completes, learnings graduate upward:                       │
+│   plan discovery → project knowledge → global preference                │
 │                                                                         │
 └─────────────────────────────────────────────────────────────────────────┘
 ```
 
 **Run at session end:** `/session-reviewer` or "review this session"
 
-**The two loops:**
+**Three nested loops:**
 
-| Loop | Storage | Scope | What it captures |
-|------|---------|-------|------------------|
-| **Global** | `~/.claude/CLAUDE.md` | All projects | Coding style, communication preferences, workflow habits |
-| **Project** | `CLAUDE.md` | This project | Commands, gotchas, patterns, conventions |
+| Loop | Storage | Scope | Lifetime | What it captures |
+|------|---------|-------|----------|------------------|
+| **Global** | `~/.claude/CLAUDE.md` | All projects | Forever | Coding style, communication, workflow |
+| **Project** | `CLAUDE.md` | This project | Life of project | Commands, gotchas, patterns |
+| **Plan** | `PLAN.md` | This feature | Until archived | Task deps, blockers, discoveries |
 
-**How to tell them apart:**
-- User says "I prefer X" or corrects your style → **Global** (applies everywhere)
-- You discover "this codebase does Y" → **Project** (specific to this repo)
+**How to route learnings:**
+- "I prefer X" or style correction → **Global** (applies everywhere)
+- "This codebase does Y" → **Project** (specific to this repo)
+- "Task 3 needs X first" → **Plan** (relevant to current work)
 
-**Secondary outputs** (not loops):
-- `PLAN.md` — Task context for the current plan (temporary)
-- `docs/` — User-facing documentation when features complete (one-way)
+**Graduation:** When a plan completes, review its learnings. Discoveries useful beyond this feature should promote to project CLAUDE.md. Preferences that apply everywhere should promote to global config.
+
+**Also outputs** (one-way, not loops):
+- `docs/` — User-facing documentation when features complete
 
 The skill presents recommendations and waits for approval before making changes.
 

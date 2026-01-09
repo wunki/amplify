@@ -56,15 +56,21 @@ For each potential learning, ask:
 
 If any answer is "no", skip it.
 
-### 4) Categorize by Destination
+### 4) Categorize by Destination (Three Loops)
 
-| Destination | What Goes There | Examples |
-|-------------|-----------------|----------|
-| **~/.claude/CLAUDE.md** | Personal preferences that apply to all projects | Coding style, communication preferences, workflow habits |
-| **CLAUDE.md** (project) | Project-specific knowledge for future Claude sessions | Commands, gotchas, patterns, conventions |
-| **PLAN.md** | Context for remaining tasks in the current plan | Dependencies discovered, blockers, revised approaches |
-| **docs/** | User-facing documentation (features, APIs, setup) | New endpoints, changed config, new features |
-| **Nothing** | Generic knowledge, one-time issues, already documented | Standard debugging, temporary workarounds |
+Learning loops, nested by scope and lifetime:
+
+| Loop | Storage | Scope | Lifetime | What it captures |
+|------|---------|-------|----------|------------------|
+| **Global** | `~/.claude/CLAUDE.md` | All projects | Forever | Coding style, communication, workflow |
+| **Project** | `CLAUDE.md` | This project | Life of project | Commands, gotchas, patterns |
+| **Plan** | `PLAN.md` | This feature | Until archived | Task deps, blockers, discoveries |
+
+Also:
+| Destination | What Goes There |
+|-------------|-----------------|
+| **docs/** | User-facing documentation (features, APIs, setup) |
+| **Nothing** | Generic knowledge, one-time issues, already documented |
 
 ### 5) Present Recommendations
 
@@ -102,13 +108,23 @@ Use this format:
 
 ---
 
-#### Update PLAN.md
+#### Add to PLAN.md (plan loop)
 
 **Add to task X / Notes section:**
 
 > [Exact text to add]
 
-**Why:** [How this helps remaining tasks]
+**Why:** [How this helps remaining tasks in this plan]
+
+---
+
+#### Graduate from PLAN.md (on plan completion)
+
+**Promote to:** [CLAUDE.md | ~/.claude/CLAUDE.md]
+
+> [Exact text to add]
+
+**Why:** [Why this learning applies beyond this plan]
 
 ---
 
@@ -191,6 +207,23 @@ Structure learnings by category:
 - Database queries go through `src/db/queries/`, not inline SQL
 ```
 
+## Graduation: When Plan Completes
+
+When a PLAN.md is fully checked off, review its accumulated learnings for **graduation** to a longer-lived loop:
+
+- **Plan → Project**: Discoveries useful beyond this feature should promote to CLAUDE.md
+  - "The auth service requires lowercase headers" (gotcha for the whole project)
+  - "Use `make test-unit` for fast feedback" (command everyone should know)
+
+- **Plan → Global**: Preferences that apply everywhere should promote to ~/.claude/CLAUDE.md
+  - User expressed a style preference while working on this plan
+  - Workflow pattern that would improve all future sessions
+
+Don't graduate:
+- Context that only mattered for this specific plan
+- One-time issues that won't recur
+- Things already captured at the right level
+
 ## When to Recommend Documentation Updates
 
 Only recommend docs work when ALL of these are true:
@@ -221,6 +254,22 @@ When docs are needed, suggest running the `tech-docs-writer` skill with a specif
 > "The test database resets between test files but not between tests in the same file. Use `beforeEach` for isolation, or tests will pollute each other."
 >
 > **Why:** We spent 15 minutes debugging flaky tests before discovering test pollution from a previous test case.
+
+### Good Recommendation (Plan Context)
+
+> **Add to PLAN.md (Task 4 notes):**
+>
+> "Task 4 depends on the auth middleware changes from Task 2. Don't start until Task 2's PR is merged."
+>
+> **Why:** Discovered this dependency while working on Task 2; prevents wasted work on Task 4.
+
+### Good Recommendation (Graduation)
+
+> **Graduate to CLAUDE.md (Commands):**
+>
+> "Use `make test-auth` for auth-related tests (faster than full suite)."
+>
+> **Why:** Discovered while working on this plan, but useful for all future auth work in this project.
 
 ### Bad Recommendation (too generic)
 
