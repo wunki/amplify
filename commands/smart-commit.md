@@ -103,11 +103,26 @@ Body: (none — internal tooling change)
 
 ## Step 4: Get User Confirmation
 
-Ask the user:
+Use the `AskUserQuestion` tool to get confirmation:
 
-1. Does this grouping make sense?
-2. Should any commits be merged or split differently?
-3. Ready to proceed with staging and committing?
+```
+AskUserQuestion:
+  question: "How would you like to proceed with these commits?"
+  header: "Commits"
+  options:
+    - label: "Proceed"
+      description: "Commit all groups as planned"
+    - label: "Skip some"
+      description: "Choose which commits to make"
+    - label: "Edit grouping"
+      description: "Adjust how changes are grouped"
+```
+
+Handle responses:
+- **Proceed**: Execute all commits as planned
+- **Skip some**: Ask which commit numbers to skip, then execute the rest
+- **Edit grouping**: Ask what to change, revise the plan, confirm again
+- **Other** (custom input): User may type "y", "yes", specific instructions, or adjustments
 
 ## Step 5: Execute Commits (on confirmation)
 
