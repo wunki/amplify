@@ -190,13 +190,14 @@ When all tasks are checked:
 2. Summarize what was built overall
 3. Archive the plan:
    - Create `plans/` directory if it doesn't exist
-   - Move PLAN.md to `plans/YYYY-MM-DD-<descriptive-title>.md`
-   - Use today's date and derive title from the plan's goal
+   - Move PLAN.md to `plans/YYYY-MM-DD-<descriptive-title>.done.md`
+   - Use today's date, derive title from the plan's goal, suffix with `.done`
+   - The `.done` suffix makes completion status visible in directory listings
 
 ```bash
 # Example: Plan was about adding authentication
 mkdir -p plans
-mv PLAN.md plans/2025-01-05-add-user-authentication.md
+mv PLAN.md plans/2025-01-05-add-user-authentication.done.md
 ```
 
 4. Mention any follow-up work that emerged during execution
