@@ -27,8 +27,24 @@ Read `PLAN.md` and locate the first unchecked `[ ]` item.
 
 **If no PLAN.md exists:**
 
-- If the user specified a plan from `plans/` directory, check that no `PLAN.md` exists in the project root (do not overwrite an active plan). If clear, move the specified plan to `PLAN.md` in the project root and proceed.
-- Otherwise, ask the user to create one (suggest `create-plan` skill) or specify which plan from `plans/` to activate.
+1. If the user specified a plan, move it to `PLAN.md` and proceed.
+2. Otherwise, find incomplete plans in `plans/` (files NOT ending in `.done.md`):
+   ```bash
+   ls plans/*.md 2>/dev/null | grep -v '\.done\.md$'
+   ```
+3. If incomplete plans exist, use `AskUserQuestion` to let the user choose:
+   ```
+   question: "Which plan would you like to work on?"
+   header: "Plan"
+   options:
+     - label: "2025-01-05-add-authentication"
+       description: "Add user authentication flow"
+     - label: "2025-01-08-refactor-api"
+       description: "Refactor API endpoints"
+     # ... list all incomplete plans, use first line of file as description
+   ```
+4. Move the selected plan to `PLAN.md` and proceed.
+5. If no incomplete plans exist, ask the user to create one (suggest `create-plan` skill).
 
 ### 2) Understand Before Acting
 
