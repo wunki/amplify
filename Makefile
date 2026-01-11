@@ -37,7 +37,9 @@ claude:
 		rsync -a $(CURDIR)/$$skill/ ~/.claude/skills/$$(basename $$skill)/; \
 	done
 	@for agent in $(AGENTS); do \
-		rsync -a $(CURDIR)/$$agent ~/.claude/agents/; \
+		sed -e 's/model: codex/model: claude-opus-4-5/g' \
+		    -e '/^reasoningEffort:/d' \
+		    $(CURDIR)/$$agent > ~/.claude/agents/$$(basename $$agent); \
 	done
 
 opencode:
@@ -57,6 +59,7 @@ opencode:
 		sed -e 's/model: sonnet/model: anthropic\/claude-sonnet-4-5/g' \
 		    -e 's/model: opus/model: anthropic\/claude-opus-4-5/g' \
 		    -e 's/model: haiku/model: anthropic\/claude-haiku-3-5/g' \
+		    -e 's/model: codex/model: openai\/gpt-5.2-codex/g' \
 		    $(CURDIR)/$$agent > ~/.config/opencode/agent/$$(basename $$agent); \
 	done
 
