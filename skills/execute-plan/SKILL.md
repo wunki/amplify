@@ -1,6 +1,6 @@
 ---
 name: execute-plan
-description: Work through PLAN.md one task at a time with human oversight. Use when continuing, resuming, or making progress on an existing plan. Triggers on "continue", "continue the plan", "let's continue working", "next task", "work on the plan", "pick up where I left off", or any request to execute tasks from PLAN.md.
+description: Work through PLAN.md one task at a time with human oversight. Triggers on "execute", "execute plan", "execute the plan", "continue", "continue the plan", "continue to plan", "next task", "work on the plan", "pick up where I left off", "resume", or any request to make progress on PLAN.md.
 ---
 
 # Execute Plan
