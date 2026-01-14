@@ -406,6 +406,15 @@ All three major tools use the same `SKILL.md` format with YAML frontmatter. The 
 | Plugin system | Yes (marketplace) | Yes ($skill-installer) | No |
 | Config file | CLAUDE.md | AGENTS.md | AGENTS.md |
 
+## Presentation
+
+There's a slide deck in `docs/presentation.md` that explains the philosophy behind this repo. Run it with [slides](https://github.com/maaslalani/slides):
+
+```bash
+brew install slides
+slides docs/presentation.md
+```
+
 ## License
 
 MIT. Individual skills may have their own licenses (see LICENSE.txt in skill directories).
