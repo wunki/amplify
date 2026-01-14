@@ -28,23 +28,7 @@ Read `PLAN.md` and locate the first unchecked `[ ]` item.
 **If no PLAN.md exists:**
 
 1. If the user specified a plan, move it to `PLAN.md` and proceed.
-2. Otherwise, find incomplete plans in `plans/` (files NOT ending in `.done.md`):
-   ```bash
-   ls plans/*.md 2>/dev/null | grep -v '\.done\.md$'
-   ```
-3. If incomplete plans exist, use `AskUserQuestion` to let the user choose:
-   ```
-   question: "Which plan would you like to work on?"
-   header: "Plan"
-   options:
-     - label: "2025-01-05-add-authentication"
-       description: "Add user authentication flow"
-     - label: "2025-01-08-refactor-api"
-       description: "Refactor API endpoints"
-     # ... list all incomplete plans, use first line of file as description
-   ```
-4. Move the selected plan to `PLAN.md` and proceed.
-5. If no incomplete plans exist, ask the user to create one (suggest `create-plan` agent).
+2. Otherwise, ask the user to create one (suggest `create-plan` agent). If a `SPEC.md` exists, offer to generate a plan from it.
 
 ### 2) Understand Before Acting
 
@@ -204,19 +188,20 @@ When all tasks are checked:
 
 1. Congratulate briefly (one line, no fluff)
 2. Summarize what was built overall
-3. Archive the plan:
-   - Create `plans/` directory if it doesn't exist
-   - Move PLAN.md to `plans/YYYY-MM-DD-<descriptive-title>.done.md`
-   - Use today's date, derive title from the plan's goal, suffix with `.done`
-   - The `.done` suffix makes completion status visible in directory listings
+3. Archive the spec (if it exists):
+   - Create `specs/` directory if it doesn't exist
+   - Move `SPEC.md` to `specs/YYYY-MM-DD-<descriptive-title>.md`
+   - Use today's date, derive title from the spec's goal
+4. Remove `PLAN.md` (do not archive plans)
+5. Mention any follow-up work that emerged during execution
 
 ```bash
-# Example: Plan was about adding authentication
-mkdir -p plans
-mv PLAN.md plans/2025-01-05-add-user-authentication.done.md
+# Example: Spec was about adding authentication
+mkdir -p specs
+mv SPEC.md specs/2025-01-05-add-user-authentication.md
+rm PLAN.md
 ```
 
-4. Mention any follow-up work that emerged during execution
 
 ## Anti-patterns
 

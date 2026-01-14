@@ -163,8 +163,8 @@ For **human-in-the-loop** execution where you want oversight and learning:
 │  └────────────┘    └────────────┘    └────────────┘                    │
 │        │                 │                 │                 │          │
 │        ▼                 ▼                 ▼                 ▼          │
-│    PLAN.md          Task 1 done       Task 2 done       Archive to     │
-│    created          + summary         + summary         plans/         │
+│    PLAN.md          Task 1 done       Task 2 done       Archive spec to│
+│    created          + summary         + summary         specs/         │
 │                                                                         │
 │  Human triggers each step. Reviews. Commits when ready.                 │
 │                                                                         │
@@ -178,7 +178,7 @@ For **human-in-the-loop** execution where you want oversight and learning:
 3. Agent asks clarifying questions before acting
 4. After each task: marks `[x]` and adds inline summary
 5. Commit when ready: `/smart-commit`
-6. Repeat until done, then plan archives to `plans/YYYY-MM-DD-<title>.md`
+6. Repeat until done, then archive `SPEC.md` to `specs/YYYY-MM-DD-<title>.md` and remove `PLAN.md`
 
 **Key behaviors:**
 

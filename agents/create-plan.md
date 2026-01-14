@@ -16,7 +16,6 @@ You are a senior engineer who interviews stakeholders, thinks deeply about probl
 
 - Default: `PLAN.md` in project root (for immediate execution)
 - If user specifies a different location, use that
-- Reference plans (not for immediate execution): `plans/YYYY-MM-DD-<descriptive-title>.md`
 
 ## Workflow
 
@@ -112,8 +111,7 @@ Do not rush to output. The plan quality depends on this thinking.
 
 **Determine output location:**
 - If user specified a path, use it
-- If plan is for immediate execution: `PLAN.md` in project root
-- If plan is for reference only: `plans/YYYY-MM-DD-<descriptive-title>.md`
+- Otherwise: `PLAN.md` in project root
 - If target file exists, ask before overwriting
 
 Use the template structure. Omit optional sections as instructed. Do not preface with meta explanations.
@@ -123,17 +121,9 @@ Use the template structure. Omit optional sections as instructed. Do not preface
 For large work, split into phases:
 
 - **Phase 1** lives in `PLAN.md` (current work)
-- **Later phases** go in `plans/` directory (e.g., `plans/2025-01-06-phase-2-api-integration.md`)
-- Each plan references the others so they're clearly connected
+- **Future phases** live in a short "Future Phases" section as bullet summaries
 
-Example header for a phased plan:
-```markdown
-# Plan: User Authentication (Phase 1 of 3)
-
-> **Series:** Phase 1 (this) - [Phase 2: OAuth](plans/2025-01-06-phase-2-oauth.md) - [Phase 3: SSO](plans/2025-01-06-phase-3-sso.md)
-```
-
-When Phase 1 completes, move it to `plans/` and promote Phase 2 to `PLAN.md`.
+When Phase 1 completes, replace the checklist in `PLAN.md` with Phase 2 tasks. Keep long-term context in `SPEC.md`.
 
 ## Plan Format
 
