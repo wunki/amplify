@@ -5,13 +5,14 @@ description: Deep, exhaustive requirements gathering for features. Reads existin
 
 # Interview
 
-Exhaustive requirements elicitation that produces a complete SPEC.md. Unlike quick clarifications before coding, this is a thorough exploration of everything needed to build a feature well.
+Exhaustive requirements elicitation through deep questioning. This skill focuses on *gathering* requirements thoroughly. For writing specs, it uses the `create-spec` skill.
 
 ## When to Use
 
-- User explicitly asks to be interviewed or to fill out a spec
-- Starting a complex feature that needs thorough thinking before planning
+- User explicitly asks to be interviewed
+- Starting a complex feature that needs thorough thinking
 - Existing SPEC.md has gaps that need filling
+- Any task requiring deep requirements extraction before action
 
 ## Workflow
 
@@ -51,44 +52,33 @@ Cover these areas, but **only ask non-obvious questions** - things you can't dis
 **Pacing**: 
 - Start with 3-5 questions covering the biggest unknowns
 - After answers, ask follow-up questions that dig deeper
-- Continue until you have enough to write a complete spec
+- Continue until you have enough for the task at hand
 
-**Challenge the premise**: If something seems like the wrong approach, say so early. Better to redirect now than write a spec for something that shouldn't be built.
+**Challenge the premise**: If something seems like the wrong approach, say so early. Better to redirect now than proceed with something that shouldn't be built.
 
-### 3) Write the Spec
+### 3) Hand Off to Output
 
-When you have enough information, write to `SPEC.md` (or user-specified file).
+When interviewing is complete:
 
-Follow the template structure in `references/spec-template.md`.
+- **For specs**: Use the `create-spec` skill to write SPEC.md
+- **For plans**: Hand off to `create-plan` agent
+- **For other tasks**: Summarize findings and proceed with the task
 
-Key principles:
-- **Capture decisions**: Record what was decided and why
-- **Note open questions**: Don't pretend certainty where there is none
-- **Be specific**: Vague specs lead to wrong implementations
-- **Include the "why"**: Future readers need context, not just what
+The interview skill gathers; other skills/agents structure and write.
 
-### 4) Confirm and Iterate
+### 4) Confirm Understanding
 
-After writing:
-1. Summarize what's in the spec
+Before handing off:
+1. Summarize what you learned
 2. Ask if anything is missing or wrong
-3. Update based on feedback
-
-The spec is a living document - it's okay to iterate.
-
-## Output Location
-
-- Default: `SPEC.md` in project root
-- If user specifies a path, use that
-- If multiple specs needed: `specs/<feature-name>.md`
+3. Iterate if needed
 
 ## Anti-patterns
 
 - **Don't ask obvious questions**: If you can read it from the code, don't ask
 - **Don't ask everything at once**: Start broad, then dive deep based on answers
 - **Don't skip areas**: Even if user seems impatient, cover security/edge cases
-- **Don't write vague specs**: "Handle errors appropriately" is not a spec
-- **Don't interview forever**: Know when you have enough to write a useful spec
+- **Don't interview forever**: Know when you have enough for the task
 
 ## Example Interview Flow
 
@@ -133,4 +123,4 @@ Follow-up on OAuth:
    c) Reject - must use original method
 ```
 
-Continue until spec is complete.
+Continue until requirements are complete, then use `create-spec` to write the spec.
