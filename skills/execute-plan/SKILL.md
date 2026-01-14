@@ -44,7 +44,7 @@ Read `PLAN.md` and locate the first unchecked `[ ]` item.
      # ... list all incomplete plans, use first line of file as description
    ```
 4. Move the selected plan to `PLAN.md` and proceed.
-5. If no incomplete plans exist, ask the user to create one (suggest `create-plan` skill).
+5. If no incomplete plans exist, ask the user to create one (suggest `create-plan` agent).
 
 ### 2) Understand Before Acting
 

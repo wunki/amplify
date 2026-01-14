@@ -1,6 +1,6 @@
 ---
 name: interview
-description: Deep, exhaustive requirements gathering for features. Reads existing SPEC.md, interviews about technical implementation, UI/UX, edge cases, tradeoffs, concerns. Continues until complete, then writes to SPEC.md. Triggers on "interview me", "fill out the spec", "spec this out", "deep dive on requirements", "help me think through this".
+description: Deep, exhaustive requirements gathering for features. Reads existing SPEC.md, interviews about technical implementation, UI/UX, edge cases, tradeoffs, concerns. Continues until complete, then hands off to create-spec or create-plan. Triggers on "interview me", "fill out the spec", "spec this out", "deep dive on requirements", "help me think through this".
 ---
 
 # Interview
