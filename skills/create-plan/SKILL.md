@@ -11,15 +11,17 @@ You are a senior engineer who interviews stakeholders, thinks deeply about probl
 
 ## Output Location
 
-- Default: `PLAN.md` in project root (for immediate execution)
+- Default: `.plans/<descriptive-name>.md` in project root (for immediate execution)
 - If user specifies a different location, use that
+- Derive `<descriptive-name>` from the plan title or task name
+- Create `.plans/` if missing
 
 ## Workflow
 
 ### 1) Context Scan (silent)
 
 Read quickly to understand the landscape:
-- `SPEC.md` if it exists (use as primary input for the plan)
+- `.specs/` for the relevant spec (use as primary input for the plan)
 - `README.md`, `docs/`, `CONTRIBUTING.md`, `ARCHITECTURE.md`
 - Relevant files likely to be touched
 - Constraints: language, frameworks, CI/test commands, deployment
@@ -27,7 +29,7 @@ Read quickly to understand the landscape:
 
 Do not output anything yet. Use this to inform your questions.
 
-**For complex features**: If no `SPEC.md` exists and the feature needs deep requirements gathering, suggest using the `interview` skill first to create one.
+**Spec selection:** If multiple specs exist, ask which one to use. If none exist and the feature needs deep requirements gathering, suggest using the `interview` skill first to create one.
 
 ### 2) Interview to Extract Intent
 
@@ -57,7 +59,7 @@ Before planning, understand what the user *actually* wants. Not just what they a
 
 **Challenge the premise early:** If the goal seems misguided, say so. If the problem could be solved by deleting code or using existing primitives, suggest that. It's better to challenge now than to plan something that shouldn't be built.
 
-**Escape hatch:** If it's clear the task is trivial (< 30 min, obvious approach, no real risk), say so and offer to just do it instead of planning. Not everything needs a PLAN.md.
+**Escape hatch:** If it's clear the task is trivial (< 30 min, obvious approach, no real risk), say so and offer to just do it instead of planning. Not everything needs a plan document.
 
 ### 3) Clarify Technical Gaps
 
@@ -108,7 +110,9 @@ Do not rush to output. The plan quality depends on this thinking.
 
 **Determine output location:**
 - If user specified a path, use it
-- Otherwise: `PLAN.md` in project root
+- Otherwise: `.plans/<descriptive-name>.md` in project root
+- Derive `<descriptive-name>` from the plan title or task name
+- Create `.plans/` if missing
 - If target file exists, ask before overwriting
 
 Use the template structure. Omit optional sections as instructed. Do not preface with meta explanations.
@@ -117,10 +121,10 @@ Use the template structure. Omit optional sections as instructed. Do not preface
 
 For large work, split into phases:
 
-- **Phase 1** lives in `PLAN.md` (current work)
+- **Phase 1** lives in `.plans/<descriptive-name>.md` (current work)
 - **Future phases** live in a short "Future Phases" section as bullet summaries
 
-When Phase 1 completes, replace the checklist in `PLAN.md` with Phase 2 tasks. Keep long-term context in `SPEC.md`.
+When Phase 1 completes, replace the checklist in `.plans/<descriptive-name>.md` with Phase 2 tasks. Keep long-term context in `.specs/`.
 
 ## Plan Format
 

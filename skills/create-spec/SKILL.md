@@ -1,11 +1,11 @@
 ---
 name: create-spec
-description: Create or update a SPEC.md document from requirements, notes, or interview output. Structures information into a consistent spec format. Triggers on "create a spec", "write a spec", "turn this into a spec", "spec template", or when structuring requirements into a specification document.
+description: Create or update a spec document from requirements, notes, or interview output. Structures information into a consistent spec format. Triggers on "create a spec", "write a spec", "turn this into a spec", "spec template", or when structuring requirements into a specification document.
 ---
 
 # Create Spec
 
-Structure requirements into a well-organized SPEC.md document. This skill focuses on the *structure and writing* of specs, not the requirements gathering (use the `interview` skill for that).
+Structure requirements into a well-organized spec document. This skill focuses on the *structure and writing* of specs, not the requirements gathering (use the `interview` skill for that).
 
 ## When to Use
 
@@ -22,7 +22,7 @@ Determine what you're working with:
 
 - **Interview output**: Requirements gathered from `interview` skill
 - **Existing notes**: User-provided requirements, PRD, or design doc
-- **Existing SPEC.md**: Update/extend rather than replace
+- **Existing spec**: Update/extend rather than replace
 - **Nothing yet**: Create a template with placeholders
 
 ### 2) Structure the Spec
@@ -53,9 +53,10 @@ Use the template in `references/spec-template.md`. Key sections:
 
 ### 4) Output Location
 
-- Default: `SPEC.md` in project root
+- Default: `.specs/<descriptive-name>.md` in project root
 - If user specifies a path, use that
-- Multiple specs: `specs/<feature-name>.md`
+- Derive `<descriptive-name>` from the spec title or feature name
+- Create `.specs/` if missing
 - If file exists, ask before overwriting (unless updating)
 
 ## Spec Quality Checklist
