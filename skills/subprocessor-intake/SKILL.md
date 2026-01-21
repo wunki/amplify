@@ -36,9 +36,53 @@ What vendor/service are you looking to add?
 Give me the company name and website if you have it.
 ```
 
-### 2) Research the Vendor
+### 2) Get Vendor Scope
 
-Once you have the vendor, actively research their public documentation:
+Once you have the vendor identity, clarify exactly what you'll be using:
+
+```text
+Before I research, I need to understand the scope:
+
+1) What specific product/API will you use?
+   (e.g., "ElevenLabs Text-to-Speech API", "Vertex AI Gemini", "Azure OpenAI API")
+
+2) Are you using their managed platform or direct API calls?
+   - Managed platform (vendor hosts everything, you use their UI/dashboard)
+   - Direct API integration (you call their API from your code)
+   - SDK/library (vendor-provided code running in your infrastructure)
+
+3) What pricing tier are you planning to use?
+   (Free, Pro, Enterprise, etc. - this affects available features and policies)
+
+4) Which regions will you deploy to?
+   - US only
+   - EU only
+   - Both US and EU
+```
+
+**Why this matters:** Many vendors have multiple products with different data handling policies. ElevenLabs API has different retention than ElevenLabs Agents. Vertex AI has different policies than AI Studio. Getting this wrong means researching the wrong documentation.
+
+### 3) Research the Vendor
+
+Once you have the vendor AND scope, actively research their public documentation.
+
+**IMPORTANT: Distinguish API vs Platform Documentation**
+
+Many vendors have multiple products with different policies. Before citing any policy, confirm you're looking at the right docs:
+
+| Documentation Type     | Common URL Patterns                             | Applies To                         |
+| ---------------------- | ----------------------------------------------- | ---------------------------------- |
+| API/SDK docs           | `/docs/api-reference/`, `/developers/`          | Direct API integration             |
+| Platform docs          | `/docs/platform/`, `/docs/agents/`, `/console/` | Managed services, hosted solutions |
+| Consumer/Creative docs | `/docs/studio/`, `/create/`                     | Often NOT relevant for B2B         |
+| Enterprise docs        | `/enterprise/`, `/business/`                    | Enterprise tier features           |
+
+**Example mismatches to avoid:**
+- ElevenLabs: API docs vs Agents platform (different retention)
+- Google: Vertex AI vs AI Studio (different data handling)
+- OpenAI: API vs ChatGPT (very different policies)
+
+**Research the documentation that matches the user's stated scope from step 2.**
 
 | Resource | Common Locations | What to Extract |
 |----------|------------------|-----------------|
@@ -54,9 +98,24 @@ Once you have the vendor, actively research their public documentation:
 - What certifications do they have?
 - Are there specific endpoints or services we would use from this subprocessor?
 - What are their data retention policies on the endpoints we would use?
-- Do they use customer data for AI/ML training, will it be user for other purposes?
-- What's their deletion process, to facilitate purging user data?
+- Do they use customer data for AI/ML training, will it be used for other purposes?
 - Encryption at rest and in transit?
+
+**Data Deletion Capabilities (critical):**
+
+We must always be able to delete data. Research these thoroughly:
+
+| Question                                         | Where to Look                                     | Why It Matters                            |
+| ------------------------------------------------ | ------------------------------------------------- | ----------------------------------------- |
+| Can individual users delete their own data?      | Privacy policy, user docs, settings/account pages | GDPR right to erasure, user control       |
+| Can we (the company) request deletion?           | DPA, API docs, admin console docs                 | Our ability to fulfill deletion requests  |
+| Can we trigger deletion at company/tenant level? | DPA, enterprise docs, account termination terms   | Offboarding clients, contract termination |
+| What's the deletion process?                     | DPA, support docs, API reference                  | Must be documented and reliable           |
+| What's the deletion timeline?                    | DPA, privacy policy                               | GDPR requires "without undue delay"       |
+| Is deletion complete or just deidentification?   | Privacy policy, DPA fine print                    | True deletion vs. anonymization           |
+| Are backups purged?                              | Security docs, DPA                                | Data may persist in backups               |
+
+**Why this matters:** We should never be in a position where we cannot delete data for business or compliance reasons. If a vendor cannot confirm deletion capabilities, flag this as a blocker.
 
 **Research tips:**
 - Check `vendor.com/legal/dpa`, `vendor.com/trust`, `trust.vendor.com`
@@ -65,7 +124,34 @@ Once you have the vendor, actively research their public documentation:
 
 If you can't find something, note it as "Not found publicly - request from vendor."
 
-### 3) Understand the Feature (Open Conversation)
+### 4) Verify Research Source
+
+**Before proceeding, confirm your research applies to the user's actual integration.**
+
+After completing initial research, pause to validate:
+
+```text
+I found the following policies. Quick check that I researched the right docs:
+
+You said you're using: [specific product/API from step 2]
+I researched: [document title/URL]
+This source covers: [what the documentation is for]
+
+Does this match your integration?
+- If yes, we can proceed
+- If no, tell me what's different and I'll re-research
+```
+
+**Why this step exists:** Platforms often have multiple offerings with different policies. Catching a mismatch early avoids backtracking after the detailed interview.
+
+**Common mismatches:**
+- User says "API" but you found platform/console docs
+- User says "Enterprise" but you found free tier policies
+- User is using a specific service but you found general company policies
+
+If there's a mismatch, go back to step 3 and research the correct documentation before continuing.
+
+### 5) Understand the Feature (Open Conversation)
 
 **Before asking structured questions, have an open conversation.** This gives context about the data sensitivity and use case.
 
@@ -77,6 +163,11 @@ I've researched [Vendor]. Here's what I found:
 - DPA: [Available at URL / Not found]
 - Certifications: [SOC 2, ISO 27001, etc.]
 - AI/ML training: [Opt-out available / No mention / Explicitly excluded]
+- Data deletion:
+  - Individual user deletion: [Self-service / Via request / Not found]
+  - Company-level deletion: [API available / Admin console / Via support / Not found]
+  - Deletion timeline: [X days / "without undue delay" / Not specified]
+  - Backup purging: [Confirmed / Not mentioned]
 
 Before I ask specific questions, tell me about this feature:
 - What are you building or enabling with [Vendor]?
@@ -92,7 +183,7 @@ Before I ask specific questions, tell me about this feature:
 
 This open conversation will inform the specific questions that follow and help you understand context that structured questions might miss.
 
-### 4) Interview: Detailed Questions
+### 6) Interview: Detailed Questions
 
 Now ask structured questions, but **require detailed answers, not just selections**.
 
@@ -167,9 +258,11 @@ Now ask structured questions, but **require detailed answers, not just selection
     If yes, describe the new data flow.
 ```
 
-*(Note: User may provide link to current network diagram for reference)*
+**Current network diagram references:**
+- [Figma: Infrastructure Architecture](https://www.figma.com/board/gTZqLqhHVRm5HmtjK9zifV/Infrastructure-Architecture?node-id=0-1&p=f&t=Z6r1oiv0f9pEJ7NP-0)
+- [Vanta: Network Diagram](https://app.vanta.com/c/workera.ai/tests/network-diagram?tab=results)
 
-### 5) Validate Claims
+### 7) Validate Claims
 
 Cross-check user statements against research:
 
@@ -181,13 +274,24 @@ Cross-check user statements against research:
 | "We can delete anytime" | Verify deletion process in docs |
 | "Encryption at rest" | Check security page |
 
+**Deletion validation (always verify):**
+
+| Claim                         | How to Verify                                                | Red Flags                                            |
+| ----------------------------- | ------------------------------------------------------------ | ---------------------------------------------------- |
+| "Users can delete their data" | Find self-service deletion in user docs or privacy policy    | No documented process, "contact support" with no SLA |
+| "We can request deletion"     | Check for API endpoint, admin console, or documented process | Only available via legal/support with no timeline    |
+| "Deletion is complete"        | DPA should specify true deletion vs. anonymization           | "May retain for legal purposes" without limits       |
+| "Backups are purged"          | Security docs or DPA should mention backup retention         | No mention of backup deletion timeline               |
+
+**If deletion capabilities are unclear or insufficient, this is a potential blocker.** We must be able to honor deletion requests from our users and clients.
+
 **Flag discrepancies:**
 ```text
 Note: You mentioned [X], but their documentation says [Y].
 This needs clarification before proceeding.
 ```
 
-### 6) Produce Outputs
+### 8) Produce Outputs
 
 Create two documents:
 
@@ -297,10 +401,31 @@ to generate text transcripts that are stored for review by the user."]
 |----------|--------|
 | Can clients opt out? | Yes / No / Partial |
 | If no, why is it mandatory? | [Explanation] |
-| Can clients trigger deletion? | Yes / No / Via request |
-| Can we request deletion (individual)? | Yes / No |
-| Can we request deletion (company-wide)? | Yes / No |
-| Deletion process | [Description] |
+
+---
+
+## Data Deletion Capabilities
+
+| Capability                               | Status                             | Process | Source |
+| ---------------------------------------- | ---------------------------------- | ------- | ------ |
+| Individual user self-service deletion    | Yes / No / Unknown                 |         |        |
+| Individual user deletion via our request | Yes / No / Unknown                 |         |        |
+| Company/tenant-level deletion            | Yes / No / Unknown                 |         |        |
+| Deletion timeline                        | [X days / unspecified]             |         |        |
+| Backup purging confirmed                 | Yes / No / Unknown                 |         |        |
+| True deletion vs. anonymization          | Deletion / Anonymization / Unknown |         |        |
+
+**Deletion process documentation:**
+[Link to vendor docs describing deletion process, or "Not found publicly"]
+
+**Assessment:**
+- [ ] We can delete individual user data on request
+- [ ] We can delete all data for a client/company
+- [ ] Deletion timeline is acceptable
+- [ ] No business reason would prevent us from deleting data
+
+**Gaps or concerns:**
+[List any deletion capability gaps that need resolution before approval]
 
 ---
 
@@ -330,7 +455,9 @@ to generate text transcripts that are stored for review by the user."]
 - [ ] Certifications
 - [ ] Encryption standards
 - [ ] AI/ML training policy
-- [ ] Deletion capabilities
+- [ ] Individual user deletion capability
+- [ ] Company-level deletion capability
+- [ ] Deletion process and timeline
 
 **Discrepancies or clarifications needed:**
 - [List any mismatches]
@@ -382,7 +509,7 @@ We are adding [Company Name] ([website]) as a subprocessor for [purpose].
 *Draft for InfoSec review. Do not send without approval.*
 ```
 
-### 7) File Locations
+### 9) File Locations
 
 - Intake doc: `docs/subprocessors/intake-[company-name-lowercase].md`
 - Create directory if needed
@@ -411,11 +538,18 @@ Use this to ensure nothing is missed:
 - [ ] Retention period defined
 - [ ] AI/ML training policy checked
 
-**Control & Deletion**
+**Control & Opt-out**
 - [ ] Client opt-out possibility documented
 - [ ] Mandatory vs optional clarified
-- [ ] Client deletion trigger documented
-- [ ] Our deletion request process documented
+
+**Data Deletion (critical)**
+- [ ] Individual user self-service deletion researched
+- [ ] Individual user deletion via our request confirmed
+- [ ] Company/tenant-level deletion confirmed
+- [ ] Deletion process documented
+- [ ] Deletion timeline acceptable
+- [ ] Backup purging policy verified
+- [ ] No business blockers to deletion identified
 
 **Access & Architecture**
 - [ ] Internal access roles defined
@@ -435,6 +569,8 @@ Use this to ensure nothing is missed:
 - **Don't trust without verifying**: If user says "SOC 2", find the source
 - **Don't accept vague data scope**: "User data" is not specific enough
 - **Don't skip opt-out question**: Client choice is a real requirement
+- **Don't skip deletion research**: Deletion capability is critical; unclear deletion = potential blocker
+- **Don't accept "we can delete" without proof**: Find the documented process, API, or admin flow
 - **Don't send notices**: Drafts only; InfoSec handles notification
 
 ## Handoff
