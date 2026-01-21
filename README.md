@@ -8,17 +8,22 @@ Skills and configuration for AI coding agents. Works with Claude Code, OpenCode,
 
 | Skill | What It Does |
 |-------|--------------|
-| **dev-browser** | Browser automation with persistent page state. Navigate, click, fill forms, screenshot, scrape. Works standalone or connected to your Chrome session. |
-| **frontend-design** | Build distinctive, production-grade interfaces that don't look like AI slop. Opinionated about typography, color, motion, and spatial composition. |
-| **web-perf** | Performance auditing via Chrome DevTools MCP. Core Web Vitals, render-blocking resources, network waterfalls, accessibility gaps. |
-| **beads** | Graph-based task tracker that survives conversation compaction. Dependencies, priorities, audit trails, git-backed persistence. |
-| **roadmap** | Create a ROADMAP.md for open source projects. Vision, milestones, timeline (Now/Next/Later/Future). Follows open source conventions. |
-| **create-plan** | Generate concise implementation plans. Scope, action items, open questions, documentation links. |
-| **execute-plan** | Work through PLAN.md one task at a time. Questions before action, summaries after, learning persistence. |
-| **guide** | Interactive teaching mode. Orchestrates clarification, planning, and guided execution. |
-| **skill-creator** | Meta-skill for building new skills. Structure, progressive disclosure, bundled resources. |
 | **ask-questions-if-underspecified** | Requirement clarification. Ask focused questions before implementing. |
+| **browse-site** | Browser automation using agent-browser CLI. Navigate, click, fill forms, screenshot, scrape. |
+| **create-plan** | Generate concise implementation plans. Scope, action items, open questions, documentation links. |
+| **create-spec** | Create or update SPEC.md from requirements, notes, or interview output. Structures information into consistent spec format. |
+| **execute-plan** | Work through PLAN.md one task at a time. Questions before action, summaries after, learning persistence. |
+| **frontend-design** | Build distinctive, production-grade interfaces that don't look like AI slop. Opinionated about typography, color, motion, and spatial composition. |
+| **gh-file** | Fetch source code from GitHub URLs. Supports line ranges, directories, and full repo clones via `gh` CLI. |
+| **guide** | Interactive teaching mode. Orchestrates clarification, planning, and guided execution. |
+| **interview** | Deep requirements gathering through exhaustive questioning. Hands off to create-spec or create-plan when complete. |
+| **roadmap** | Create a ROADMAP.md for open source projects. Vision, milestones, timeline (Now/Next/Later/Future). Follows open source conventions. |
 | **session-reviewer** | Extract learnings from sessions. Persists personal preferences globally, project knowledge locally. |
+| **skill-creator** | Meta-skill for building new skills. Structure, progressive disclosure, bundled resources. |
+| **solveit** | Generate structured learning guides using the Pólya problem-solving method. Self-contained documents for building features. |
+| **stop-slop** | Remove AI writing patterns from prose. Eliminate filler phrases, formulaic structures, and predictable AI tells. |
+| **web-perf** | Performance auditing via Chrome DevTools MCP. Core Web Vitals, render-blocking resources, network waterfalls, accessibility gaps. |
+| **write-test** | Write meaningful tests using coverage as a guide. Prioritizes real user workflows over implementation details. |
 
 ### Commands
 
@@ -26,6 +31,16 @@ Skills and configuration for AI coding agents. Works with Claude Code, OpenCode,
 |---------|--------------|
 | **/commit** | Generate conventional commit messages from staged changes |
 | **/smart-commit** | Analyze unstaged changes, group into atomic commits, generate messages for each |
+
+### Agents
+
+| Agent | What It Does |
+|-------|--------------|
+| **code-simplifier** | Simplifies and refines code for clarity and maintainability. Focuses on recently modified code. |
+| **create-plan** | Create implementation plans through interviewing. Thinks deeply before planning. |
+| **execute-plan** | Execute PLAN.md tasks one at a time with human oversight. |
+| **plan-reviewer** | Deep analysis of PLAN.md before execution. Validates against codebase, checks task decomposition, identifies risks. |
+| **tech-docs-writer** | Technical writer that transforms codebases into clear documentation. README files, API docs, architecture guides. |
 
 ### Scripts
 
