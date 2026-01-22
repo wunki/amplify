@@ -25,3 +25,8 @@ Thumbs.db
 .idea/
 .vscode/
 *.swp
+
+
+# Specs and plans directories
+.specs/
+.plans/
