@@ -21,6 +21,7 @@ Skills and configuration for AI coding agents. Works with Claude Code, OpenCode,
 | **session-reviewer** | Extract learnings from sessions. Persists personal preferences globally, project knowledge locally. |
 | **skill-creator** | Meta-skill for building new skills. Structure, progressive disclosure, bundled resources. |
 | **solveit** | Generate structured learning guides using the Pólya problem-solving method. Self-contained documents for building features. |
+| **spec-to-linear** | Create a Linear issue from a spec file. Derives title/summary, embeds spec in collapsible section, updates spec with issue ID. Can update existing issues. |
 | **stop-slop** | Remove AI writing patterns from prose. Eliminate filler phrases, formulaic structures, and predictable AI tells. |
 | **subprocessor-intake** | Research and document new subprocessors/vendors for InfoSec review. Researches compliance docs, interviews about data scope, validates claims. |
 | **web-perf** | Performance auditing via Chrome DevTools MCP. Core Web Vitals, render-blocking resources, network waterfalls, accessibility gaps. |
