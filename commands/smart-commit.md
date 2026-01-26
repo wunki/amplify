@@ -40,6 +40,26 @@ Group changes into atomic commits based on:
    - Documentation = separate commit (usually `docs`)
 5. **Dependency Order**: If commit B depends on commit A, A comes first
 
+### Allowed Scopes
+
+Use ONLY these scopes in commit messages. If a change doesn't fit a scope, omit the scope entirely.
+
+| Scope  | What it covers                               |
+|--------|----------------------------------------------|
+| web    | LiveView, controllers, templates, assets, UI |
+| api    | REST API endpoints, schemas, serializers     |
+| db     | Ecto schemas, migrations, repo changes       |
+| jobs   | Oban workers, background processing          |
+| auth   | Authentication, SSO, authorization policies  |
+| i18n   | Translations, lokalise, gettext              |
+| mix    | Mix tasks                                    |
+| llm    | LLM integrations (OpenAI, Gemini, Claude)    |
+| ci     | GitHub workflows, CI/CD                      |
+| deps   | Dependency updates                           |
+| config | Configuration files                          |
+| docs   | Documentation                                |
+| test   | Test-only changes (fixtures, helpers)        |
+
 ### Common Patterns
 
 - `feat`: New functionality → group with related tests/types
