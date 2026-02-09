@@ -27,13 +27,6 @@ Skills and configuration for AI coding agents. Works with Claude Code, OpenCode,
 | **web-perf** | Performance auditing via Chrome DevTools MCP. Core Web Vitals, render-blocking resources, network waterfalls, accessibility gaps. |
 | **write-test** | Write meaningful tests using coverage as a guide. Prioritizes real user workflows over implementation details. |
 
-### Commands
-
-| Command | What It Does |
-|---------|--------------|
-| **/commit** | Generate conventional commit messages from staged changes |
-| **/smart-commit** | Analyze unstaged changes, group into atomic commits, generate messages for each |
-
 ### Agents
 
 | Agent | What It Does |
@@ -275,7 +268,7 @@ Knowledge gets lost between sessions. The **session-reviewer** skill extracts le
 | Loop | Storage | Scope | Lifetime | What it captures |
 |------|---------|-------|----------|------------------|
 | **Global** | `~/.claude/CLAUDE.md` | All projects | Forever | Coding style, communication, workflow |
-| **Project** | `CLAUDE.md` | This project | Life of project | Commands, gotchas, patterns |
+| **Project** | `CLAUDE.md` | This project | Life of project | Workflows, gotchas, patterns |
 | **Plan** | `PLAN.md` | This feature | Until archived | Task deps, blockers, discoveries |
 
 **How to route learnings:**
@@ -322,7 +315,7 @@ cd amplify
 make
 ```
 
-This detects which tools you have installed (Claude Code, OpenCode, Codex, Amp) and copies skills, commands, and configuration to each.
+This detects which tools you have installed (Claude Code, OpenCode, Codex, Amp) and copies skills, agents, and configuration to each.
 
 To install for a specific tool only:
 
@@ -351,12 +344,12 @@ Amp reads skills from `.agents/skills/` in your workspace. Either:
 
 ## Skill Locations by Tool
 
-| Tool | Skills Directory | Commands Directory |
-|------|------------------|-------------------|
-| Claude Code | `~/.claude/skills/` | `~/.claude/commands/` |
-| OpenCode | `~/.config/opencode/skills/` | `~/.config/opencode/command/` |
-| Codex | `~/.codex/skills/` | `~/.codex/commands/` |
-| Amp | `~/.config/amp/skills/` | `~/.config/amp/commands/` |
+| Tool | Skills Directory |
+|------|------------------|
+| Claude Code | `~/.claude/skills/` |
+| OpenCode | `~/.config/opencode/skills/` |
+| Codex | `~/.codex/skills/` |
+| Amp | `~/.config/amp/skills/` |
 
 OpenCode now expects skills under `~/.config/opencode/skills/` (plural). If you have a legacy `~/.config/opencode/skill/` directory, you can remove it after reinstalling.
 
@@ -392,24 +385,13 @@ config/
 2. Add `scripts/` for executable code, `references/` for on-demand docs
 3. Run `make`
 
-### New Command
-
-1. Create `commands/<name>.md` with frontmatter:
-   ```yaml
-   ---
-   description: What the command does
-   ---
-   ```
-2. Add step-by-step instructions
-3. Run `make`
-
 ## How It Works
 
 **Config files** are symlinked (changes propagate immediately).
 
-**Skills and commands** are rsynced (run `make` after changes).
+**Skills and agents** are rsynced (run `make` after changes).
 
-The Makefile auto-discovers skills in `skills/` and commands in `commands/`, then distributes them to each tool's expected location.
+The Makefile auto-discovers skills in `skills/` and agents in `agents/`, then distributes them to each tool's expected location.
 
 ## Cross-Tool Compatibility
 

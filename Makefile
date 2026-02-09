@@ -7,7 +7,6 @@ HAS_AMP := $(shell command -v amp 2>/dev/null)
 
 # Auto-discover from repo directories
 SKILLS := $(wildcard skills/*)
-COMMANDS := $(wildcard commands/*)
 AGENTS := $(wildcard agents/*)
 SCRIPTS := $(wildcard scripts/*)
 
@@ -28,11 +27,8 @@ endif
 
 claude:
 	@echo "Installing for Claude Code..."
-	mkdir -p ~/.claude/commands ~/.claude/skills ~/.claude/agents
+	mkdir -p ~/.claude/skills ~/.claude/agents
 	ln -sf $(CURDIR)/config/AGENTS.md ~/.claude/CLAUDE.md
-	@for cmd in $(COMMANDS); do \
-		rsync -a $(CURDIR)/$$cmd ~/.claude/commands/; \
-	done
 	@for skill in $(SKILLS); do \
 		rsync -a $(CURDIR)/$$skill/ ~/.claude/skills/$$(basename $$skill)/; \
 	done
@@ -44,14 +40,11 @@ claude:
 
 opencode:
 	@echo "Installing for OpenCode..."
-	mkdir -p ~/.config/opencode/command ~/.config/opencode/skills ~/.config/opencode/agent
+	mkdir -p ~/.config/opencode/skills ~/.config/opencode/agent
 	ln -sf $(CURDIR)/config/AGENTS.md ~/.config/opencode/AGENTS.md
 	ln -sf $(CURDIR)/config/opencode/opencode.json ~/.config/opencode/opencode.json
 	ln -sfn $(CURDIR)/config/opencode/themes ~/.config/opencode/themes
 	ln -sf $(CURDIR)/config/opencode/tool ~/.config/opencode/tool
-	@for cmd in $(COMMANDS); do \
-		rsync -a $(CURDIR)/$$cmd ~/.config/opencode/command/; \
-	done
 	@for skill in $(SKILLS); do \
 		rsync -a $(CURDIR)/$$skill/ ~/.config/opencode/skills/$$(basename $$skill)/; \
 	done
@@ -65,24 +58,18 @@ opencode:
 
 codex:
 	@echo "Installing for Codex..."
-	mkdir -p ~/.codex/skills ~/.codex/commands
+	mkdir -p ~/.codex/skills
 	ln -sf $(CURDIR)/config/AGENTS.md ~/.codex/AGENTS.md
 	ln -sf $(CURDIR)/config/codex/config.toml ~/.codex/config.toml
-	@for cmd in $(COMMANDS); do \
-		rsync -a $(CURDIR)/$$cmd ~/.codex/commands/; \
-	done
 	@for skill in $(SKILLS); do \
 		rsync -a $(CURDIR)/$$skill/ ~/.codex/skills/$$(basename $$skill)/; \
 	done
 
 amp:
 	@echo "Installing for Amp..."
-	mkdir -p ~/.config/amp/skills ~/.config/amp/commands
+	mkdir -p ~/.config/amp/skills
 	ln -sf $(CURDIR)/config/AGENTS.md ~/.config/amp/AGENTS.md
 	ln -sf $(CURDIR)/config/amp/settings.json ~/.config/amp/settings.json
-	@for cmd in $(COMMANDS); do \
-		rsync -a $(CURDIR)/$$cmd ~/.config/amp/commands/; \
-	done
 	@for skill in $(SKILLS); do \
 		rsync -a $(CURDIR)/$$skill/ ~/.config/amp/skills/$$(basename $$skill)/; \
 	done
@@ -96,18 +83,18 @@ scripts:
 	@echo "Ensure ~/.local/bin is in your PATH"
 
 clean:
-	@echo "Removing installed skills and commands..."
+	@echo "Removing installed skills and agents..."
 ifdef HAS_CLAUDE
-	rm -rf ~/.claude/skills ~/.claude/commands ~/.claude/agents
+	rm -rf ~/.claude/skills ~/.claude/agents
 endif
 ifdef HAS_OPENCODE
-	rm -rf ~/.config/opencode/skills ~/.config/opencode/skill ~/.config/opencode/command ~/.config/opencode/agent
+	rm -rf ~/.config/opencode/skills ~/.config/opencode/skill ~/.config/opencode/agent
 endif
 ifdef HAS_CODEX
-	rm -rf ~/.codex/skills ~/.codex/commands
+	rm -rf ~/.codex/skills
 endif
 ifdef HAS_AMP
-	rm -rf ~/.config/amp/skills ~/.config/amp/commands
+	rm -rf ~/.config/amp/skills
 endif
 	@for script in $(SCRIPTS); do \
 		rm -f ~/.local/bin/$$(basename $$script); \
