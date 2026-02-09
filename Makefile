@@ -1,4 +1,4 @@
-.PHONY: all claude opencode codex amp scripts clean
+.PHONY: all claude opencode codex amp scripts clean reset
 
 HAS_CLAUDE := $(shell command -v claude 2>/dev/null)
 HAS_OPENCODE := $(shell command -v opencode 2>/dev/null)
@@ -100,3 +100,7 @@ endif
 		rm -f ~/.local/bin/$$(basename $$script); \
 	done
 	@echo "Done. Run 'make' to reinstall."
+
+reset:
+	@$(MAKE) clean
+	@$(MAKE) all
