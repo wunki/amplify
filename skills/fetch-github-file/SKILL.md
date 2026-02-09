@@ -1,9 +1,9 @@
 ---
-name: gh-file
-description: Fetch source code from GitHub URLs. Paste a GitHub link to a file, directory, or repository and get the contents. Supports line ranges (#L10-L25), directories, and full repo clones. Triggers on GitHub URLs like "github.com/owner/repo/blob/..." or phrases like "fetch this GitHub file", "get the code from GitHub", "show me this file".
+name: fetch-github-file
+description: Fetch source code from GitHub URLs. Automatically use this skill whenever the user shares any GitHub URL (even if they only paste the link), especially file URLs like github.com/owner/repo/blob/... or raw.githubusercontent.com/..., or when they ask to read/fetch code from GitHub. Supports file contents, line ranges (#L10-L25), directory listings, and full repository clones.
 ---
 
-# GitHub File Fetcher
+# Fetch GitHub File
 
 Fetch source code from GitHub URLs using the `gh` CLI for reliable, authenticated access.
 

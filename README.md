@@ -14,7 +14,7 @@ Skills and configuration for AI coding agents. Works with Claude Code, OpenCode,
 | **create-spec** | Create or update SPEC.md from requirements, notes, or interview output. Structures information into consistent spec format. |
 | **execute-plan** | Work through PLAN.md one task at a time. Questions before action, summaries after, learning persistence. |
 | **frontend-design** | Build distinctive, production-grade interfaces that don't look like AI slop. Opinionated about typography, color, motion, and spatial composition. |
-| **gh-file** | Fetch source code from GitHub URLs. Supports line ranges, directories, and full repo clones via `gh` CLI. |
+| **fetch-github-file** | Fetch source code from GitHub URLs. Auto-triggers on GitHub file links and supports line ranges, directories, and full repo clones via `gh` CLI. |
 | **guide** | Interactive teaching mode. Orchestrates clarification, planning, and guided execution. |
 | **interview** | Deep requirements gathering through exhaustive questioning. Hands off to create-spec or create-plan when complete. |
 | **roadmap** | Create a ROADMAP.md for open source projects. Vision, milestones, timeline (Now/Next/Later/Future). Follows open source conventions. |
