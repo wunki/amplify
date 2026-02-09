@@ -13,18 +13,16 @@ Skills and configuration for AI coding agents. Works with Claude Code, OpenCode,
 | **create-plan** | Generate concise implementation plans. Scope, action items, open questions, documentation links. |
 | **create-spec** | Create or update SPEC.md from requirements, notes, or interview output. Structures information into consistent spec format. |
 | **execute-plan** | Work through PLAN.md one task at a time. Questions before action, summaries after, learning persistence. |
-| **frontend-design** | Build distinctive, production-grade interfaces that don't look like AI slop. Opinionated about typography, color, motion, and spatial composition. |
 | **fetch-github-file** | Fetch source code from GitHub URLs. Auto-triggers on GitHub file links and supports line ranges, directories, and full repo clones via `gh` CLI. |
+| **frontend-design** | Build distinctive, production-grade interfaces that don't look like AI slop. Opinionated about typography, color, motion, and spatial composition. |
+| **frontend-slides** | Create stunning, animation-rich HTML presentations, including PPT/PPTX-to-web workflows. |
 | **guide** | Interactive teaching mode. Orchestrates clarification, planning, and guided execution. |
 | **interview** | Deep requirements gathering through exhaustive questioning. Hands off to create-spec or create-plan when complete. |
+| **mcp-builder** | Build high-quality MCP servers for Python (FastMCP) and Node/TypeScript MCP SDK integrations. |
 | **roadmap** | Create a ROADMAP.md for open source projects. Vision, milestones, timeline (Now/Next/Later/Future). Follows open source conventions. |
-| **session-reviewer** | Extract learnings from sessions. Persists personal preferences globally, project knowledge locally. |
 | **skill-creator** | Meta-skill for building new skills. Structure, progressive disclosure, bundled resources. |
-| **solveit** | Generate structured learning guides using the Pólya problem-solving method. Self-contained documents for building features. |
-| **spec-to-linear** | Create a Linear issue from a spec file. Derives title/summary, embeds spec in collapsible section, updates spec with issue ID. Can update existing issues. |
 | **stop-slop** | Remove AI writing patterns from prose. Eliminate filler phrases, formulaic structures, and predictable AI tells. |
-| **subprocessor-intake** | Research and document new subprocessors/vendors for InfoSec review. Researches compliance docs, interviews about data scope, validates claims. |
-| **web-perf** | Performance auditing via Chrome DevTools MCP. Core Web Vitals, render-blocking resources, network waterfalls, accessibility gaps. |
+| **update-deps** | Update Elixir Mix/Hex dependencies safely, including verification and migration handling. |
 | **write-test** | Write meaningful tests using coverage as a guide. Prioritizes real user workflows over implementation details. |
 
 ### Agents
@@ -208,81 +206,6 @@ For **human-in-the-loop** execution where you want oversight and learning:
 | Repetitive refactoring | `wiggum` |
 | Building new features | `execute-plan` |
 
-### Learning Loops: session-reviewer
-
-Knowledge gets lost between sessions. The **session-reviewer** skill extracts learnings and persists them so future sessions start smarter.
-
-```
-┌─────────────────────────────────────────────────────────────────────────┐
-│                    Three Learning Loops                                 │
-├─────────────────────────────────────────────────────────────────────────┤
-│                                                                         │
-│   GLOBAL LOOP          PROJECT LOOP           PLAN LOOP                 │
-│   (all projects)       (this project)         (this feature)            │
-│                                                                         │
-│   ┌─────────────┐      ┌─────────────┐       ┌─────────────┐            │
-│   │ ~/.claude/  │      │  CLAUDE.md  │       │   PLAN.md   │            │
-│   │  CLAUDE.md  │      │             │       │             │            │
-│   └──────┬──────┘      └──────┬──────┘       └──────┬──────┘            │
-│          │                    │                     │                   │
-│          │ prefs              │ knowledge           │ context           │
-│          ▼                    ▼                     ▼                   │
-│        ┌─────────────────────────────────────────────────┐              │
-│        │                    SESSION                      │              │
-│        │                                                 │              │
-│        │     Work → Friction → Discovery → Preferences   │              │
-│        │                                                 │              │
-│        └──────────────────────┬──────────────────────────┘              │
-│                               │                                         │
-│                               ▼                                         │
-│                    ┌─────────────────────┐                              │
-│                    │  /session-reviewer  │                              │
-│                    │   (extract & route) │                              │
-│                    └─────────┬───────────┘                              │
-│                              │                                          │
-│          ┌───────────────────┼───────────────────┐                      │
-│          │                   │                   │                      │
-│          ▼                   ▼                   ▼                      │
-│   ┌─────────────┐     ┌─────────────┐     ┌─────────────┐               │
-│   │  "Prefer    │     │ "Run make   │     │ "Task 3     │               │
-│   │   early     │     │  test-unit" │     │  needs auth │               │
-│   │   returns"  │     │             │     │  first"     │               │
-│   └──────┬──────┘     └──────┬──────┘     └──────┬──────┘               │
-│          │                   │                   │                      │
-│          ▼                   ▼                   ▼                      │
-│    All future          This project's       This plan's                 │
-│    sessions            sessions             remaining tasks             │
-│                                                                         │
-│   ◀──────────────── loops continue ────────────────▶                    │
-│                                                                         │
-│   When plan completes, learnings graduate upward:                       │
-│   plan discovery → project knowledge → global preference                │
-│                                                                         │
-└─────────────────────────────────────────────────────────────────────────┘
-```
-
-**Run at session end:** `/session-reviewer` or "review this session"
-
-**Three nested loops:**
-
-| Loop | Storage | Scope | Lifetime | What it captures |
-|------|---------|-------|----------|------------------|
-| **Global** | `~/.claude/CLAUDE.md` | All projects | Forever | Coding style, communication, workflow |
-| **Project** | `CLAUDE.md` | This project | Life of project | Workflows, gotchas, patterns |
-| **Plan** | `PLAN.md` | This feature | Until archived | Task deps, blockers, discoveries |
-
-**How to route learnings:**
-- "I prefer X" or style correction → **Global** (applies everywhere)
-- "This codebase does Y" → **Project** (specific to this repo)
-- "Task 3 needs X first" → **Plan** (relevant to current work)
-
-**Graduation:** When a plan completes, review its learnings. Discoveries useful beyond this feature should promote to project CLAUDE.md. Preferences that apply everywhere should promote to global config.
-
-**Also outputs** (one-way, not loops):
-- `docs/` — User-facing documentation when features complete
-
-The skill presents recommendations and waits for approval before making changes.
-
 ## Installation
 
 ### Claude Code (Plugin Marketplace)
@@ -294,9 +217,9 @@ Add the marketplace and install specific skills:
 /plugin marketplace add wunki/amplify
 
 # Install individual skills
-/plugin install dev-browser@amplify
+/plugin install browse-site@amplify
 /plugin install frontend-design@amplify
-/plugin install web-perf@amplify
+/plugin install fetch-github-file@amplify
 ```
 
 Or install everything at once:
@@ -331,7 +254,7 @@ make amp       # Amp only
 Use the skill installer:
 
 ```bash
-$skill-installer wunki/amplify/dev-browser
+$skill-installer wunki/amplify/browse-site
 $skill-installer wunki/amplify/frontend-design
 ```
 
@@ -347,11 +270,11 @@ Amp reads skills from `.agents/skills/` in your workspace. Either:
 | Tool | Skills Directory |
 |------|------------------|
 | Claude Code | `~/.claude/skills/` |
-| OpenCode | `~/.config/opencode/skills/` |
+| OpenCode | `~/.claude/skills/` (shared with Claude Code) |
 | Codex | `~/.codex/skills/` |
 | Amp | `~/.config/amp/skills/` |
 
-OpenCode now expects skills under `~/.config/opencode/skills/` (plural). If you have a legacy `~/.config/opencode/skill/` directory, you can remove it after reinstalling.
+OpenCode reads from `~/.claude/skills/`, so this repo uses that shared location instead of installing a separate OpenCode skills directory.
 
 ## Configuration
 

@@ -40,13 +40,13 @@ claude:
 
 opencode:
 	@echo "Installing for OpenCode..."
-	mkdir -p ~/.config/opencode/skills ~/.config/opencode/agent
+	mkdir -p ~/.claude/skills ~/.config/opencode/agent
 	ln -sf $(CURDIR)/config/AGENTS.md ~/.config/opencode/AGENTS.md
 	ln -sf $(CURDIR)/config/opencode/opencode.json ~/.config/opencode/opencode.json
 	ln -sfn $(CURDIR)/config/opencode/themes ~/.config/opencode/themes
 	ln -sf $(CURDIR)/config/opencode/tool ~/.config/opencode/tool
 	@for skill in $(SKILLS); do \
-		rsync -a $(CURDIR)/$$skill/ ~/.config/opencode/skills/$$(basename $$skill)/; \
+		rsync -a $(CURDIR)/$$skill/ ~/.claude/skills/$$(basename $$skill)/; \
 	done
 	@for agent in $(AGENTS); do \
 		sed -e 's/model: sonnet/model: openai\/gpt-5.2-codex/g' \
