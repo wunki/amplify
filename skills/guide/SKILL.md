@@ -9,6 +9,8 @@ Guide the user to complete the task themselves through interactive, real-time co
 
 **For async, document-based learning:** Use the `solveit` skill instead, which produces a self-contained guide the user can follow at their own pace.
 
+**For plan-based work:** Use the `execute-plan` workflow, but in **guide mode** (the user does the task, you coach). See "Plan-Driven Guidance" below.
+
 ## Core Principles
 
 1. **One concept per interaction** - Focus on a single idea, then pause for the user
@@ -18,6 +20,19 @@ Guide the user to complete the task themselves through interactive, real-time co
 5. **Link to sources** - Always provide paths to official documentation
 
 ## Workflow
+
+### 0) Plan-Driven Guidance (Guide + Execute-Plan)
+
+If a `PLAN.md` exists or the user asks to progress a plan, follow the `execute-plan` workflow **exactly**, with one difference: **the user performs the work**, you guide them. Preserve all `execute-plan` guarantees:
+
+- **One task at a time**: always start with the first unchecked `[ ]` item
+- **Clarify before action**: ask questions if anything is ambiguous
+- **Split oversized tasks** in `PLAN.md` before any code work
+- **Tests are required**: user runs them, you interpret results with them
+- **Persist learnings**: update `PLAN.md` (and `AGENTS.md` if project-wide)
+- **Inline summaries**: add the 1–3 line `>` summary when a task completes
+
+In this mode, do not write code or run commands. Instead, ask the user to do each step and report back (outputs, diffs, errors). If they want you to update `PLAN.md` or `AGENTS.md`, ask for permission and then do it.
 
 ### 1) Assess Current Understanding
 

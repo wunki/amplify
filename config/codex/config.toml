@@ -1,18 +1,39 @@
-model = "gpt-5.2-codex"
+model = "gpt-5.3-codex"
 model_reasoning_effort = "high"
+personality = "pragmatic"
+suppress_unstable_features_warning = true
 
 # Add your trusted project paths here:
 # [projects."/path/to/project"]
 # trust_level = "trusted"
 
-[mcp_servers.svelte]
-command = "npx"
-args = ["-y", "@sveltejs/mcp"]
-
 [features]
 ghost_commit = false
 unified_exec = true
 apply_patch_freeform = true
-web_search_request = true
 skills = true
 shell_snapshot = true
+
+[projects."/Users/petar/Code/amplify-cli"]
+trust_level = "trusted"
+
+[projects."/Users/petar/Code/amplify-web"]
+trust_level = "trusted"
+
+[projects."/Users/petar"]
+trust_level = "trusted"
+
+[projects."/Users/petar/Downloads"]
+trust_level = "trusted"
+
+[projects."/Users/petar/Code/finde-ts"]
+trust_level = "trusted"
+
+[projects."/Users/petar/Code/bytebottom/finde"]
+trust_level = "trusted"
+
+[projects."/Users/petar/Code/workera"]
+trust_level = "trusted"
+
+[projects."/Users/petar/Code/skills"]
+trust_level = "untrusted"

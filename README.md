@@ -358,6 +358,8 @@ Amp reads skills from `.agents/skills/` in your workspace. Either:
 | Codex | `~/.codex/skills/` | `~/.codex/commands/` |
 | Amp | `~/.config/amp/skills/` | `~/.config/amp/commands/` |
 
+OpenCode now expects skills under `~/.config/opencode/skills/` (plural). If you have a legacy `~/.config/opencode/skill/` directory, you can remove it after reinstalling.
+
 ## Configuration
 
 The `config/` directory contains tool-specific settings:

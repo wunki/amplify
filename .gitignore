@@ -30,3 +30,6 @@ Thumbs.db
 # Specs and plans directories
 .specs/
 .plans/
+
+# internal documentation
+docs/

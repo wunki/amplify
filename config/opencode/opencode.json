@@ -5,6 +5,27 @@
   "experimental": {
     "disable_paste_summary": true
   },
+  "provider": {
+    "ollama": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "Ollama (local)",
+      "options": {
+        "baseURL": "http://localhost:11434/v1"
+      },
+      "models": {
+        "qwen3-coder:30b": {
+          "name": "Qwen3 Coder 30B (local)",
+          "limit": {
+            "context": 32768,
+            "output": 4096
+          },
+          "options": {
+            "num_ctx": 32768
+          }
+        }
+      }
+    }
+  },
   "mcp": {},
   "plugin": ["opencode-openai-codex-auth@4.2.0"],
   "lsp": {

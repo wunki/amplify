@@ -44,7 +44,7 @@ claude:
 
 opencode:
 	@echo "Installing for OpenCode..."
-	mkdir -p ~/.config/opencode/command ~/.config/opencode/skill ~/.config/opencode/agent
+	mkdir -p ~/.config/opencode/command ~/.config/opencode/skills ~/.config/opencode/agent
 	ln -sf $(CURDIR)/config/AGENTS.md ~/.config/opencode/AGENTS.md
 	ln -sf $(CURDIR)/config/opencode/opencode.json ~/.config/opencode/opencode.json
 	ln -sfn $(CURDIR)/config/opencode/themes ~/.config/opencode/themes
@@ -53,12 +53,12 @@ opencode:
 		rsync -a $(CURDIR)/$$cmd ~/.config/opencode/command/; \
 	done
 	@for skill in $(SKILLS); do \
-		rsync -a $(CURDIR)/$$skill/ ~/.config/opencode/skill/$$(basename $$skill)/; \
+		rsync -a $(CURDIR)/$$skill/ ~/.config/opencode/skills/$$(basename $$skill)/; \
 	done
 	@for agent in $(AGENTS); do \
-		sed -e 's/model: sonnet/model: anthropic\/claude-sonnet-4-5/g' \
-		    -e 's/model: opus/model: anthropic\/claude-opus-4-5/g' \
-		    -e 's/model: haiku/model: anthropic\/claude-haiku-3-5/g' \
+		sed -e 's/model: sonnet/model: openai\/gpt-5.2-codex/g' \
+		    -e 's/model: opus/model: openai\/gpt-5.2-codex/g' \
+		    -e 's/model: haiku/model: openai\/gpt-5.2-codex/g' \
 		    -e 's/model: codex/model: openai\/gpt-5.2-codex/g' \
 		    $(CURDIR)/$$agent > ~/.config/opencode/agent/$$(basename $$agent); \
 	done
@@ -101,7 +101,7 @@ ifdef HAS_CLAUDE
 	rm -rf ~/.claude/skills ~/.claude/commands ~/.claude/agents
 endif
 ifdef HAS_OPENCODE
-	rm -rf ~/.config/opencode/skill ~/.config/opencode/command ~/.config/opencode/agent
+	rm -rf ~/.config/opencode/skills ~/.config/opencode/skill ~/.config/opencode/command ~/.config/opencode/agent
 endif
 ifdef HAS_CODEX
 	rm -rf ~/.codex/skills ~/.codex/commands

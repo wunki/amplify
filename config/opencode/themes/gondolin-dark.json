@@ -1,0 +1,233 @@
+{
+  "$schema": "https://opencode.ai/theme.json",
+  "defs": {
+    "bg": "#080A0D",
+    "bgPanel": "#0d0f13",
+    "bgElement": "#0E1114",
+    "border": "#1C2129",
+    "borderActive": "#1a1d23",
+    "borderSubtle": "#6A758750",
+    "text": "#D0D3DA",
+    "textMuted": "#A2AEC0",
+    "primary": "#83AEF8",
+    "secondary": "#A6C6FE",
+    "accent": "none",
+    "error": "#FF7A77",
+    "warning": "#FFE878",
+    "success": "#B9EC86",
+    "info": "#83AEF8",
+    "keyword": "#CC95FF",
+    "function": "#A6C6FE",
+    "string": "#AAE08A",
+    "number": "#FFBE78",
+    "comment": "#3D4550",
+    "variable": "none",
+    "type": "#FFBE78",
+    "operator": "#A9E1EB",
+    "punctuation": "#A4ACCB",
+    "diffAdded": "#B9EC86",
+    "diffRemoved": "#FF889E"
+  },
+  "theme": {
+    "primary": {
+      "dark": "primary",
+      "light": "primary"
+    },
+    "secondary": {
+      "dark": "secondary",
+      "light": "secondary"
+    },
+    "accent": {
+      "dark": "accent",
+      "light": "accent"
+    },
+    "error": {
+      "dark": "error",
+      "light": "error"
+    },
+    "warning": {
+      "dark": "warning",
+      "light": "warning"
+    },
+    "success": {
+      "dark": "success",
+      "light": "success"
+    },
+    "info": {
+      "dark": "info",
+      "light": "info"
+    },
+    "text": {
+      "dark": "text",
+      "light": "bg"
+    },
+    "textMuted": {
+      "dark": "textMuted",
+      "light": "textMuted"
+    },
+    "background": {
+      "dark": "bg",
+      "light": "text"
+    },
+    "backgroundPanel": {
+      "dark": "bgPanel",
+      "light": "#E5E9F0"
+    },
+    "backgroundElement": {
+      "dark": "bgElement",
+      "light": "#D8DEE9"
+    },
+    "border": {
+      "dark": "border",
+      "light": "border"
+    },
+    "borderActive": {
+      "dark": "borderActive",
+      "light": "borderActive"
+    },
+    "borderSubtle": {
+      "dark": "borderSubtle",
+      "light": "borderSubtle"
+    },
+    "diffAdded": {
+      "dark": "diffAdded",
+      "light": "diffAdded"
+    },
+    "diffRemoved": {
+      "dark": "diffRemoved",
+      "light": "diffRemoved"
+    },
+    "diffContext": {
+      "dark": "textMuted",
+      "light": "textMuted"
+    },
+    "diffHunkHeader": {
+      "dark": "textMuted",
+      "light": "textMuted"
+    },
+    "diffHighlightAdded": {
+      "dark": "diffAdded",
+      "light": "diffAdded"
+    },
+    "diffHighlightRemoved": {
+      "dark": "diffRemoved",
+      "light": "diffRemoved"
+    },
+    "diffAddedBg": {
+      "dark": "bgElement",
+      "light": "#E5E9F0"
+    },
+    "diffRemovedBg": {
+      "dark": "bgElement",
+      "light": "#E5E9F0"
+    },
+    "diffContextBg": {
+      "dark": "bgPanel",
+      "light": "#E5E9F0"
+    },
+    "diffLineNumber": {
+      "dark": "border",
+      "light": "#D8DEE9"
+    },
+    "diffAddedLineNumberBg": {
+      "dark": "bgElement",
+      "light": "#E5E9F0"
+    },
+    "diffRemovedLineNumberBg": {
+      "dark": "bgElement",
+      "light": "#E5E9F0"
+    },
+    "markdownText": {
+      "dark": "text",
+      "light": "bg"
+    },
+    "markdownHeading": {
+      "dark": "primary",
+      "light": "primary"
+    },
+    "markdownLink": {
+      "dark": "secondary",
+      "light": "secondary"
+    },
+    "markdownLinkText": {
+      "dark": "accent",
+      "light": "accent"
+    },
+    "markdownCode": {
+      "dark": "string",
+      "light": "string"
+    },
+    "markdownBlockQuote": {
+      "dark": "textMuted",
+      "light": "textMuted"
+    },
+    "markdownEmph": {
+      "dark": "#eebcbc",
+      "light": "#eebcbc"
+    },
+    "markdownStrong": {
+      "dark": "warning",
+      "light": "warning"
+    },
+    "markdownHorizontalRule": {
+      "dark": "textMuted",
+      "light": "textMuted"
+    },
+    "markdownListItem": {
+      "dark": "primary",
+      "light": "primary"
+    },
+    "markdownListEnumeration": {
+      "dark": "accent",
+      "light": "accent"
+    },
+    "markdownImage": {
+      "dark": "secondary",
+      "light": "secondary"
+    },
+    "markdownImageText": {
+      "dark": "accent",
+      "light": "accent"
+    },
+    "markdownCodeBlock": {
+      "dark": "text",
+      "light": "bg"
+    },
+    "syntaxComment": {
+      "dark": "comment",
+      "light": "comment"
+    },
+    "syntaxKeyword": {
+      "dark": "keyword",
+      "light": "keyword"
+    },
+    "syntaxFunction": {
+      "dark": "function",
+      "light": "function"
+    },
+    "syntaxVariable": {
+      "dark": "variable",
+      "light": "variable"
+    },
+    "syntaxString": {
+      "dark": "string",
+      "light": "string"
+    },
+    "syntaxNumber": {
+      "dark": "number",
+      "light": "number"
+    },
+    "syntaxType": {
+      "dark": "type",
+      "light": "type"
+    },
+    "syntaxOperator": {
+      "dark": "operator",
+      "light": "operator"
+    },
+    "syntaxPunctuation": {
+      "dark": "punctuation",
+      "light": "punctuation"
+    }
+  }
+}

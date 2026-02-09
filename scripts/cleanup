@@ -35,7 +35,8 @@ get_source_agents() {
 
 # Get installed items for each tool
 get_opencode_skills() {
-    ls -1 ~/.config/opencode/skill 2>/dev/null || true
+    local skill_dir="$1"
+    ls -1 "$skill_dir" 2>/dev/null || true
 }
 
 get_opencode_agents() {
@@ -81,12 +82,14 @@ SOURCE_AGENTS=$(get_source_agents)
 declare -a ORPHANS=()
 
 # Check OpenCode
-if [[ -d ~/.config/opencode/skill ]]; then
-    OPENCODE_SKILL_ORPHANS=$(find_orphans "$SOURCE_SKILLS" "$(get_opencode_skills)")
-    for item in $OPENCODE_SKILL_ORPHANS; do
-        ORPHANS+=("opencode:skill:$item:$HOME/.config/opencode/skill/$item")
-    done
-fi
+for opencode_skill_dir in ~/.config/opencode/skills ~/.config/opencode/skill; do
+    if [[ -d "$opencode_skill_dir" ]]; then
+        OPENCODE_SKILL_ORPHANS=$(find_orphans "$SOURCE_SKILLS" "$(get_opencode_skills "$opencode_skill_dir")")
+        for item in $OPENCODE_SKILL_ORPHANS; do
+            ORPHANS+=("opencode:skill:$item:$opencode_skill_dir/$item")
+        done
+    fi
+done
 
 if [[ -d ~/.config/opencode/agent ]]; then
     OPENCODE_AGENT_ORPHANS=$(find_orphans "$SOURCE_AGENTS" "$(get_opencode_agents)")

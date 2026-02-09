@@ -45,7 +45,6 @@ If code is very confusing:
 
 - **TypeScript projects**: check `package.json` for available scripts; confirm with the user before running `npm`, `pnpm` or `bun` scripts.
 - **AST-first where it helps**. Prefer `ast-grep` for tree-safe edits when it is better than regex.
-- **Git is read-only**. Do not run `git` commands that write to files; only run read-only commands like `git show`, `git status`, `git diff`.
 - **CI as source of truth**. If you need to know how to run tests, read through `.github/workflows`; it should behave the same locally.
 
 ## Testing Philosophy
@@ -100,3 +99,30 @@ Before finishing a task:
 - Skip em dashes; use commas, parentheses, or periods instead.
 - If I sound angry, I am mad at the code, not at you.
 - Jokes and cursing in code comments are fine if used sparingly and they genuinely land.
+
+<!-- BEGIN AMPLIFY INTEGRATION -->
+## Amplify CLI
+
+Use Amplify to sync, browse, install, publish, and comment on skills from amplify.workera.ai.
+
+### Core Rules
+- Run `amplify prime` at session start or after compaction if it's not automated by hooks
+- Auth required for all commands except prime. If not authenticated, run `amplify auth login --json`. It emits a pending event with `login_url`, opens the browser, then emits success/error. Show the login_url to the user so they can click it.
+- Run `amplify sync --json` before list/show/install/comment if cache might be stale
+- Always use `--json` for structured output
+- `amplify show --json` includes a changelog array with per-file diffs when the installed version is behind
+
+### Quick Reference
+```bash
+amplify prime
+amplify auth login
+amplify sync --json
+amplify list --json
+amplify list --installed --json
+amplify show <skill-name> --json
+amplify install <skill-name> --agent claude|codex|opencode --scope global|project --json
+amplify comment <skill-name> --message "<text>" --json
+amplify publish [path] --title "<title>" --message "<changelog>" --json
+```
+
+<!-- END AMPLIFY INTEGRATION -->
