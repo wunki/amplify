@@ -1,4 +1,4 @@
-.PHONY: all claude opencode codex amp scripts clean reset
+.PHONY: all claude opencode codex amp scripts clean cleanup reset
 
 HAS_CLAUDE := $(shell command -v claude 2>/dev/null)
 HAS_OPENCODE := $(shell command -v opencode 2>/dev/null)
@@ -101,6 +101,16 @@ endif
 	done
 	@echo "Done. Run 'make' to reinstall."
 
+cleanup:
+	@bash "$(CURDIR)/scripts/cleanup"
+
 reset:
-	@$(MAKE) clean
+	@echo "Reinstalling without deleting custom skills..."
 	@$(MAKE) all
+	@echo ""
+	@echo "Review stale installed skills/agents and choose what to remove:"
+	@if [ -t 0 ]; then \
+		$(MAKE) cleanup; \
+	else \
+		bash "$(CURDIR)/scripts/cleanup" --dry-run; \
+	fi

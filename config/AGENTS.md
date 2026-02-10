@@ -52,6 +52,7 @@ If code is very confusing:
 - **No mocks**. Either unit tests or e2e tests, nothing in between. Mocks invent behaviors that never happen in production and hide the real bugs.
 - **Test behavior, not implementation**. Tests verify what the code does, not how. Refactoring internals should not break tests.
 - **Test everything that matters**. Tests must be rigorous. A new contributor should not be able to break things without a test failing.
+- **Bugs: add regression test when it fits.** If a practical, reliable test can capture the bug, add it with the fix.
 - **Run only what you touch**. Unless asked otherwise, run only the tests you added or modified.
 
 ## TypeScript Guidelines
