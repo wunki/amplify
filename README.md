@@ -10,6 +10,7 @@ Skills and configuration for AI coding agents. Works with Claude Code, OpenCode,
 |-------|--------------|
 | **ask-questions-if-underspecified** | Requirement clarification. Ask focused questions before implementing. |
 | **browse-site** | Browser automation using agent-browser CLI. Navigate, click, fill forms, screenshot, scrape. |
+| **code-simplifier** | Simplifies and refines code for clarity, consistency, and maintainability while preserving behavior. |
 | **create-plan** | Generate concise implementation plans. Scope, action items, open questions, documentation links. |
 | **create-spec** | Create or update SPEC.md from requirements, notes, or interview output. Structures information into consistent spec format. |
 | **execute-plan** | Work through PLAN.md one task at a time. Questions before action, summaries after, learning persistence. |
@@ -29,7 +30,6 @@ Skills and configuration for AI coding agents. Works with Claude Code, OpenCode,
 
 | Agent | What It Does |
 |-------|--------------|
-| **code-simplifier** | Simplifies and refines code for clarity and maintainability. Focuses on recently modified code. |
 | **create-plan** | Create implementation plans through interviewing. Thinks deeply before planning. |
 | **execute-plan** | Execute PLAN.md tasks one at a time with human oversight. |
 | **plan-reviewer** | Deep analysis of PLAN.md before execution. Validates against codebase, checks task decomposition, identifies risks. |
