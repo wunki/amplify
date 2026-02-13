@@ -1,7 +1,12 @@
 model = "gpt-5.3-codex"
-model_reasoning_effort = "high"
+model_reasoning_effort = "xhigh"
 personality = "pragmatic"
 suppress_unstable_features_warning = true
+
+
+[sandbox_workspace_write]
+network_access = true
+
 
 # Add your trusted project paths here:
 # [projects."/path/to/project"]
@@ -39,4 +44,10 @@ trust_level = "trusted"
 trust_level = "untrusted"
 
 [projects."/Users/petar/Code/amplify"]
+trust_level = "trusted"
+
+[projects."/Users/petar/.claude/skills/analytics"]
+trust_level = "trusted"
+
+[projects."/Users/petar/Code/examples/lennys-podcast-transcripts"]
 trust_level = "trusted"
