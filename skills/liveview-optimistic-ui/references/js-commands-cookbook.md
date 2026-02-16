@@ -93,6 +93,39 @@ And related event variants (`focus`, `blur`, `window-keydown`, `window-keyup`).
 
 Add `phx-disable-with` to buttons for immediate text/disabled feedback.
 
+## Composing multiple loading indicators
+
+When one action affects several UI regions, pipe multiple class additions:
+
+```heex
+phx-click={
+  JS.push("checkout", loading: "#cart-summary")
+  |> JS.add_class("opacity-50", to: "#cart-items")
+  |> JS.add_class("animate-pulse", to: "#order-total")
+}
+```
+
+`loading:` applies loading classes and locking to a single target; these loading classes are removed automatically when the server acknowledges the event. `JS.add_class` calls are **not** auto-removed on acknowledgement. They persist until explicitly removed via `JS.remove_class`, a hook, or a full re-render that replaces the element.
+
+## Server-to-client revert with `push_event`
+
+When `JS.add_class` adds optimistic classes that survive server patches, use `push_event` from the server to tell a hook to clean up:
+
+```elixir
+# Server
+push_event(socket, "revert-optimistic", %{id: id})
+```
+
+```javascript
+// Hook
+this.handleEvent("revert-optimistic", ({ id }) => {
+  const el = document.getElementById(`item-${id}`)
+  if (el) el.classList.remove("opacity-50", "pointer-events-none")
+})
+```
+
+This is the escape hatch for error recovery when server diffs alone cannot undo client-side JS changes.
+
 ## Hook escalation path
 
 Escalate to `phx-hook` when:
@@ -100,5 +133,6 @@ Escalate to `phx-hook` when:
 - You need third-party JS interop.
 - You need imperative control that `JS.*` cannot express.
 - You need custom event orchestration around browser APIs.
+- You need to listen for `push_event` calls from the server (e.g., revert patterns).
 
-For modern LiveView versions, colocated hooks and typed hook interfaces reduce glue code and make hook behavior easier to maintain.
+For modern LiveView versions (v1.1+), prefer colocated hooks over global registrations. Colocated hooks and typed hook interfaces reduce glue code and keep hook logic close to the LiveView that uses it.
