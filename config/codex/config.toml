@@ -51,3 +51,9 @@ trust_level = "trusted"
 
 [projects."/Users/petar/Code/examples/lennys-podcast-transcripts"]
 trust_level = "trusted"
+
+[projects."/Users/petar/Code/vaults/slab-pages"]
+trust_level = "trusted"
+
+[projects."/Users/petar/Code/finde"]
+trust_level = "trusted"
