@@ -62,10 +62,10 @@ opencode:
 		rsync -a $(CURDIR)/$$skill/ ~/.claude/skills/$$(basename $$skill)/; \
 	done
 	@for agent in $(AGENTS); do \
-		sed -e 's/model: sonnet/model: openai\/gpt-5.2-codex/g' \
-		    -e 's/model: opus/model: openai\/gpt-5.2-codex/g' \
-		    -e 's/model: haiku/model: openai\/gpt-5.2-codex/g' \
-		    -e 's/model: codex/model: openai\/gpt-5.2-codex/g' \
+		sed -e 's/model: sonnet/model: openai\/gpt-5.3-codex/g' \
+		    -e 's/model: opus/model: openai\/gpt-5.3-codex/g' \
+		    -e 's/model: haiku/model: openai\/gpt-5.3-codex/g' \
+		    -e 's/model: codex/model: openai\/gpt-5.3-codex/g' \
 		    $(CURDIR)/$$agent > ~/.config/opencode/agent/$$(basename $$agent); \
 	done
 
