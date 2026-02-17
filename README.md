@@ -8,23 +8,30 @@ Skills and configuration for AI coding agents. Works with Claude Code, OpenCode,
 
 | Skill | What It Does |
 |-------|--------------|
-| **ask-questions-if-underspecified** | Requirement clarification. Ask focused questions before implementing. |
-| **browse-site** | Browser automation using agent-browser CLI. Navigate, click, fill forms, screenshot, scrape. |
-| **code-simplifier** | Simplifies and refines code for clarity, consistency, and maintainability while preserving behavior. |
-| **create-plan** | Generate concise implementation plans. Scope, action items, open questions, documentation links. |
-| **create-spec** | Create or update SPEC.md from requirements, notes, or interview output. Structures information into consistent spec format. |
-| **execute-plan** | Work through PLAN.md one task at a time. Questions before action, summaries after, learning persistence. |
-| **fetch-github-file** | Fetch source code from GitHub URLs. Auto-triggers on GitHub file links and supports line ranges, directories, and full repo clones via `gh` CLI. |
-| **frontend-design** | Build distinctive, production-grade interfaces that don't look like AI slop. Opinionated about typography, color, motion, and spatial composition. |
-| **frontend-slides** | Create stunning, animation-rich HTML presentations, including PPT/PPTX-to-web workflows. |
-| **guide** | Interactive teaching mode. Orchestrates clarification, planning, and guided execution. |
-| **interview** | Deep requirements gathering through exhaustive questioning. Hands off to create-spec or create-plan when complete. |
-| **mcp-builder** | Build high-quality MCP servers for Python (FastMCP) and Node/TypeScript MCP SDK integrations. |
-| **roadmap** | Create a ROADMAP.md for open source projects. Vision, milestones, timeline (Now/Next/Later/Future). Follows open source conventions. |
-| **skill-creator** | Meta-skill for building new skills. Structure, progressive disclosure, bundled resources. |
-| **stop-slop** | Remove AI writing patterns from prose. Eliminate filler phrases, formulaic structures, and predictable AI tells. |
-| **update-deps** | Update Elixir Mix/Hex dependencies safely, including verification and migration handling. |
-| **write-test** | Write meaningful tests using coverage as a guide. Prioritizes real user workflows over implementation details. |
+| **[ask-questions-if-underspecified](skills/ask-questions-if-underspecified/)** | Requirement clarification. Ask focused questions before implementing. |
+| **[browse-site](skills/browse-site/)** | Browser automation using agent-browser CLI. Navigate, click, fill forms, screenshot, scrape. |
+| **[code-simplifier](skills/code-simplifier/)** | Simplifies and refines code for clarity, consistency, and maintainability while preserving behavior. |
+| **[create-plan](skills/create-plan/)** | Generate concise implementation plans. Scope, action items, open questions, documentation links. |
+| **[create-spec](skills/create-spec/)** | Create or update SPEC.md from requirements, notes, or interview output. Structures information into consistent spec format. |
+| **[create-vault](skills/create-vault/)** | Create Ampi-ready SQLite vaults from document folders or existing SQLite tables with search contracts. |
+| **[execute-plan](skills/execute-plan/)** | Work through PLAN.md one task at a time. Questions before action, summaries after, learning persistence. |
+| **[fetch-github-file](skills/fetch-github-file/)** | Fetch source code from GitHub URLs. Auto-triggers on GitHub file links and supports line ranges, directories, and full repo clones via `gh` CLI. |
+| **[frontend-design](skills/frontend-design/)** | Build distinctive, production-grade interfaces that don't look like AI slop. Opinionated about typography, color, motion, and spatial composition. |
+| **[frontend-slides](skills/frontend-slides/)** | Create stunning, animation-rich HTML presentations, including PPT/PPTX-to-web workflows. |
+| **[guide](skills/guide/)** | Interactive teaching mode. Orchestrates clarification, planning, and guided execution. |
+| **[interview](skills/interview/)** | Deep requirements gathering through exhaustive questioning. Hands off to create-spec or create-plan when complete. |
+| **[liveview-forms](skills/liveview-forms/)** | Build correct, resilient forms in Phoenix LiveView. Validation, error feedback, recovery, nested forms, uploads. |
+| **[liveview-optimistic-ui](skills/liveview-optimistic-ui/)** | Build LiveView interactions that feel instant. JS commands, streams, error recovery, race conditions, accessibility. |
+| **[mcp-builder](skills/mcp-builder/)** | Build high-quality MCP servers for Python (FastMCP) and Node/TypeScript MCP SDK integrations. |
+| **[project-memory](skills/project-memory/)** | Maintain durable, project-specific memory in MEMORY.md. Persists preferences, conventions, and lessons across sessions. |
+| **[roadmap](skills/roadmap/)** | Create a ROADMAP.md for open source projects. Vision, milestones, timeline (Now/Next/Later/Future). Follows open source conventions. |
+| **[skill-creator](skills/skill-creator/)** | Meta-skill for building new skills. Structure, progressive disclosure, bundled resources. |
+| **[smart-commit](skills/smart-commit/)** | Analyze unstaged changes, group into atomic commits, generate conventional commit messages. |
+| **[spec-story](skills/spec-story/)** | Transform a dense SPEC.md into an entertaining narrative. Same information, actually fun to read. |
+| **[stop-slop](skills/stop-slop/)** | Remove AI writing patterns from prose. Eliminate filler phrases, formulaic structures, and predictable AI tells. |
+| **[tech-docs-writer](skills/tech-docs-writer/)** | Technical writer that transforms codebases into clear documentation. README files, API docs, architecture guides. |
+| **[update-deps](skills/update-deps/)** | Update Elixir Mix/Hex dependencies safely, including verification and migration handling. |
+| **[write-test](skills/write-test/)** | Write meaningful tests using coverage as a guide. Prioritizes real user workflows over implementation details. |
 
 ### Agents
 
@@ -33,7 +40,6 @@ Skills and configuration for AI coding agents. Works with Claude Code, OpenCode,
 | **create-plan** | Create implementation plans through interviewing. Thinks deeply before planning. |
 | **execute-plan** | Execute PLAN.md tasks one at a time with human oversight. |
 | **plan-reviewer** | Deep analysis of PLAN.md before execution. Validates against codebase, checks task decomposition, identifies risks. |
-| **tech-docs-writer** | Technical writer that transforms codebases into clear documentation. README files, API docs, architecture guides. |
 
 ### Scripts
 
