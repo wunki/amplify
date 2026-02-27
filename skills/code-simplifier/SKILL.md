@@ -1,34 +1,44 @@
 ---
 name: code-simplifier
-description: Simplify and refine existing code for clarity, consistency, and maintainability while preserving behavior. Use when asked to "simplify code", "clean this up", "refactor for readability", "reduce complexity", or to polish recently modified code without changing functionality.
+description: Refines existing code for clarity, readability, and maintainability without
+  changing behavior, interfaces, or outputs. Use when asked to "simplify", "clean up",
+  "refactor for readability", "reduce complexity", or polish code without adding features.
+  Don't use when the request involves changing behavior, adding functionality, migrating
+  to a new pattern or library, renaming public APIs, or any structural change that alters
+  interfaces or outputs.
 ---
 
 # Code Simplifier
 
-Refine code so it is easier to read, reason about, and maintain, while preserving behavior.
+Refine code so it is easier to read, reason about, and maintain, while preserving all behavior.
 
 ## Guardrails
 
-1. Preserve functionality. Do not change outputs, side effects, interfaces, or user-visible behavior.
-2. Stay in scope. Prioritize recently modified files unless the user asks for broader cleanup.
-3. Follow project conventions from local instructions (for example `AGENTS.md`, lint rules, and existing patterns).
+1. Preserve functionality. Do not change outputs, side effects, public interfaces, or user-visible behavior.
+2. Stay in scope. Default to the files the user named or recently modified. Ask before expanding scope.
+3. Discover project conventions before editing: check for `AGENTS.md`, lint config, and existing code patterns in the target files. If none are found, follow the dominant style in the file.
 4. Prefer explicit, maintainable code over clever compression.
 
 ## Workflow
 
-1. Identify target files and confirm the intended scope.
+1. Identify target files. If scope is ambiguous, ask the user to confirm which files or modules to touch before proceeding.
 2. Find complexity hotspots:
    - Deep nesting or confusing control flow
    - Duplicate or redundant logic
-   - Overly broad functions or components
+   - Overly broad functions doing more than one thing
    - Dead code, unused parameters, or unnecessary abstractions
 3. Simplify safely:
-   - Break large units into focused helpers when it improves readability
-   - Replace nested ternaries with clearer branching
-   - Use descriptive names for values, functions, and booleans
-   - Remove comments that only restate obvious code
-4. Verify behavior is unchanged by running relevant tests or checks for touched areas.
-5. Summarize only meaningful simplifications and any assumptions made.
+   - Extract helpers only when the extracted unit has a clear, stable name and the call site becomes meaningfully clearer. Do not extract for extraction's sake.
+   - Replace deeply nested conditionals with early returns or guard clauses
+   - Use descriptive names for values, functions, and boolean flags
+   - Remove comments that only restate what the code already says
+   - Apply language-idiomatic patterns, not patterns borrowed from other languages
+4. Verify behavior is unchanged:
+   - Run the relevant test suite or linter for touched files if a test command is known or discoverable from `package.json`, `Makefile`, or CI config.
+   - If no tests exist, state that explicitly in the summary and flag it as a risk.
+   - If tests fail after simplification, revert the change that caused the failure before proceeding.
+5. If the code is already clean and no meaningful simplification is possible, say so explicitly. Do not manufacture changes.
+6. Summarize only changes that had a clear complexity payoff. Note any assumptions made about intent or scope.
 
 ## Quality Bar
 

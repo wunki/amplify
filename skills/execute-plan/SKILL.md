@@ -1,13 +1,13 @@
 ---
 name: execute-plan
-description: Work through PLAN.md one task at a time with human oversight. Triggers on "execute", "execute plan", "execute the plan", "continue", "continue the plan", "continue to plan", "next task", "work on the plan", "pick up where I left off", "resume", or any request to make progress on PLAN.md.
+description: Executes tasks from a PLAN.md file one at a time with human oversight, handling task splitting, clarifying questions, tests, and learning persistence. Use when the user says "execute the plan", "work on the plan", "next task", "pick up where I left off", "continue the plan", "resume the plan", or asks to make progress on a specific PLAN.md. Don't use for general task execution without a PLAN.md, creating a new plan (use create-plan instead), answering questions about what is in a plan without executing it, one-off commands or scripts with no plan file, or continuing an unrelated conversation.
 ---
 
 # Execute Plan
 
 Work through a PLAN.md **one task at a time**, with human oversight. Unlike automated loops, this skill encourages questions, explanations, and deliberate progress.
 
-**Prerequisites**: Read and follow `$HOME/.config/opencode/AGENTS.md` throughout this workflow.
+**Prerequisites**: If a project-level `AGENTS.md` exists at the repository root, read it before starting and follow its conventions throughout this workflow.
 
 ## Core Principles
 
@@ -21,20 +21,24 @@ Work through a PLAN.md **one task at a time**, with human oversight. Unlike auto
 
 ### 1) Find the Current Task
 
-Read `PLAN.md` and locate the first unchecked `[ ]` item.
+Read `PLAN.md` at the repository root and locate the first unchecked `[ ]` item that is not prefixed with `BLOCKED:`.
 
-**Tracking:** Create TodoItems from the Task Checklist (at the end of this skill) so progress is visible to the user.
+**Tracking:** If a TodoWrite tool is available in the current environment, create TodoItems from the Task Checklist (at the end of this skill) so progress is visible to the user. Detect availability by checking whether the tool appears in the active tool list. Skip this step if the tool is not available.
 
-**If no PLAN.md exists:**
+**If no PLAN.md exists at the repository root:**
 
-1. If the user specified a plan, move it to `PLAN.md` and proceed.
-2. Otherwise, ask the user to create one (suggest `create-plan` agent). If a `SPEC.md` exists, offer to generate a plan from it.
+1. If the user specified a plan inline, write it to `PLAN.md` and proceed.
+2. Otherwise, ask the user to create one (suggest `create-plan` skill). If a `SPEC.md` exists, offer to generate a plan from it.
+
+**If the first unchecked task is `BLOCKED:`:** Report the blocker to the user, state what is needed to unblock it, and stop. Do not skip to a later task without explicit user instruction.
+
+**If all remaining unchecked tasks are `BLOCKED:`:** Report each blocker with its unblock condition, then stop. Do not attempt to work around blockers.
 
 ### 2) Understand Before Acting
 
 Before writing any code:
 
-- **Verify the plan still fits** - If time has passed or earlier tasks changed assumptions, check that this task still makes sense. If not, propose adjustments before proceeding.
+- **Verify the plan still fits** - If earlier tasks changed the codebase in ways that affect this task (e.g., a file was renamed, an API was replaced, a dependency was removed), note the conflict and propose adjustments before writing any code.
 - Read relevant files mentioned in the task
 - Check existing patterns in the codebase
 - Identify what "done" looks like for this specific task
@@ -70,15 +74,21 @@ After each substantive change, simplify and clean up touched areas when appropri
 - **Unit tests**: Always. Cover the behavior you added or changed.
 - **E2E tests**: If the task touches UI or user-facing workflows.
 
-Use the `write-test` skill for guidance on what to test. Focus on user-facing behavior, not implementation details. If existing tests break, fix them as part of the task.
+Use the `write-test` skill for guidance on what to test if it is available. Focus on user-facing behavior, not implementation details. If existing tests break, fix them as part of the task.
 
-**Before marking complete, verify the code passes all checks:**
+**Before marking complete, verify the code passes all checks.**
 
-1. **Format**: Run the formatter (e.g., `bun run format`)
-2. **Lint**: Run the linter (e.g., `bun run lint`)
-3. **Test**: Run the tests (e.g., `bun run test:all`)
+Check `package.json`, `Makefile`, `.github/workflows/`, or project docs to identify the actual commands. Common patterns:
 
-All three must pass. If any fail, fix the issues before proceeding.
+1. **Format**: e.g., `bun run format`, `npm run format`, `mix format`
+2. **Lint**: e.g., `bun run lint`, `npm run lint`, `mix credo`
+3. **Test**: e.g., `bun run test:all`, `npm test`, `mix test`
+
+All applicable checks must pass. If any fail, fix the issues before proceeding.
+
+**If none of these files exist:** Ask the user how to run checks before proceeding. Do not invent commands.
+
+**If the project has no test infrastructure:** Note this explicitly in the task summary and skip the test step. Do not invent test commands.
 
 ### 4) Reflect and Persist Learnings
 
@@ -89,20 +99,15 @@ Before marking complete, ask yourself:
 
 Persist learnings now (before context is lost):
 
-- **Plan-specific** (e.g., "this endpoint already exists", "the schema uses soft deletes"): Add a note in PLAN.md near the relevant task
-- **Project-wide** (e.g., "all API routes use kebab-case", "tests require `DATABASE_URL` set"): Update AGENTS.md so future plans benefit
-- **User-facing features**: If the project has a `docs/` directory, update relevant documentation
+- **Plan-specific** (e.g., "this endpoint already exists", "the schema uses soft deletes"): Add a note in PLAN.md near the relevant task.
+- **Project-wide** (e.g., "all API routes use kebab-case", "tests require `DATABASE_URL` set"): Update `AGENTS.md` at the repository root. If `AGENTS.md` does not exist, create it with a `## Project-Specific` section containing the new entry.
+- **User-facing features**: If the project has a `docs/` directory, update relevant documentation.
 
 ### 5) Mark Complete with Summary
 
-After completing the task, update PLAN.md:
+After completing the task, update PLAN.md with a completion summary.
 
-```markdown
-- [x] Add JWT authentication to /api/login
-  > Implemented in `src/auth/jwt.ts`. Uses HTTP-only cookies with 15min
-  > access tokens. Refresh endpoint at `/api/refresh`. Added middleware
-  > in `src/middleware/auth.ts`.
-```
+Read `references/summary-examples.md` when writing a task summary. Skip if the format is already clear from earlier tasks in the session.
 
 Summary guidelines:
 
@@ -156,16 +161,9 @@ The plan is a living document. Update it when reality diverges:
 
 ## Learning Persistence
 
-### AGENTS.md Updates
+### AGENTS.md Format
 
-Add to AGENTS.md when you discover **how this project works**:
-
-- Build/test commands that aren't documented
-- Naming conventions
-- Architectural patterns
-- Common gotchas
-
-Format as actionable guidance:
+Format entries as actionable guidance under a `## Project-Specific` section:
 
 ```markdown
 ## Project-Specific
@@ -176,7 +174,7 @@ Format as actionable guidance:
 
 ### Documentation Updates
 
-If the project has a `docs/` directory and you build user-facing features:
+If the project has a `docs/` directory and you built a user-facing feature:
 
 - Check if relevant docs exist
 - Update them to reflect new functionality
@@ -188,20 +186,20 @@ When all tasks are checked:
 
 1. Congratulate briefly (one line, no fluff)
 2. Summarize what was built overall
-3. Archive the spec (if it exists):
+3. Archive the spec if `SPEC.md` exists at the repository root:
    - Create `specs/` directory if it doesn't exist
-   - Move `SPEC.md` to `specs/YYYY-MM-DD-<descriptive-title>.md`
-   - Use today's date, derive title from the spec's goal
+   - Move `SPEC.md` to `specs/YYYY-MM-DD-<descriptive-title>.md` using today's date
+   - Derive the title from the spec's stated goal
+   - Skip this step entirely if `SPEC.md` does not exist
 4. Remove `PLAN.md` (do not archive plans)
 5. Mention any follow-up work that emerged during execution
 
 ```bash
-# Example: Spec was about adding authentication
+# Example: Spec was about adding authentication, today is 2026-02-27
 mkdir -p specs
-mv SPEC.md specs/2025-01-05-add-user-authentication.md
+mv SPEC.md specs/2026-02-27-add-user-authentication.md
 rm PLAN.md
 ```
-
 
 ## Anti-patterns
 

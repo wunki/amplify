@@ -1,109 +1,69 @@
 ---
 name: create-spec
-description: Create or update a SPEC.md document from requirements, notes, or interview output. Structures information into a consistent spec format. Triggers on "create a spec", "write a spec", "turn this into a spec", "spec template", or when structuring requirements into a specification document.
+description: Creates or updates a SPEC.md specification document by structuring
+  requirements, notes, or interview output into a consistent format with sections
+  for goals, design, edge cases, security, testing, and success criteria. Use when
+  the user asks to write a spec, create a specification, turn notes or requirements
+  into a spec, document a feature design, or structure technical requirements. Don't
+  use for requirements gathering or discovery interviews (use the interview skill
+  instead), for Architecture Decision Records or RFCs, for general documentation or
+  README files, or for implementing code based on a spec.
 ---
 
 # Create Spec
 
-Structure requirements into a well-organized SPEC.md document. This skill focuses on the *structure and writing* of specs, not the requirements gathering (use the `interview` skill for that).
-
-## When to Use
-
-- After an interview session, to write the gathered requirements
-- To convert existing notes/requirements into spec format
-- To create a blank spec template for a new feature
-- To update an existing spec with new information
+Structure requirements into a well-organized SPEC.md document. This skill covers the *writing* of specs, not requirements gathering (use the `interview` skill for that).
 
 ## Workflow
 
-### 1) Gather Input
+### 1) Determine Input
 
-Determine what you're working with:
+Identify what the user has provided:
 
-- **Interview output**: Requirements gathered from `interview` skill
-- **Existing notes**: User-provided requirements, PRD, or design doc
-- **Existing SPEC.md**: Update/extend rather than replace
-- **Nothing yet**: Create a template with placeholders
+- **Interview output or structured notes** — proceed to Step 2
+- **Unstructured text, PRD, or rough ideas** — proceed to Step 2, noting gaps as Open Questions
+- **Existing SPEC.md to update** — read the file first, then extend or revise the relevant sections rather than replacing the whole document; proceed to Step 2
+- **Both new input and an existing SPEC.md** — read the existing file; merge new information in, surfacing any contradictions in the Open Questions section; proceed to Step 2
+- **No input yet** — ask: "What feature or system is this spec for? Share any notes, requirements, or context you have." Wait for the user's response, then restart from Step 1.
 
-### 2) Structure the Spec
+### 2) Read the Template
 
-Use the template in `references/spec-template.md`. Key sections:
+Read `references/spec-template.md` for the canonical section list and per-section guidance.
 
-| Section | Purpose |
-|---------|---------|
-| **Summary** | One breath: what and why |
-| **Background** | Context for newcomers |
-| **Goals / Non-Goals** | Scope control |
-| **Design** | Technical, UI/UX, Data, API |
-| **Edge Cases** | What could go wrong |
-| **Security & Privacy** | Risks and mitigations |
-| **Testing Strategy** | How we verify it works |
-| **Success Criteria** | Measurable "done" |
-| **Open Questions** | Honest uncertainty |
-| **Decisions Log** | Why we chose what we chose |
+### 3) Structure the Spec
 
-**Omit sections that don't apply**, but consider each before omitting.
+Apply the template sections. Omit sections that genuinely don't apply, but consider each one before omitting.
 
-### 3) Write with Precision
+Write with precision:
+- Specific over vague: "Validates email format using RFC 5322" not "validates input"
+- Include the why: decisions without rationale are useless to future readers
+- Note uncertainties as Open Questions rather than inventing answers
+- Use concrete examples to illustrate behavior
 
-- **Be specific**: "Validates email format using RFC 5322" not "validates input"
-- **Include the why**: Decisions without rationale are useless to future readers
-- **Note uncertainties**: Open questions are better than false confidence
-- **Use concrete examples**: Show, don't just tell
+If input contradicts itself (e.g., interview output conflicts with an existing SPEC.md), surface the conflict explicitly in the Open Questions section rather than silently picking one.
 
-### 4) Output Location
+When updating an existing spec: revise in-place where the intent is clearly to replace, append to existing lists where the intent is additive, and add a Decisions Log entry for any significant structural change.
 
-- Default: `SPEC.md` in project root
-- If user specifies a path, use that
-- Multiple specs: `specs/<feature-name>.md`
-- If file exists, ask before overwriting (unless updating)
+### 4) Write to File
+
+Determine the output path:
+- Default: `SPEC.md` in the project root
+- User-specified path: use it exactly
+- Multiple specs for a project: `specs/[feature-name].md`
+
+If a file already exists at the target path and the user did not explicitly ask to update or extend it, confirm with the user before overwriting.
 
 ## Spec Quality Checklist
 
 Before finishing:
 
-- [ ] Summary is one breath (if you can't summarize it, you don't understand it)
+- [ ] Summary fits in one or two sentences
 - [ ] Goals are measurable, not vague
 - [ ] Non-goals explicitly prevent scope creep
 - [ ] Design is implementable without guessing
 - [ ] Edge cases cover failure modes
 - [ ] Success criteria are testable
 - [ ] Open questions are honest about unknowns
-
-## Example Usage
-
-**From interview output:**
-```
-Based on our interview, here's the spec:
-
-# Spec: User Authentication
-
-OAuth + email/password, JWT in HTTP-only cookies...
-[structured content from interview]
-```
-
-**From existing notes:**
-```
-I'll structure your notes into a spec. Let me organize this:
-
-# Spec: Payment Processing
-
-[transforms unstructured notes into spec format]
-```
-
-**Blank template:**
-```
-Here's a spec template for the notification system:
-
-# Spec: Notification System
-
-## Summary
-<describe what the notification system does and why>
-
-## Background
-<why are we building this now?>
-...
-```
 
 ## Anti-patterns
 

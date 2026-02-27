@@ -1,6 +1,17 @@
 ---
 name: liveview-forms
-description: Build correct, resilient forms in Phoenix LiveView including validation, error feedback, recovery on reconnect, nested forms, uploads, and component forms. Use when requests mention LiveView forms, phx-change, phx-submit, form validation, changeset, to_form, form recovery, reconnect, phx-auto-recover, nested forms, inputs_for, embeds, file upload, allow_upload, phx-trigger-action, used_input?, phx-debounce, debounce, throttle, form errors, errors not showing, dynamic fields, add/remove fields, sort_param, drop_param, multi-step form, wizard, form component, phx-target, or _target.
+description: >
+  Builds and debugs Phoenix LiveView forms: changeset-backed validation,
+  per-field error feedback with used_input?, form recovery on reconnect,
+  nested forms with inputs_for and sort/drop params, file uploads with
+  allow_upload, component forms with phx-target, and HTTP bridging via
+  phx-trigger-action. Use when the user is working with LiveView forms,
+  phx-change, phx-submit, to_form, changeset validation, error display,
+  form errors not showing, dynamic add/remove fields, multi-step forms,
+  file uploads, or form reconnect recovery. Don't use for non-LiveView
+  forms (plain HTML, React, dead views), general Ecto changeset questions
+  unrelated to a form, or LiveView topics that don't involve form input
+  handling (streams, navigation, presence, JS hooks).
 ---
 
 # LiveView Forms
@@ -16,25 +27,10 @@ Build forms in LiveView that validate cleanly, recover from disconnects, and han
 
 ## Workflow
 
-1. Create the form:
-   - Build a changeset from the schema and pass it through `to_form/2`.
-   - Do not set `action: :validate` on mount. Errors should not appear before the user interacts.
-2. Validate on change:
-   - Handle `phx-change` to rebuild the changeset with `action: :validate` and reassign the form.
-   - Use `_target` to know which field triggered the change (for conditional validation logic).
-3. Submit:
-   - Handle `phx-submit` to attempt persistence.
-   - On success: redirect or update assigns.
-   - On failure: reassign the form from the error changeset.
-4. Choose debounce strategy:
-   - Omit for defaults (300ms debounce).
-   - `phx-debounce="blur"` for fields validated only on blur (email, password).
-   - Integer ms for search/filter inputs.
-   - `phx-throttle` for rate-limited continuous events (sliders, volume).
-5. Plan for recovery:
-   - Ensure forms have both `phx-change` and a unique `id`.
-   - For multi-step forms, use a custom `phx-auto-recover` event.
-   - Disable recovery with `phx-auto-recover="ignore"` when the form cannot be meaningfully restored.
+1. Create the form: build a changeset from the schema, pass it through `to_form/2`, assign the result. Do not set `action: :validate` on mount.
+2. Validate on change: handle `phx-change` to rebuild the changeset with `action: :validate` and reassign the form. Use `_target` for conditional validation logic.
+3. Submit: handle `phx-submit`. On success, redirect or update assigns. On failure, reassign from the error changeset.
+4. Give the form a unique `id`. Required for DOM stability, recovery, and component targeting.
 
 ## Form Lifecycle
 
@@ -116,7 +112,7 @@ Even with `action: :validate`, errors only show for fields the user has interact
 errors = if Phoenix.Component.used_input?(field), do: field.errors, else: []
 ```
 
-The default `<.input>` component from Phoenix generators (1.7.18+) handles this internally.
+The default `<.input>` component from Phoenix generators (1.7.18+) handles this internally. `used_input?/1` requires Phoenix LiveView 0.20+. On earlier versions, errors show unconditionally once the changeset action is set.
 
 ### Nested fields
 
@@ -135,9 +131,9 @@ Both are client-side rate limiters applied to any event binding.
 
 | Attribute | Behavior | Default (when value omitted) |
 |---|---|---|
-| `phx-debounce="300"` | Delays event until 300ms of inactivity | 300ms |
+| `phx-debounce="300"` | Delays event until 300ms of inactivity | 300ms (when attribute value is empty string) |
 | `phx-debounce="blur"` | Delays event until field loses focus | n/a |
-| `phx-throttle="1000"` | Emits immediately, then at most once per 1s | 300ms |
+| `phx-throttle="1000"` | Emits immediately, then at most once per 1s | 300ms (when attribute value is empty string) |
 
 ### Timer reset behavior
 
@@ -205,74 +201,16 @@ When form state cannot be meaningfully restored (e.g., a completed payment form)
 
 ## Nested Forms
 
-### `inputs_for` basics
+Read `references/nested-forms.md` when the request involves `inputs_for`, dynamic add/remove fields, `sort_param`, `drop_param`, `cast_embed`, `cast_assoc`, or schemas without a primary key. Skip if the form has no nested associations or embeds.
 
-```heex
-<.inputs_for :let={ef} field={@form[:emails]}>
-  <.input field={ef[:address]} label="Email" />
-</.inputs_for>
-```
+### Quick reference: key requirements
 
-### Dynamic add/remove with sort and drop params
-
-Ecto's `:sort_param` and `:drop_param` options on `cast_assoc/3` or `cast_embed/3` enable adding and removing nested items without custom event handlers.
-
-**Schema:**
-
-```elixir
-embeds_many :emails, Email, on_replace: :delete do
-  field :address, :string
-end
-
-def changeset(list, attrs) do
-  list
-  |> cast(attrs, [:title])
-  |> cast_embed(:emails,
-    with: &email_changeset/2,
-    sort_param: :emails_sort,
-    drop_param: :emails_drop
-  )
-end
-```
-
-`on_replace: :delete` is **required** on `has_many` and `embeds_many` when using sort/drop params.
-
-**Template:**
-
-```heex
-<.inputs_for :let={ef} field={@form[:emails]}>
-  <input type="hidden" name="list[emails_sort][]" value={ef.index} />
-  <.input field={ef[:address]} label="Email" />
-  <button
-    type="button"
-    name="list[emails_drop][]"
-    value={ef.index}
-    phx-click={JS.dispatch("change")}
-  >
-    Remove
-  </button>
-</.inputs_for>
-
-<%!-- Required: empty drop input so all items can be removed --%>
-<input type="hidden" name="list[emails_drop][]" />
-
-<%!-- Add button --%>
-<button
-  type="button"
-  name="list[emails_sort][]"
-  value="new"
-  phx-click={JS.dispatch("change")}
->
-  Add email
-</button>
-```
-
-### Key requirements
-
+- `on_replace: :delete` is **required** on `has_many` and `embeds_many` when using sort/drop params.
 - Add/remove buttons must be `type="button"` to prevent form submission.
-- `JS.dispatch("change")` triggers the form's `phx-change` event, which rebuilds the changeset with the new sort/drop values.
+- `JS.dispatch("change")` triggers the form's `phx-change` event, which rebuilds the changeset.
 - The empty `<input type="hidden" name="list[emails_drop][]" />` **outside** `inputs_for` is required. Without it, removing the last item sends no drop param and the delete is silently ignored.
 - Do not access `form[:field].value` in nested forms for display logic. The value may be a struct, changeset, or raw params depending on state. Compute derived values in the LiveView or changeset instead.
+- `sort_param` and `drop_param` require Ecto 3.10.0+.
 
 ## Uploads
 
@@ -446,18 +384,24 @@ def mount(_params, _session, socket) do
   {:ok, assign(socket, form: to_form(%{}, as: :user), trigger_submit: false)}
 end
 
+def handle_event("validate", %{"user" => params}, socket) do
+  form = to_form(params, as: :user, action: :validate)
+  {:noreply, assign(socket, form: form)}
+end
+
 def handle_event("save", %{"user" => params}, socket) do
   case validate_credentials(params) do
     :ok ->
       {:noreply, assign(socket, trigger_submit: true)}
 
     {:error, message} ->
-      {:noreply, put_flash(socket, :error, message)}
+      # Reset trigger_submit to false so a subsequent retry does not immediately re-submit
+      {:noreply, socket |> assign(trigger_submit: false) |> put_flash(:error, message)}
   end
 end
 ```
 
-When `phx-trigger-action` becomes `true`, LiveView disconnects and submits the form via HTTP POST to the `action` URL.
+When `phx-trigger-action` becomes `true`, LiveView disconnects and submits the form via HTTP POST to the `action` URL. Always reset `trigger_submit` back to `false` in failure paths — leaving it `true` causes the form to re-submit immediately on the next render.
 
 ## Input Edge Cases
 
@@ -525,6 +469,10 @@ Use this for conditional validation (e.g., only run expensive uniqueness checks 
 - Omitting `on_replace: :delete` on `has_many`/`embeds_many`. Sort/drop params silently fail.
 - Forgetting the empty drop hidden input outside `inputs_for`. Removing the last item is ignored.
 - Using `type="submit"` on add/remove buttons. Triggers form submission instead of `phx-change`.
+- See `references/nested-forms.md` for the full list of nested-form pitfalls.
+
+**phx-trigger-action:**
+- Not resetting `trigger_submit` to `false` in error branches. Causes the form to re-submit on the next render.
 
 **Uploads:**
 - Calling `consume_uploaded_entries` before uploads complete. Raises `ArgumentError`.

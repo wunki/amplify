@@ -1,6 +1,6 @@
 ---
 name: spec-story
-description: Transform a technical SPEC.md into a conversational, narrative document that's enjoyable to read. Tells the story of what's being built and why, without the dry spec format. Use when asked to "make this readable", "tell the story", "narrative version", "explain this spec", "make this fun to read", "story version", "readable spec", "spec story", or when the user wants to understand a spec without slogging through structured sections.
+description: Transforms a technical spec file (SPEC.md, PRD, RFC, ADR, or similar structured design document) into a narrative prose retelling that preserves every technical detail while making it engaging and story-driven. Writes output to STORY.md alongside the source file. Use when the user asks to "tell the story of this spec", "make this spec fun to read", "narrative version", "spec story", "story version of the spec", "make this spec readable", or wants to experience a spec as a flowing read rather than a structured document. Don't use for summarizing a spec into bullet points or a shorter overview, creating a new spec from scratch, converting specs to slide decks or presentations, explaining arbitrary code files that are not design documents, or when the user wants a standard technical summary rather than a full narrative retelling.
 ---
 
 # Spec Story
@@ -23,9 +23,14 @@ Think less "requirements document" and more "the best Slack message your tech le
 
 ### 1) Find the spec
 
-Look for `SPEC.md` in the project root or `specs/` directory. If the user points to a specific file, use that.
+If the user points to a specific file, use that.
 
-If no spec exists, tell the user and suggest running `/create-spec` first.
+Otherwise, search for a spec file in this order:
+1. `SPEC.md` in the project root
+2. Any `.md` file in the `specs/` or `docs/` directory whose name suggests it is a spec, PRD, RFC, or ADR
+3. Ask the user to point to the file explicitly if none is found
+
+If no spec file exists anywhere, tell the user and stop. Do not suggest other skills.
 
 ### 2) Read the entire spec
 
@@ -37,9 +42,13 @@ Read every section. Understand the full picture before writing a word. Look for:
 - The honest gaps. What does nobody know yet?
 - The drama. Was there a decision that could have gone either way?
 
+Note any sections already written in narrative prose — absorb their voice but rewrite them to fit the unified story. Do not paste them in verbatim.
+
 ### 3) Write the narrative
 
-Write in first person plural ("we") or second person ("you"). The reader is the person about to build this thing. They're smart, they're busy, and they'll bail if you bore them.
+Default to first person plural ("we") — it creates a sense of shared ownership and is the most natural voice for engineering narratives. Use second person ("you") only if the spec itself is framed as a user-facing tutorial or if the dominant concern is the developer's experience of building the feature. Pick one voice and hold it throughout.
+
+The reader is the person about to build this thing. They're smart, they're busy, and they'll bail if you bore them.
 
 **Structure the narrative as a story with tension and payoff:**
 
@@ -111,13 +120,14 @@ Use a handful of headings to create breathing room. Make them interesting enough
 
 ### 7) Output
 
-- Default: `STORY.md` in the same directory as the spec
-- If the spec is at `specs/feature.md`, write to `specs/feature-story.md`
-- If the user specifies a path, use that
+- If the user specifies an output path, use that.
+- If the spec is named `SPEC.md`, write to `STORY.md` in the same directory.
+- For any other filename, append `-story` before the extension: `specs/feature.md` → `specs/feature-story.md`, `docs/RFC-42.md` → `docs/RFC-42-story.md`.
+- If the output file already exists, notify the user and ask before overwriting.
 
 ### 8) Length
 
-Aim for roughly 40-60% of the spec's word count. Dense specs get compressed; thin specs might expand where context helps. The narrative should feel like a satisfying read, not a marathon. If it's boring at any point, it's too long at that point.
+Aim for roughly 40-60% of the spec's word count. Dense specs get compressed; thin specs might expand where context helps. Floor: never produce fewer than 300 words regardless of source length — a stub is not a story. The narrative should feel like a satisfying read, not a marathon. If it's boring at any point, it's too long at that point.
 
 ## Quality checklist
 

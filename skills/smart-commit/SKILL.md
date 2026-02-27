@@ -1,80 +1,65 @@
 ---
 name: smart-commit
-description: Analyze unstaged changes, group them into logical commits, and generate conventional commit messages. Use when asked to "smart commit", "group commits", "atomic commits", or when there are many unstaged changes that should be split into separate, well-scoped commits.
+description: Analyzes all uncommitted changes (staged and unstaged), groups them into atomic commits by logical purpose, and generates conventional commit messages with user-facing bodies. Use when the user asks to "smart commit", "group my commits", "split into atomic commits", "organize my changes into commits", or when there are many uncommitted changes across multiple files that should be separated into well-scoped commits. Don't use for a single, simple commit message request, for push/pull operations, for rebasing or squashing existing commits, or when the user just says "commit this" without asking for grouping or splitting.
 ---
 
-# Smart Commit - Atomic Commit Grouping
+# Smart Commit — Atomic Commit Grouping
 
-Analyze all unstaged changes in the working directory, intelligently group related changes into atomic commits, and generate conventional commit messages for each group.
+Analyze all uncommitted changes in the working directory, intelligently group related changes into atomic commits, and generate conventional commit messages for each group.
 
-## Step 1: Gather All Unstaged Changes
+## Step 1: Gather All Uncommitted Changes
 
 ```bash
-# Get list of modified files (unstaged)
-git diff --name-only
+# Get full status including staged, unstaged, and untracked files
+git status --short
 
-# Get detailed diff of all unstaged changes
+# Get diff of unstaged tracked changes
 git diff
 
-# Get status overview
-git status --short
+# Get diff of staged changes
+git diff --cached
+
+# Get list of untracked files
+git ls-files --others --exclude-standard
 ```
+
+Note: all four commands are needed to get a complete picture. Untracked files appear only in `git ls-files --others`. Staged changes appear only in `git diff --cached`.
 
 ## Step 2: Analyze and Group Changes
 
 For each changed file, analyze:
 - **Purpose**: What is this change doing? (feature, fix, refactor, etc.)
-- **Scope**: Which module/component/feature does it affect?
+- **Scope**: Which module, component, or feature does it affect?
 - **Relationship**: Which other changes are logically related?
 
-Group changes into atomic commits based on:
+Group changes into atomic commits using these rules:
 
 ### Grouping Rules
 
-1. **Single Responsibility**: Each commit should do ONE logical thing
-2. **Feature Coherence**: Changes to the same feature belong together
-3. **Type Coherence**: Don't mix `feat` with `fix` in same commit unless tightly coupled
+1. **Single Responsibility**: Each commit does ONE logical thing.
+2. **Feature Coherence**: Changes to the same feature belong together.
+3. **Type Coherence**: Do not mix `feat` with `fix` in the same commit unless tightly coupled.
 4. **File Relationships**:
    - Component + its tests = same commit
    - Component + its styles = same commit
    - Config changes = separate commit (usually `chore`)
    - Documentation = separate commit (usually `docs`)
-5. **Dependency Order**: If commit B depends on commit A, A comes first
+5. **Dependency Order**: If commit B depends on commit A, A comes first.
 
-### Common Patterns
+### Type Reference
 
-- `feat`: New functionality -> group with related tests/types
-- `fix`: Bug fix -> group with regression test if added
-- `refactor`: Code restructuring -> can be larger, but still single purpose
-- `chore`: Deps, config, tooling -> usually standalone
-- `docs`: Documentation only -> standalone
-- `style`: Formatting -> standalone or skip if mixed with other changes
-
-### Writing the Body
-
-The commit body appears in release notes and should be readable by non-technical users.
-
-**Guidelines:**
-- Describe the *user impact*, not the implementation
-- Write in plain language (no jargon, no code references)
-- One sentence is usually enough
-- Skip the body for `chore`/`style`/`ci` commits (filtered from release notes anyway)
-
-**Good bodies:**
-- "Users can now export their data as a CSV file."
-- "Fixes an issue where the app would freeze when uploading large images."
-- "Search results now load twice as fast."
-
-**Bad bodies:**
-- "Added exportToCSV function to DataService" (implementation detail)
-- "Fixed null pointer exception in handleUpload" (too technical)
-- "Optimized SQL query with proper indexing" (user doesn't care how)
+- `feat`: New functionality — group with related tests and types.
+- `fix`: Bug fix — group with regression test if added.
+- `refactor`: Code restructuring — can be larger, but still single purpose.
+- `chore`: Deps, config, tooling — usually standalone.
+- `docs`: Documentation only — standalone.
+- `style`: Formatting — standalone, or omit if entangled with other changes.
 
 ## Step 3: Present Commit Plan
 
-Present the grouped commits in order of suggested execution:
+Present the grouped commits in suggested execution order:
 
-```markdown
+```
 ## Proposed Commits (in order)
 
 ### Commit 1: `feat(auth): add password reset flow`
@@ -102,47 +87,73 @@ Files:
 Body: (none)
 ```
 
+### Commit Body Guidelines
+
+The body appears in release notes and should be readable by non-technical users. Write one sentence describing user impact, not implementation.
+
+Skip the body entirely for `chore`, `style`, and `ci` commits.
+
+Good: "Users can now export their data as a CSV file."
+Good: "Fixes an issue where the app would freeze when uploading large images."
+
+Bad: "Added exportToCSV function to DataService." (implementation detail)
+Bad: "Fixed null pointer exception in handleUpload." (too technical)
+
 ## Step 4: Get User Confirmation
 
-Use the `AskUserQuestion` tool to get confirmation:
+Ask the user how to proceed. Present the options as a simple prose question:
 
 ```
-AskUserQuestion:
-  question: "How would you like to proceed with these commits?"
-  header: "Commits"
-  options:
-    - label: "Proceed"
-      description: "Commit all groups as planned"
-    - label: "Skip some"
-      description: "Choose which commits to make"
-    - label: "Edit grouping"
-      description: "Adjust how changes are grouped"
+How would you like to proceed with these N commits?
+- Proceed — commit all groups as planned
+- Skip some — choose which commits to skip
+- Edit grouping — adjust how changes are grouped
+- Or type specific instructions
 ```
 
 Handle responses:
-- **Proceed**: Execute all commits as planned
-- **Skip some**: Ask which commit numbers to skip, then execute the rest
-- **Edit grouping**: Ask what to change, revise the plan, confirm again
-- **Other** (custom input): User may type "y", "yes", specific instructions, or adjustments
+- **Proceed** (or "y", "yes", "do it"): Execute all commits as planned.
+- **Skip some**: Ask which commit numbers to skip, then execute the rest.
+- **Edit grouping**: Ask what to change, revise the plan, present it again, confirm once more before executing.
+- **Custom instruction**: Apply the instruction to the plan, show the updated plan, confirm again.
 
-## Step 5: Execute Commits (on confirmation)
+Do not execute any commits until the user has explicitly confirmed.
 
-For each commit group, in order:
+## Step 5: Execute Commits
+
+For each commit group in order:
 
 ```bash
 # Stage only the files for this commit
 git add <file1> <file2> ...
 
-# Create the commit with subject and body
-git commit -m "<type>(<scope>): <description>" -m "<body>"
+# For deleted files, use:
+git rm <deleted-file>
 
-# Repeat for next group
+# For new untracked files, use:
+git add <new-file>
+
+# Commit with subject line only (chore/style/ci):
+git commit -m "<type>(<scope>): <description>"
+
+# Commit with subject and body (feat/fix/refactor/docs):
+git commit -m "<type>(<scope>): <description>" -m "<body>"
 ```
 
-## Important Notes
+Omit the second `-m "<body>"` argument entirely for `chore`, `style`, and `ci` commits.
 
-- **Never auto-commit without confirmation**
-- **Preserve the user's ability to modify grouping**
-- If changes are too intertwined to separate cleanly, suggest committing together with a note
-- If a file has multiple unrelated hunks, mention that `git add -p` could be used for finer control
-- Always show the full plan before executing any commits
+After all commits are done, confirm the result:
+
+```bash
+git log --oneline -<N>
+```
+
+Show the user the resulting commit log.
+
+## Error Handling
+
+- **No uncommitted changes**: Report "No uncommitted changes found." and stop.
+- **Changes too intertwined to separate cleanly**: Suggest committing together with a note explaining why splitting would be misleading. Offer `git add -p` as an option for finer-grained hunk control if the user wants to try.
+- **Merge conflict markers present**: Stop, report the files with conflicts, and tell the user to resolve conflicts before running smart-commit.
+- **git command fails**: Show the raw error output and stop. Do not retry or work around silently.
+- **Scope is unclear**: Use the directory name or top-level module as the scope. Note the assumption in the plan.

@@ -2,6 +2,16 @@
 
 Curated visual styles for Frontend Slides. Each preset includes specific font choices, color palettes, and animation approaches to ensure distinctive, non-generic designs.
 
+## Table of Contents
+
+- [Dark Themes](#dark-themes): Neon Cyber, Midnight Executive, Deep Space, Terminal Green
+- [Light Themes](#light-themes): Paper & Ink, Swiss Modern, Soft Pastel, Warm Editorial
+- [Specialty Themes](#specialty-themes): Brutalist, Gradient Wave
+- [Font Pairing Quick Reference](#font-pairing-quick-reference)
+- [Animation Easing Reference](#animation-easing-reference)
+- [Background Effect Snippets](#background-effect-snippets)
+- [DO NOT USE (Generic AI Patterns)](#do-not-use-generic-ai-patterns)
+
 ---
 
 ## Dark Themes

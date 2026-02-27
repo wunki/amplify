@@ -1,5 +1,5 @@
 model = "gpt-5.3-codex"
-model_reasoning_effort = "xhigh"
+model_reasoning_effort = "high"
 personality = "pragmatic"
 suppress_unstable_features_warning = true
 
@@ -57,3 +57,15 @@ trust_level = "trusted"
 
 [projects."/Users/petar/Code/finde"]
 trust_level = "trusted"
+
+[projects."/Users/petar/Code/breakthrough"]
+trust_level = "trusted"
+
+[projects."/Users/petar/Code/tech-radar"]
+trust_level = "trusted"
+
+[mcp_servers.linear]
+url = "https://mcp.linear.app/mcp"
+
+[tui]
+theme = "dark-neon"

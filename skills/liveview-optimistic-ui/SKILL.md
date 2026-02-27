@@ -1,6 +1,17 @@
 ---
 name: liveview-optimistic-ui
-description: Build responsive and optimistic UI in Elixir Phoenix LiveView using `Phoenix.LiveView.JS`, loading classes, `phx-disable-with`, hooks, and latency testing. Use when requests mention optimistic UI, instant feedback, responsive LiveView interactions, `JS.push`, loading states, loading indicator, loading spinner, flicker/race issues, toggles/modals/deletes/forms that should feel immediate, double submit, double click, feels slow, feels laggy, undo/rollback/revert UI state, stale data, stream delete/insert animation, `used_input?`, or `aria-live`/screen reader accessibility in LiveView.
+description: >
+  Implements optimistic UI patterns in Elixir Phoenix LiveView: instant client
+  feedback before server confirmation, loading states, rollback/revert on failure,
+  race condition guards, stream insert/delete animations, undo windows, and
+  accessibility for async interactions. Use when the user needs LiveView interactions
+  to feel immediate, wants to add loading indicators or spinners, needs to handle
+  double-submit or double-click, wants to animate stream inserts or deletes, needs
+  undo/rollback for destructive actions, is dealing with stale data or flicker under
+  latency, or needs aria-live announcements for optimistic state changes.
+  Don't use for general LiveView form validation or changeset errors (use
+  liveview-forms instead), non-LiveView frontend frameworks (React, Vue, Svelte),
+  or server-side performance optimization unrelated to perceived UI responsiveness.
 ---
 
 # LiveView Optimistic UI
@@ -35,10 +46,10 @@ Build LiveView interactions that feel instant while preserving server truth.
    - Prefer LiveView JS commands over ad-hoc DOM mutation.
    - Use `JS.ignore_attributes` for browser-owned attributes like `open` on `<details>`/`<dialog>`.
    - Ensure failures remove stale optimistic decorations deterministically.
-5. Plan for failure:
-   - On mutation rejection: revert optimistic visuals and show error feedback.
+5. Plan for failure — see **Error Recovery** section below for implementation:
+   - On mutation rejection: choose server-driven revert (for server-rendered attrs) or `push_event` revert (for `JS.add_class` changes that survive patches).
    - On concurrent clicks: disable or serialize per resource key.
-   - On async work: guard stale responses with request IDs or version checks.
+   - On async work: guard stale responses with request IDs or version checks. Use `cancel_async/3` to cancel a superseded `start_async` by name before starting a new one.
    - On socket disconnect: server patches resync DOM on reconnect. Re-derive any hook-managed state from the patched DOM in `mounted()`.
 6. Make it accessible:
    - Use `aria-live="polite"` regions to announce state changes to screen readers.
@@ -101,20 +112,6 @@ User intent (click/submit)
 ```heex
 <button phx-click={JS.push("rebuild", page_loading: true)}>
   Rebuild
-</button>
-```
-
-### 5) Composing multiple loading indicators
-
-When a single action affects several parts of the page:
-
-```heex
-<button phx-click={
-  JS.push("checkout", loading: "#cart-summary")
-  |> JS.add_class("opacity-50", to: "#cart-items")
-  |> JS.add_class("animate-pulse", to: "#order-total")
-}>
-  Place order
 </button>
 ```
 
@@ -211,7 +208,7 @@ The 300ms delay matches the `duration-300` transition class. If the server respo
 
 ### Async stream loading with `stream_async` (v1.1.5+)
 
-For paginated or lazily loaded lists, `stream_async/4` inserts items as they arrive without blocking the initial render.
+For paginated or lazily loaded lists, `stream_async/4` inserts items as they arrive without blocking the initial render. Skip this pattern if the project uses LiveView older than v1.1.5 — use `start_async` with manual `stream_insert` calls instead.
 
 ```elixir
 def mount(_params, _session, socket) do
@@ -247,7 +244,7 @@ end
 
 ### Explicit revert via `push_event` (JS.add_class and similar)
 
-Classes added via `JS.add_class` survive server patches. Use `push_event` to tell a hook to clean them up on failure.
+Classes added via `JS.add_class` survive server patches. Use `push_event` to tell a hook to clean them up on failure. See `references/js-commands-cookbook.md` for the hook-side implementation.
 
 ```elixir
 {:error, _reason} ->
@@ -255,19 +252,6 @@ Classes added via `JS.add_class` survive server patches. Use `push_event` to tel
    socket
    |> push_event("revert-optimistic", %{id: id})
    |> put_flash(:error, "Archive failed")}
-```
-
-```javascript
-Hooks.OptimisticContainer = {
-  mounted() {
-    this.handleEvent("revert-optimistic", ({ id }) => {
-      const el = document.getElementById(`item-${id}`)
-      if (el) {
-        el.classList.remove("opacity-50", "pointer-events-none", "line-through")
-      }
-    })
-  }
-}
 ```
 
 ### Undo window for destructive actions
@@ -310,34 +294,13 @@ end
 
 ### Request ID tracking for async results
 
-Discard stale responses when a newer request supersedes an older one. `start_async` does **not** auto-cancel a previous async of the same name; use `cancel_async/3` if you need explicit cancellation. For manual `Task`-based async, track a request ID and ignore stale results:
+Discard stale responses when a newer request supersedes an older one. `start_async` does **not** auto-cancel a previous async of the same name. Cancel the named async before starting a new one:
 
 ```elixir
-def handle_event("search", %{"q" => query}, socket) do
-  request_id = System.unique_integer([:positive])
-  parent = self()
-
-  socket =
-    socket
-    |> assign(:search_request_id, request_id)
-    |> assign(:searching?, true)
-
-  Task.start(fn ->
-    results = MyApp.Search.run(query)
-    send(parent, {:search_results, request_id, results})
-  end)
-
-  {:noreply, socket}
-end
-
-def handle_info({:search_results, request_id, results}, socket) do
-  if request_id == socket.assigns.search_request_id do
-    {:noreply, assign(socket, results: results, searching?: false)}
-  else
-    {:noreply, socket}
-  end
-end
+socket = socket |> cancel_async(:search, :superseded) |> start_async(:search, fn -> ... end)
 ```
+
+For manual `Task`-based async (pre-LiveView 1.0 or third-party tasks), track a monotonic request ID in assigns and ignore results where `request_id != socket.assigns.search_request_id`.
 
 ### Optimistic locking for concurrent edits
 
@@ -364,27 +327,7 @@ end
 
 ### Serializing concurrent clicks
 
-Disable the trigger element during the round-trip to prevent double submission.
-
-```heex
-<button
-  phx-click={JS.push("process")}
-  phx-disable-with="Processing..."
->
-  Submit
-</button>
-```
-
-For resource-keyed serialization (one in-flight action per row), use `loading:` to lock the row:
-
-```heex
-<button phx-click={
-  JS.push("archive", loading: "#row-#{item.id}")
-  |> JS.add_class("pointer-events-none", to: "#row-#{item.id}")
-}>
-  Archive
-</button>
-```
+Use `phx-disable-with` to block double-submit on a button. For per-row serialization, use `loading: "#row-#{item.id}"` to lock the row element during the round-trip (see Baseline Pattern 1).
 
 ## Form Validation
 
@@ -414,7 +357,7 @@ For the full form lifecycle (changesets, `to_form`, error feedback model, deboun
 
 ### Screen reader announcements
 
-Use an `aria-live` region to announce optimistic state changes. Keep it in the layout so it persists across patches.
+Use an `aria-live` region in the layout (so it persists across patches). Update `@status_message` from the server after mutations.
 
 ```heex
 <div role="status" aria-live="polite" class="sr-only" id="live-status">
@@ -422,21 +365,7 @@ Use an `aria-live` region to announce optimistic state changes. Keep it in the l
 </div>
 ```
 
-Update it from the server after mutations:
-
-```elixir
-{:noreply, assign(socket, :status_message, "Item saved")}
-```
-
-### Busy state on containers
-
-Mark regions as busy during async operations so assistive technology can announce completion.
-
-```heex
-<section id="items-list" aria-busy={@saving?}>
-  ...
-</section>
-```
+Mark containers as busy during async operations: `<section aria-busy={@saving?}>`. Update `@saving?` before and after the mutation.
 
 ### Respect reduced motion
 
@@ -506,34 +435,11 @@ end
 
 ### Latency simulation in development
 
-Not a substitute for tests, but catches visual regressions tests cannot.
-
-```javascript
-// In browser console
-liveSocket.enableLatencySim(1000)
-// Interact with the UI and watch for flicker, stale state, double submissions
-liveSocket.disableLatencySim()
-```
+Not a substitute for tests, but catches visual regressions tests cannot. In the browser console: `liveSocket.enableLatencySim(1000)`. Check for flicker, stale state, and double submissions. Disable with `liveSocket.disableLatencySim()`.
 
 ## Colocated Hooks (v1.1+)
 
-Prefer colocated hooks over global hook registrations. They keep hook logic close to the LiveView that uses them and avoid global namespace pollution.
-
-```javascript
-// In your LiveView's colocated JS file (e.g., item_list_live.hooks.js)
-export const OptimisticList = {
-  mounted() {
-    this.handleEvent("revert-optimistic", ({ id }) => {
-      const el = document.getElementById(`item-${id}`)
-      if (el) {
-        el.classList.remove("opacity-50", "pointer-events-none")
-      }
-    })
-  }
-}
-```
-
-See [`Phoenix.LiveView.ColocatedHook`](https://hexdocs.pm/phoenix_live_view/Phoenix.LiveView.ColocatedHook.html) for hooks and [`Phoenix.LiveView.ColocatedJS`](https://hexdocs.pm/phoenix_live_view/Phoenix.LiveView.ColocatedJS.html) for general colocated JS. Requires Phoenix 1.8+.
+Prefer colocated hooks over global hook registrations. They keep hook logic close to the LiveView that uses them and avoid global namespace pollution. See [`Phoenix.LiveView.ColocatedHook`](https://hexdocs.pm/phoenix_live_view/Phoenix.LiveView.ColocatedHook.html) and [`Phoenix.LiveView.ColocatedJS`](https://hexdocs.pm/phoenix_live_view/Phoenix.LiveView.ColocatedJS.html). Hook-side implementation for `push_event` revert patterns is in `references/js-commands-cookbook.md`.
 
 ## Anti-Patterns
 
@@ -565,5 +471,5 @@ See José Valim's [analysis of concurrent submissions](https://dashbit.co/blog/r
 
 ## References
 
-- When composing JS command chains, refer to `references/js-commands-cookbook.md` for command syntax, option details, and composition patterns.
-- When checking version-specific behavior or planning a LiveView upgrade, refer to `references/changelog-highlights-2024-2026.md` for breaking changes, bug fixes, and new features that affect optimistic UI.
+- Read `references/js-commands-cookbook.md` when composing JS command chains, choosing selector strategies, or looking up loading feedback options. Skip if the question is purely about server-side Elixir patterns.
+- Read `references/changelog-highlights-2024-2026.md` when checking version-specific behavior, planning a LiveView upgrade, or debugging a regression that appeared after a version bump. Skip if the LiveView version is not in question.

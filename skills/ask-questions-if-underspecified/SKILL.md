@@ -1,77 +1,130 @@
 ---
 name: ask-questions-if-underspecified
-description: Clarify requirements before implementing code. Ask focused questions to fill gaps in scope, constraints, or acceptance criteria. Use when a request is vague, ambiguous, has multiple interpretations, or when you need to understand "what does done look like?" before starting work.
+description: Pauses to ask focused clarifying questions when a request lacks enough
+  information to execute correctly. Use when the task is vague, has multiple plausible
+  interpretations, is missing acceptance criteria, or when wrong assumptions would
+  produce significant wasted work. Don't use when the request is already well-specified,
+  when requirements were clarified earlier in the same conversation, when the task
+  is trivially unambiguous (e.g., fix a specific typo), or when general clarification
+  techniques are being discussed rather than applied to a specific task.
 ---
 
 # Ask Questions If Underspecified
 
 ## Goal
 
-Ask the minimum set of clarifying questions needed to avoid wrong work; do not start implementing until the must-have questions are answered (or the user explicitly approves proceeding with stated assumptions).
+Ask the minimum set of clarifying questions needed to avoid wrong work. Never start
+implementing until must-have questions are answered — or the user explicitly approves
+proceeding with stated assumptions.
 
 ## Workflow
 
-### 1) Decide whether the request is underspecified
+### 1. Check conversation history first
 
-Treat a request as underspecified if after exploring how to perform the work, some or all of the following are not clear:
-- Define the objective (what should change vs stay the same)
-- Define "done" (acceptance criteria, examples, edge cases)
-- Define scope (which files/components/users are in/out)
-- Define constraints (compatibility, performance, style, deps, time)
-- Identify environment (language/runtime versions, OS, build/test runner)
-- Clarify safety/reversibility (data migration, rollout/rollback, risk)
+Before asking anything, scan earlier messages in the current thread. Requirements
+already discussed are not underspecified. If prior messages resolve the ambiguity,
+proceed directly to Step 4.
 
-If multiple plausible interpretations exist, assume it is underspecified.
+### 2. Decide whether the request is underspecified
 
-### 2) Ask must-have questions first (keep it small)
+After inspecting the codebase or task context as needed, treat a request as
+underspecified if **two or more** of the following are unclear:
 
-Ask 1-5 questions in the first pass. Prefer questions that eliminate whole branches of work.
+- Objective: what should change vs. stay the same
+- Done criteria: acceptance criteria, examples, or edge cases
+- Scope: which files, components, or users are in or out
+- Constraints: compatibility, performance, style, deps, or time
+- Environment: language/runtime versions, OS, build/test runner
+- Safety: data migration, rollout/rollback, or rollback plan
+
+If only one criterion is unclear and a low-risk discovery read can resolve it (e.g.,
+checking a config file), do that read and proceed. Do not ask the user for something
+that can be looked up.
+
+If multiple plausible interpretations exist that would lead to meaningfully different
+implementations, treat it as underspecified regardless of criterion count.
+
+### 3. Ask must-have questions (one round only)
+
+Ask 1–5 questions in a single pass. Prefer questions that eliminate entire branches
+of work. Cap at one clarification round — if further ambiguity surfaces after answers
+arrive, use judgment to pick the most reasonable interpretation rather than asking again.
 
 Make questions easy to answer:
-- Optimize for scannability (short, numbered questions; avoid paragraphs)
-- Offer multiple-choice options when possible
-- Suggest reasonable defaults when appropriate (mark them clearly as the default/recommended choice; bold the recommended choice in the list, or if you present options in a code block, put a bold "Recommended" line immediately above the block and also tag defaults inside the block)
-- Include a fast-path response (e.g., reply `defaults` to accept all recommended/default choices)
-- Include a low-friction "not sure" option when helpful (e.g., "Not sure - use default")
-- Separate "Need to know" from "Nice to know" if that reduces friction
-- Structure options so the user can respond with compact decisions (e.g., `1b 2a 3c`); restate the chosen options in plain language to confirm
 
-### 3) Pause before acting
+- Short, numbered questions; no paragraphs
+- Offer multiple-choice options when possible
+- Mark reasonable defaults clearly (bold the recommended option, or add a
+  "Recommended" label above a code block and tag defaults inside)
+- Include a fast-path reply: `defaults` accepts all recommendations
+- Separate "Need to know" from "Nice to know" when it reduces friction
+- Allow compact replies such as `1b 2a 3c`; restate the chosen options in plain
+  language to confirm before proceeding
+
+### 4. Pause before acting
 
 Until must-have answers arrive:
-- Do not run commands, edit files, or produce a detailed plan that depends on unknowns
-- Do perform a clearly labeled, low-risk discovery step only if it does not commit you to a direction (e.g., inspect repo structure, read relevant config files)
 
-If the user explicitly asks you to proceed without answers:
-- State your assumptions as a short numbered list
-- Ask for confirmation; proceed only after they confirm or correct them
+- Never run commands, edit files, or produce a detailed plan that depends on unknowns.
+- Do perform clearly labeled, low-risk discovery reads that do not commit to a
+  direction (e.g., inspect repo structure, read relevant config files).
 
-### 4) Confirm interpretation, then proceed
+If the user explicitly says to proceed without answers (e.g., "just do it",
+"make reasonable assumptions"):
 
-Once you have answers, restate the requirements in 1-3 sentences (including key constraints and what success looks like), then start work.
+1. State assumptions as a short numbered list.
+2. Ask for a single confirmation ("Proceed with these? y/n").
+3. Proceed only after they confirm or correct them.
+
+### 5. Confirm interpretation, then proceed
+
+Once answers are in, restate requirements in 1–3 sentences — including key constraints
+and what success looks like — then start work.
 
 ## Question templates
 
-- "Before I start, I need: (1) ..., (2) ..., (3) .... If you don't care about (2), I will assume ...."
-- "Which of these should it be? A) ... B) ... C) ... (pick one)"
-- "What would you consider 'done'? For example: ..."
-- "Any constraints I must follow (versions, performance, style, deps)? If none, I will target the existing project defaults."
-- Use numbered questions with lettered options and a clear reply format
+```
+Before I start, I need: (1) ..., (2) ..., (3) ....
+If you don't care about (2), I will assume ....
+```
 
-```text
+```
+Which of these should it be?
+A) ... (default)
+B) ...
+C) Not sure — use default
+```
+
+```
+What counts as "done"? For example: ...
+```
+
+```
+Any constraints to follow (versions, performance, style, deps)?
+If none, I will target the existing project defaults.
+```
+
+Compact multi-question format:
+
+```
 1) Scope?
-a) Minimal change (default)
-b) Refactor while touching the area
-c) Not sure - use default
+   a) Minimal change (default)
+   b) Refactor while touching the area
+   c) Not sure — use default
 2) Compatibility target?
-a) Current project defaults (default)
-b) Also support older versions: <specify>
-c) Not sure - use default
+   a) Current project defaults (default)
+   b) Also support older versions: <specify>
+   c) Not sure — use default
 
-Reply with: defaults (or 1a 2a)
+Reply: defaults | 1a 2b | correct any option
 ```
 
 ## Anti-patterns
 
-- Don't ask questions you can answer with a quick, low-risk discovery read (e.g., configs, existing patterns, docs).
-- Don't ask open-ended questions if a tight multiple-choice or yes/no would eliminate ambiguity faster.
+- Never ask questions answerable by a low-risk discovery read (configs, existing
+  patterns, docs).
+- Never use open-ended questions when a tight multiple-choice or yes/no eliminates
+  ambiguity faster.
+- Never start a second clarification round after the user has already answered once.
+- Never ask for confirmation on trivially unambiguous tasks (e.g., "fix the typo on
+  line 42").

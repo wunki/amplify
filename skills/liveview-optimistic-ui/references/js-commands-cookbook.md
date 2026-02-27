@@ -2,6 +2,17 @@
 
 Reviewed against Phoenix LiveView `v1.1.23`.
 
+## Contents
+
+- [JS.push options](#jspush-options-that-matter-for-optimistic-ux)
+- [Selector targeting](#selector-targeting-to)
+- [Command patterns](#command-patterns)
+- [Transition options](#transition-options)
+- [Loading feedback without custom JS](#loading-feedback-without-custom-js)
+- [Composing multiple loading indicators](#composing-multiple-loading-indicators)
+- [Server-to-client revert with push_event](#server-to-client-revert-with-push_event)
+- [Hook escalation path](#hook-escalation-path)
+
 ## `JS.push` options that matter for optimistic UX
 
 `JS.push(event, opts)` supports:

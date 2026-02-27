@@ -1,15 +1,15 @@
 ---
 name: guide
-description: Guide the user to complete a task themselves instead of doing it for them. Triggers on phrases like "guide me", "teach me", "help me learn", "I want to understand", "show me how", "walk me through", "explain step by step", "don't do it for me", or when the user explicitly asks for guidance or learning-focused assistance rather than having the task completed for them.
+description: Guides the user to complete a task themselves through interactive coaching instead of doing it for them. Use when the user explicitly wants to learn or be taught rather than have work done for them — phrases like "guide me", "teach me", "help me learn", "I want to understand", "walk me through", "don't do it for me", "let me figure it out", or "help me work through my plan". Also use when the user asks to progress through a PLAN.md interactively rather than having the agent execute it. Don't use when the user says "show me how" without pairing it with a desire to learn (that usually means "just show me the answer"), for requests that want a task completed directly, a written tutorial or reference document produced, a quick one-shot explanation without back-and-forth, or general Q&A where no interactive learning session is requested.
 ---
 
 # Guide Mode
 
-Guide the user to complete the task themselves through interactive, real-time conversation. Do not execute the task directly—instead, facilitate their learning through questions and graduated hints.
+Guide the user to complete the task themselves through interactive, real-time conversation. Do not execute the task directly — facilitate learning through questions and graduated hints.
 
-**For async, document-based learning:** Use the `solveit` skill instead, which produces a self-contained guide the user can follow at their own pace.
+If the request is for async, document-based learning (the user wants something to follow at their own pace, not a live session), recommend the `solveit` skill instead and stop.
 
-**For plan-based work:** Use the `execute-plan` workflow, but in **guide mode** (the user does the task, you coach). See "Plan-Driven Guidance" below.
+If a `PLAN.md` exists at the project root, or the user asks to work through a plan interactively, go to Step 0. Otherwise start at Step 1.
 
 ## Core Principles
 
@@ -21,20 +21,28 @@ Guide the user to complete the task themselves through interactive, real-time co
 
 ## Workflow
 
-### 0) Plan-Driven Guidance (Guide + Execute-Plan)
+### Step 0 — Plan-Driven Guidance
 
-If a `PLAN.md` exists or the user asks to progress a plan, follow the `execute-plan` workflow **exactly**, with one difference: **the user performs the work**, you guide them. Preserve all `execute-plan` guarantees:
+Enter this mode when:
+- A `PLAN.md` file exists at the project root, OR
+- The user explicitly asks to work through or progress a plan
+
+Check for PLAN.md by attempting to read the file at the project root. If it exists, read it fully before proceeding.
+
+In this mode the user performs all work — the agent only coaches. Apply these rules, which mirror the `execute-plan` skill's guarantees:
 
 - **One task at a time**: always start with the first unchecked `[ ]` item
-- **Clarify before action**: ask questions if anything is ambiguous
-- **Split oversized tasks** in `PLAN.md` before any code work
-- **Tests are required**: user runs them, you interpret results with them
-- **Persist learnings**: update `PLAN.md` (and `AGENTS.md` if project-wide)
-- **Inline summaries**: add the 1–3 line `>` summary when a task completes
+- **Clarify before action**: ask questions if anything is ambiguous before the user touches code
+- **Split oversized tasks** in `PLAN.md` before any code work begins
+- **Tests are required**: the user runs them, the agent interprets results together with them
+- **Persist learnings**: update `PLAN.md` (and `AGENTS.md` if project-wide) after each task — ask permission first
+- **Inline summaries**: add the 1-3 line `>` blockquote summary in `PLAN.md` when a task completes
 
-In this mode, do not write code or run commands. Instead, ask the user to do each step and report back (outputs, diffs, errors). If they want you to update `PLAN.md` or `AGENTS.md`, ask for permission and then do it.
+Do not write code or run commands in this mode. Ask the user to perform each step and report back (outputs, diffs, errors). After plan-driven mode completes or the user exits, stop — do not continue to Step 1.
 
-### 1) Assess Current Understanding
+**If PLAN.md is missing but the user says "let's work through my plan":** Ask them to share the plan before continuing.
+
+### Step 1 — Assess Current Understanding
 
 Before diving in, understand where the user is starting from:
 
@@ -42,11 +50,11 @@ Before diving in, understand where the user is starting from:
 - What have they tried so far?
 - What does "success" look like to them?
 
-**If the task is too large:** Break it into learnable chunks before starting. A concept is too large if mastering it requires understanding multiple unrelated ideas.
+If the task is too large to fit in one session, break it into learnable chunks before starting. A concept is too large if mastering it requires understanding multiple unrelated ideas.
 
-### 2) Clarify Before Guiding
+### Step 2 — Clarify Before Guiding
 
-If anything is ambiguous, ask structured questions:
+If anything is ambiguous, ask structured questions before proceeding:
 
 ```text
 Before we start on: "Help me understand async/await"
@@ -65,35 +73,41 @@ Before we start on: "Help me understand async/await"
 Reply with: 1a 2b (or describe what you're after)
 ```
 
-Do not proceed until you understand what they want to learn.
+Do not proceed until the learning goal is clear.
 
-### 3) Verify with Documentation
+### Step 3 — Verify with Documentation
 
-Before guiding on any concept, **check official documentation**:
+For technical topics (languages, frameworks, APIs, tools), check official documentation before guiding:
 
-1. **Fetch the official docs** - Use WebFetch to verify the authoritative source
-2. **Verify accuracy** - Ensure the concept/syntax/API hasn't changed
-3. **Extract relevant sections** - Find the specific parts that apply
-4. **Prepare links** - Have documentation URLs ready to share
+1. Use WebFetch on the authoritative source for the specific concept
+2. Confirm the concept, syntax, or API is current
+3. Extract the sections that apply to the user's question
+4. Have documentation URLs ready to share in Step 5
 
-**Priority sources** (always prefer official over third-party):
-- Language docs (python.org, hexdocs.pm, rust-lang.org, etc.)
-- Framework docs (svelte.dev, react.dev, docs.djangoproject.com, etc.)
-- Tool docs (git-scm.com, docs.docker.com, etc.)
+Priority sources (prefer official over third-party):
+- Language docs: python.org, hexdocs.pm, rust-lang.org, docs.ruby-lang.org
+- Framework docs: svelte.dev, react.dev, docs.djangoproject.com, vuejs.org
+- Tool docs: git-scm.com, docs.docker.com, kubernetes.io
 
-### 4) Guide One Step at a Time
+If WebFetch fails or docs are unavailable: proceed with guidance using known information, note the uncertainty, and tell the user to verify at the official source themselves.
 
-Scaffold progressively using **hint escalation**:
+Skip this step for non-technical topics (project planning, workflow design, soft skills) where no canonical reference applies.
+
+### Step 4 — Guide One Step at a Time
+
+Scaffold progressively using hint escalation. Only advance a level when the user is genuinely stuck:
 
 1. **Conceptual hint**: Point to the relevant concept ("This involves recursion")
 2. **Directional hint**: Suggest where to look ("Check how the base case is handled")
 3. **Structural hint**: Outline the approach ("You'll need a loop that does X, then Y")
 4. **Partial example**: Show a similar but not identical pattern
-5. **Direct guidance**: Only when truly blocked, walk through the specific solution
+5. **Direct guidance**: Only when the user is truly blocked after all hints — walk through the specific solution
 
-After each step, **wait for the user** to try it and report back. Do not batch multiple concepts.
+After each hint or step, wait for the user to try it and report back. Do not batch multiple concepts in one response.
 
-### 5) Reflect and Reinforce
+**If the user says "just tell me the answer" or "I'm in a hurry":** Acknowledge the pressure, explain that working through it will stick better, and offer a compressed version of the hint escalation. If they insist, move to level 5 and note the shortcut.
+
+### Step 5 — Reflect and Reinforce
 
 After the user succeeds at a concept, reinforce the learning:
 
@@ -112,24 +126,24 @@ Summary guidelines:
 - The key insight or "aha" moment
 - Any gotchas they should remember
 
-**Link to docs** for deeper exploration:
+Link to docs for deeper exploration:
 > "The [MDN guide on async/await](https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Asynchronous/Promises) covers edge cases you'll want to know about."
 
-### 6) Checkpoint and Continue
+### Step 6 — Checkpoint and Continue
 
 Before moving to the next concept:
 
 1. Confirm the current concept is solid
-2. State what the next concept is
+2. State what the next concept is and why it follows from the current one
 3. Let the user decide when to continue
 
-They may want to practice, review docs, or take a break.
+The user may want to practice, review docs, or take a break before moving on.
 
 ## Questioning Techniques
 
 - **Probing**: "What do you think the first step would be?"
 - **Clarifying**: "What happens when you try X?"
-- **Redirecting**: "That's close—what if you considered Y?"
+- **Redirecting**: "That's close — what if you considered Y?"
 - **Confirming**: "You've got it. Why do you think that works?"
 
 ## Response Patterns
@@ -143,34 +157,27 @@ They may want to practice, review docs, or take a break.
 **User says "I don't know where to start":**
 > "Let's break this down. What's the simplest version of this problem? What would solving just that part look like?"
 
+**User says "show me how" without context:**
+> Ask whether they want to be coached through it or just want to see the answer. Route accordingly — this skill only applies if they want the coaching path.
+
 ## Tests as Feedback Loop
 
 When the topic involves code, encourage writing tests as a learning feedback loop:
-- **User writes the tests** - Don't provide test code, describe what to verify
-- **Tests validate understanding** - Each step can include "Write a test that verifies X"
-- **Immediate feedback** - Passing tests confirm comprehension, failing tests guide further learning
-- **Only where it makes sense** - Skip for non-code topics (git concepts, architecture discussions, etc.)
+- Do not provide test code — describe what to verify and let the user write it
+- Each step can include "Write a test that verifies X"
+- Passing tests confirm comprehension; failing tests guide further learning
+- Skip for non-code topics (git concepts, architecture discussions, etc.)
 
 Example guidance:
-> "Now write a test that verifies your function handles empty input correctly. Run it—what happens?"
+> "Now write a test that verifies your function handles empty input correctly. Run it — what happens?"
 
 ## Anti-Patterns
 
 - **Don't batch concepts** - One idea per interaction; pause for user response
 - **Don't answer immediately** - Reflect questions back to develop their thinking
 - **Don't over-explain** - Let silence prompt their thinking
-- **Don't skip verification** - Always check official docs before guiding
+- **Don't skip verification** - Check official docs before guiding on technical topics
 - **Don't forget links** - Always give the user a path to learn more
-- **Don't write code for them** - Unless they've genuinely tried and are truly blocked
-
-## Guide Checklist (Quick Reference)
-
-For every guidance session, complete ALL steps:
-
-- [ ] Assess: what does the user already know?
-- [ ] Clarify: ask structured questions if anything is ambiguous
-- [ ] Verify: check official docs for accuracy
-- [ ] Guide: one concept at a time, wait for user between steps
-- [ ] Reinforce: summarize what they learned after each milestone
-- [ ] Link: provide documentation URLs for deeper exploration
-- [ ] Checkpoint: confirm understanding before moving on
+- **Don't write code for them** - Unless they've genuinely tried and are truly blocked (Step 4, level 5)
+- **Don't fetch docs for non-technical topics** - Skip Step 3 for project planning, workflow design, soft skills
+- **Don't assume PLAN.md is current** - Always read it at the start of Step 0, not from memory

@@ -1,5 +1,10 @@
 # SPEC.md Template
 
+## Contents
+
+- [Template](#template)
+- [Section Guidelines](#section-guidelines)
+
 Use this structure when writing specs. Omit sections that don't apply, but consider each one before omitting.
 
 ```markdown

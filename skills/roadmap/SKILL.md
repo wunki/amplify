@@ -1,33 +1,45 @@
 ---
 name: roadmap
-description: Create a ROADMAP.md document for open source projects. Analyzes the codebase, defines vision and milestones, organizes work into short/medium/long term goals. Follows open source conventions. Triggers on "create a roadmap", "generate roadmap", "write a ROADMAP.md", "project roadmap", or when a user needs to communicate project direction to contributors.
+description: Creates or updates a ROADMAP.md file for a software project by analyzing
+  the codebase and defining vision, milestones, and a timeline. Use when the user
+  asks to create, generate, write, update, or revise a project roadmap, or wants to
+  communicate project direction and priorities to contributors or stakeholders. Don't
+  use for updating a single section of an existing roadmap in isolation without touching
+  the rest, creating sprint plans or Jira boards, writing a product requirements document,
+  or generating architecture or design docs.
 ---
 
 # Roadmap
 
-Create a **ROADMAP.md** document—a public-facing plan that communicates project vision, current status, and future direction.
+Create or update a **ROADMAP.md** document — a plan that communicates project vision, current status, and future direction.
 
 ## Process
 
 ### 1) Discover
 
 Analyze the project before asking questions:
-- Read README, docs, code structure
-- Check issue tracker, existing TODOs, CHANGELOG
-- Identify what's built vs what's incomplete
+- Read README.md, docs/, CHANGELOG.md, and any existing ROADMAP.md
+- Scan the code structure for what is built vs incomplete (open TODOs, stub files, empty directories)
+- Check for an issue tracker link in README or package metadata; if found, note open issues as candidate roadmap items
+- If no README or code exists yet, skip to Clarify immediately with no pre-filled answers
 
-### 2) Clarify
+### 2) Check for existing ROADMAP.md
 
-After discovery, ask focused questions to fill gaps. Keep it to 3-5 questions max.
+- If `ROADMAP.md` already exists: read it, then ask the user whether to **update in place** or **replace entirely**. Default to updating in place unless told otherwise.
+- If it does not exist: proceed to Clarify.
 
-```text
+### 3) Clarify
+
+After discovery, ask only the questions that cannot be confidently inferred. Keep it to 3-5 questions max. Pre-fill answers from discovery and let the user confirm or override. If discovery yielded nothing, present all questions without pre-fills.
+
+```
 1) Vision: Where is this project heading?
-   a) [Inferred from README: "..."]
-   b) Different vision: <describe>
+   a) [Insert inferred vision from README, or "unclear — please describe"]
+   b) Something different — describe it
 
 2) Audience: Who is this roadmap for?
-   a) Just me (personal tracking)
-   b) Contributors (open source)
+   a) Personal tracking only
+   b) Open source contributors
    c) Both
 
 3) Timeframe: How far out to plan?
@@ -36,22 +48,36 @@ After discovery, ask focused questions to fill gaps. Keep it to 3-5 questions ma
    c) 1 year
    d) No specific timeline
 
-4) Priorities: What's most important right now?
-   a) [List 2-3 inferred priorities from codebase]
-   b) Different priorities: <describe>
+4) Priorities: What matters most right now?
+   a) [Insert 2-3 inferred priorities from codebase, or "unclear — please describe"]
+   b) Different priorities — describe them
 
-Reply with: 1a 2b 3b 4a (or describe)
+Reply with letter codes (e.g. 1a 2b 3b 4a) or describe inline.
 ```
 
-Skip questions where the answer is obvious from discovery.
+Skip any question where the answer is obvious from discovery. If the user's replies are terse or ambiguous, make reasonable inferences and state them clearly in the draft.
 
-### 3) Draft
+### 4) Draft
 
-Generate ROADMAP.md using the template below. Present to user before writing to disk.
+Generate ROADMAP.md using the template in the Template section below, adjusted for audience:
+- Personal tracking (audience 2a): omit the "How to Contribute" section
+- Open source or both (audience 2b or 2c): include all sections
 
-### 4) Finalize
+If updating in place (existing ROADMAP.md, user chose to update):
+- Preserve the existing structure and completed items
+- Update the Timeline sections to reflect current state: move finished items to Completed, add new items from the user's priorities
+- Do not wipe custom sections the user has added outside the template structure
 
-Incorporate feedback, then write `ROADMAP.md` to project root.
+Present the full draft inline. Do not write to disk yet. Ask: "Does this look right? I'll write it to disk once you confirm."
+
+### 5) Finalize
+
+After explicit user confirmation (any affirmative reply counts), write `ROADMAP.md` to the repository root.
+
+- If the repository root is ambiguous (monorepo, multiple package directories, or no git context detected): ask the user to specify the target path before writing.
+- A monorepo is likely if the directory contains multiple subdirectories each with their own package.json, go.mod, Cargo.toml, or similar manifest files.
+- If replacing entirely: overwrite the file.
+- If updating in place: apply the merged draft produced in Step 4; do not discard sections that were present in the original but absent from the template.
 
 ## Template
 
@@ -62,15 +88,15 @@ Incorporate feedback, then write `ROADMAP.md` to project root.
 
 ## Current Status
 
-What's working today.
+What is working today.
 
 ## Vision
 
-Where this project is heading. The "why" that gets people excited.
+Where this project is heading and why it matters.
 
 ## How to Contribute
 
-Point to areas where help is welcome. Link to CONTRIBUTING.md if it exists.
+Areas where help is welcome. Link to CONTRIBUTING.md if it exists.
 
 ## Timeline
 
@@ -102,8 +128,8 @@ What this project intentionally does not do.
 
 ## Guidelines
 
-- Write for the intended audience (personal vs contributors)
-- Be specific about what help is needed
-- Keep milestones concrete and achievable
-- Use checkboxes for trackable items, plain text for vision items
-- Link to issues/discussions where relevant
+- Write for the intended audience — contributors need context; personal notes can be terse
+- Be specific about what help is wanted; vague asks attract no one
+- Keep milestones concrete and achievable; avoid "improve performance" without a measurable target
+- Use checkboxes for trackable tasks, plain text for long-horizon vision items
+- Link to issues or discussions where the detail lives

@@ -1,18 +1,18 @@
 ---
 name: interview
-description: Deep, exhaustive requirements gathering for features. Reads existing SPEC.md, interviews about technical implementation, UI/UX, edge cases, tradeoffs, concerns. Continues until complete, then hands off to create-spec or create-plan. Triggers on "interview me", "fill out the spec", "spec this out", "deep dive on requirements", "help me think through this".
+description: Conducts exhaustive requirements-gathering interviews for software features or systems. Reads existing context, then asks structured numbered questions covering purpose, technical design, UI/UX, edge cases, security, and rollout. Use when the user says "interview me", "deep dive on requirements", "spec this out", "fill out the spec", "help me think through this feature", or when a feature needs thorough requirements elicited before a spec or plan can be written. Don't use for quick clarifying questions during an in-progress task (use ask-questions-if-underspecified instead), for writing or updating a SPEC.md document (use create-spec instead), for generating a task plan (use create-plan instead), or for general architectural discussions that don't need structured requirements output.
 ---
 
 # Interview
 
-Exhaustive requirements elicitation through deep questioning. This skill focuses on *gathering* requirements thoroughly. For writing specs, it uses the `create-spec` skill.
+Exhaustive requirements elicitation through deep, structured questioning. This skill gathers requirements; it does not write specs or plans.
 
 ## When to Use
 
-- User explicitly asks to be interviewed
-- Starting a complex feature that needs thorough thinking
+- User explicitly asks to be interviewed about a feature
+- Starting a complex feature that needs thorough thinking before any code is written
 - Existing SPEC.md has gaps that need filling
-- Any task requiring deep requirements extraction before action
+- Any task where requirements must be extracted before action
 
 ## Workflow
 
@@ -20,16 +20,17 @@ Exhaustive requirements elicitation through deep questioning. This skill focuses
 
 Before asking anything:
 
-1. Check if `SPEC.md` exists in project root
-2. If yes, read it to understand what's already documented
-3. Check for related docs (`README.md`, `docs/`, existing code)
-4. Note what's already answered vs. what's missing
+1. Check if `SPEC.md` exists in the project root (cwd). If yes, read it.
+2. Check for `README.md`, any files in `docs/`, and any existing code files directly related to the feature being discussed.
+3. Note what is already documented vs. what is missing or ambiguous.
 
-Do not ask questions you can answer from existing context.
+Do not ask questions you can already answer from existing context.
+
+If no existing context is found (greenfield project), skip directly to Step 2 and open with purpose and scope questions.
 
 ### 2) Interview Deeply
 
-Cover these areas, but **only ask non-obvious questions** - things you can't discover from reading the codebase:
+Cover all areas below. Ask only non-obvious questions — things that cannot be discovered by reading the codebase.
 
 | Area | What to explore |
 |------|-----------------|
@@ -39,46 +40,57 @@ Cover these areas, but **only ask non-obvious questions** - things you can't dis
 | **Edge cases** | What could go wrong? Invalid inputs, race conditions, failure modes |
 | **Tradeoffs** | What are we optimizing for? What are we willing to sacrifice? |
 | **Security/Privacy** | Data sensitivity, auth requirements, audit needs |
-| **Testing** | How do we verify it works? What's critical to test? |
+| **Testing** | How do we verify it works? What is critical to test? |
 | **Rollout** | Feature flags? Migration? Backwards compatibility? |
 
-**Question style**: Follow the patterns in the `ask-questions-if-underspecified` skill:
-- Numbered questions with lettered options when possible
-- Suggest reasonable defaults (mark clearly)
-- Include "Not sure - use default" option
+**Prioritization:** Always lead with Purpose questions. Then Technical. Adjust order based on what existing context already covers — skip areas the codebase has answered. Security/Privacy and Edge cases are never skippable; surface them even if the user seems impatient.
+
+**Question format:**
+- Number each question; use lettered options when choices exist
+- Suggest a reasonable default and mark it clearly (e.g., "recommended")
+- Include "Not sure — use default" as the last option on choice questions
 - Allow compact responses like `1a 2b 3c`
-- Keep questions scannable, not paragraphs
+- Keep each question to one or two lines — no paragraphs
 
-**Pacing**: 
-- Start with 3-5 questions covering the biggest unknowns
-- After answers, ask follow-up questions that dig deeper
-- Continue until you have enough for the task at hand
+**Pacing:**
+- Start with 3–5 questions covering Purpose and the biggest Technical unknowns
+- After each response, acknowledge what was received, then ask targeted follow-ups
+- If a user skips a numbered question in their reply, treat it as "Not sure — use default" and note the assumed default before moving on
+- Continue until all eight areas have sufficient coverage
 
-**Challenge the premise**: If something seems like the wrong approach, say so early. Better to redirect now than proceed with something that shouldn't be built.
+**Terse or "I don't know" answers:** If the user gives a non-answer on a critical area (security, edge cases, rollout), note the gap explicitly, propose a safe default, confirm the user accepts it, and move on. Do not loop on the same question.
 
-### 3) Hand Off to Output
+**Challenge the premise:** If the approach described seems wrong, say so early and explain why. Redirect before requirements harden.
 
-When interviewing is complete:
+### 3) Determine Completion
 
-- **For specs**: Use the `create-spec` skill to write SPEC.md
-- **For plans**: Hand off to `create-plan` agent
-- **For other tasks**: Summarize findings and proceed with the task
+The interview is complete when BOTH of the following are true:
+- Each of the eight areas has either an answered question or an agreed-upon default or accepted risk
+- The user confirms nothing critical is missing (Step 4)
 
-The interview skill gathers; other skills/agents structure and write.
+Do not continue interviewing indefinitely. When coverage is sufficient across all areas, proceed to Step 4.
 
 ### 4) Confirm Understanding
 
-Before handing off:
-1. Summarize what you learned
-2. Ask if anything is missing or wrong
-3. Iterate if needed
+1. Write a brief summary (bullet points) of what was learned in each area.
+2. Ask: "Does this capture everything, or is there anything missing or wrong?"
+3. Iterate on the summary if the user corrects anything.
+
+### 5) Hand Off
+
+After confirmation, determine the next action based on what the user has asked for. If not stated, ask: "What's next — write the spec, build the plan, or jump straight to implementation?"
+
+- User asked for a spec, or SPEC.md exists and needs updating → invoke the `create-spec` skill
+- User asked for a task plan or implementation steps → invoke the `create-plan` skill
+- User asked to proceed directly with implementation → summarize the agreed requirements as a short context block, then proceed
+- User ends the conversation without a clear next step → output the requirements summary and note which skill to invoke when ready
 
 ## Anti-patterns
 
-- **Don't ask obvious questions**: If you can read it from the code, don't ask
-- **Don't ask everything at once**: Start broad, then dive deep based on answers
-- **Don't skip areas**: Even if user seems impatient, cover security/edge cases
-- **Don't interview forever**: Know when you have enough for the task
+- **Don't ask obvious questions**: If the codebase already answers it, don't ask
+- **Don't front-load everything**: Start broad, drill down based on answers
+- **Don't skip security or edge cases**: Even if the user seems impatient, surface them — note defaults if needed
+- **Don't interview forever**: Eight areas with coverage is done; summarize and hand off
 
 ## Example Interview Flow
 

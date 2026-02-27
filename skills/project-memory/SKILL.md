@@ -1,65 +1,52 @@
 ---
 name: project-memory
-description: Maintain durable, project-specific memory in `MEMORY.md` at the repository root. Load it at session start and before major work, then append concise lessons when users ask to remember preferences, conventions, and mistakes.
+description: Reads, writes, and applies durable project-specific memory stored in
+  MEMORY.md at the repository root. Use when the user says "remember this", "save
+  this to memory", "add to memory", "don't do this again", "project-memory", or
+  "scratchpad", or when starting a session in a project that has a MEMORY.md file,
+  or after correcting a recurring mistake. Don't use for one-off notes, temporary
+  task context, saving to a different file, storing credentials, updating documentation
+  files, or general note-taking unrelated to a specific code project.
 ---
 
 # Project Memory
 
 Store and apply project-specific memory from `MEMORY.md` in the repository root.
 
-## What this skill does
-
-- Loads persistent project memory from `MEMORY.md`.
-- Captures new lessons when the user asks to remember something.
-- Applies past lessons before substantial work.
-
-## When to use
-
-- At session start, if `MEMORY.md` exists.
-- Before major implementation work.
-- When the user says things like:
-  - "remember this"
-  - "save this to memory"
-  - "add to memory"
-  - "don't do this again"
-  - "project-memory"
-  - "scratchpad" (legacy phrasing)
-- After any mistake worth preventing next time.
-
 ## Initial session behavior
 
-At session start:
+At the start of a session in a project directory:
 
-1. Check for `MEMORY.md` at the project root.
-2. If it exists, read it.
-3. Acknowledge loaded memory with a short summary:
-   - "Loaded project memory: [key points]"
-4. Explicitly state how it affects this session.
+1. Check for `MEMORY.md` at the repository root (the directory containing `.git`).
+2. If it exists, read it and acknowledge with a short summary: "Loaded project memory: [key points]"
+3. State explicitly how the loaded memory affects this session.
+4. If `MEMORY.md` does not exist, continue without comment.
 
 ## Capturing new memory
 
-When the user asks to save memory or corrects your behavior:
+When the user asks to save memory or corrects recurring behavior:
 
-1. Decide if the information should persist:
-   - Repeated mistakes
-   - User workflow preferences
-   - Project conventions
-   - Important context likely to matter later
-2. If `MEMORY.md` does not exist, create it with the format below.
-3. Append a concise entry under the relevant category.
-4. Confirm save:
-   - "Saved to project memory: [what was saved]"
+1. Determine whether the information is worth persisting:
+   - Yes: repeated mistakes, workflow preferences, project conventions, architectural decisions, environment-specific notes
+   - No: one-off task details, temporary context, information already in code comments or docs
+2. If `MEMORY.md` does not exist, create it using the format in the "Memory file format" section below.
+3. Choose the most appropriate category:
+   - **User Preferences** — how the user wants the agent to behave (style, workflow, tone)
+   - **Project Conventions** — code patterns, naming rules, tooling choices specific to this project
+   - **Past Mistakes** — errors that happened and should not repeat
+   - **Environment Notes** — local setup, external services, infrastructure specifics
+   - If none fit, create a new category heading that accurately describes the content.
+4. Append the entry under the chosen category using the entry format below.
+5. Confirm: "Saved to project memory: [what was saved]"
 
 ## Memory file format
-
-Use this structure in `MEMORY.md`:
 
 ```markdown
 # Project Memory
 
 ## User Preferences
 ### [YYYY-MM-DD] Short title
-Context: What happened
+Context: What triggered this entry
 Memory: What to remember
 Action: How to behave next time
 
@@ -84,22 +71,25 @@ Action: ...
 
 ## Applying memory
 
-Before starting substantial work:
+Before starting substantial work in a session where `MEMORY.md` has been loaded:
 
-1. Scan relevant entries in `MEMORY.md`.
-2. Call out relevant lessons before acting.
-3. Use lessons to guide decisions.
-4. If memory conflicts with the current request, ask for clarification.
+1. Scan all entries relevant to the current task.
+2. Call out applicable lessons before acting, e.g. "Memory note: [lesson] — applying by [behavior]."
+3. Let the lessons guide decisions throughout the task.
+4. If a memory entry conflicts with the current user request, surface the conflict and ask for clarification before proceeding.
+5. If two memory entries conflict with each other, flag both and ask the user which takes precedence.
 
-## Best practices
+## Pruning memory
 
-- Keep memory concise and scannable.
-- Record durable behavior, not long transcripts.
-- Prefer concrete rules over vague advice.
-- Prune outdated entries occasionally.
-- Never store secrets, tokens, credentials, or personal data.
+When the user asks to prune or clean up memory, or when an entry is clearly obsolete:
 
-## Relationship to normal context
+1. Identify entries that no longer apply (superseded decisions, resolved issues, outdated environment notes).
+2. Confirm with the user before deleting any entry: "Removing: [entry title] — reason: [why it's obsolete]. OK?"
+3. Delete only after explicit user confirmation.
 
-`MEMORY.md` is for persistent, cross-session project memory.
-Use normal conversation context for temporary task details.
+## Constraints
+
+- Never store secrets, tokens, credentials, API keys, or personal data in `MEMORY.md`.
+- Keep entries concise and actionable — record durable behavior rules, not long transcripts.
+- Prefer concrete, specific rules over vague advice.
+- `MEMORY.md` is always at the repository root. In a monorepo, use the root of the specific sub-project being worked on, not the monorepo root, unless the memory applies repo-wide.
