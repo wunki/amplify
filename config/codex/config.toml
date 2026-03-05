@@ -64,8 +64,18 @@ trust_level = "trusted"
 [projects."/Users/petar/Code/tech-radar"]
 trust_level = "trusted"
 
+[projects."/Users/petar/Code/breakthroughs"]
+trust_level = "trusted"
+
+[projects."/Users/petar/.agents/skills"]
+trust_level = "trusted"
+
 [mcp_servers.linear]
 url = "https://mcp.linear.app/mcp"
+
+[mcp_servers.granola]
+enabled = true
+url = "https://mcp.granola.ai/mcp"
 
 [tui]
 theme = "dark-neon"

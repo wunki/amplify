@@ -1,6 +1,5 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "theme": "finde",
   "autoupdate": true,
   "experimental": {
     "disable_paste_summary": true
