@@ -1,6 +1,16 @@
 ---
 name: frontend-taste
-description: Generates high-end, production-quality React and Next.js UI components and full pages using Tailwind CSS, Framer Motion, and premium design principles. Use when the user wants to build, design, or refactor frontend UI where visual quality matters: hero sections, SaaS dashboards, pricing pages, bento grids, navigation, forms, cards, landing pages, or interactive components with animations. Don't use for backend logic, API routes, database schemas, server-side data processing, non-React frameworks (Vue, Svelte, Angular, Astro), plain HTML/CSS without a component framework, reviewing or auditing existing UI without producing new code, accessibility-only audits, or performance profiling unrelated to UI rendering.
+description: >-
+  Generates high-end, production-quality React and Next.js UI components and
+  full pages using Tailwind CSS, Framer Motion, and premium design principles.
+  Use when the user wants to build, design, or refactor frontend UI where
+  visual quality matters: hero sections, SaaS dashboards, pricing pages, bento
+  grids, navigation, forms, cards, landing pages, or interactive components
+  with animations. Don't use for backend logic, API routes, database schemas,
+  server-side data processing, non-React frameworks (Vue, Svelte, Angular,
+  Astro), plain HTML/CSS without a component framework, reviewing or auditing
+  existing UI without producing new code, accessibility-only audits, or
+  performance profiling unrelated to UI rendering.
 ---
 
 # High-Agency Frontend Skill

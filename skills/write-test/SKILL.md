@@ -1,6 +1,14 @@
 ---
 name: write-test
-description: Guides coverage-driven test writing for existing codebases: discovers untested user-facing behavior via coverage reports, writes one meaningful test per iteration, and marks low-value code with ignore annotations. Use when asked to "write tests", "add test coverage", "increase coverage", "test this feature", or when a coverage report shows gaps in a working codebase. Don't use for setting up a test framework from scratch, writing e2e or integration test suites, explaining testing theory, or reviewing existing tests without writing new ones.
+description: >-
+  Guides coverage-driven test writing for existing codebases: discovers
+  untested user-facing behavior via coverage reports, writes one meaningful
+  test per iteration, and marks low-value code with ignore annotations. Use
+  when asked to "write tests", "add test coverage", "increase coverage", "test
+  this feature", or when a coverage report shows gaps in a working codebase.
+  Don't use for setting up a test framework from scratch, writing e2e or
+  integration test suites, explaining testing theory, or reviewing existing
+  tests without writing new ones.
 ---
 
 # Write Test

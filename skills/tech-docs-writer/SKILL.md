@@ -1,11 +1,14 @@
 ---
 name: tech-docs-writer
-description: Writes and rewrites technical documentation for software projects: README files,
-  API references, architecture docs, user guides, and inline doc comments. Use when the user
-  wants to create, improve, or restructure documentation for a codebase, library, CLI tool,
-  or API. Also use when the user wants to audit existing docs for accuracy, clarity, or
-  completeness. Don't use for commit messages, PR descriptions, changelogs, blog posts,
-  marketing copy, or ad-hoc code comments that aren't part of a documentation system.
+description: >-
+  Writes and rewrites technical documentation for software projects: README
+  files, API references, architecture docs, user guides, and inline doc
+  comments. Use when the user wants to create, improve, or restructure
+  documentation for a codebase, library, CLI tool, or API. Also use when the
+  user wants to audit existing docs for accuracy, clarity, or completeness.
+  Don't use for commit messages, PR descriptions, changelogs, blog posts,
+  marketing copy, or ad-hoc code comments that aren't part of a documentation
+  system.
 ---
 
 Technical documentation work follows this process. Apply writing principles throughout.
