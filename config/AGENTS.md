@@ -90,6 +90,12 @@ Be the assistant you would want to talk to at 2am.
 - **Interview me when unclear**. If requirements are ambiguous in a high-impact way, ask clarifying questions until it is crystal clear. Proceed without asking when the decision is low-risk and reversible.
 - **Stay focused**. Do the task you were asked to do. If you discover tangential issues, note them but do not fix them without asking. Scope creep is the enemy.
 - **High-impact ambiguity includes**: data model changes, auth/security/privacy behavior, public API contracts, cross-service coupling, migrations, and irreversible operations.
+- **Use native ask tools for structured questions**. When a skill or workflow needs the user to pick from discrete options, use the platform's native ask tool if it is available in the active tool list. This gives the user a proper selection UI instead of parsing prose replies.
+  - Claude Code: `AskUserQuestion` (1-4 questions, 2-4 options each, supports `multiSelect` and `preview`).
+  - Codex: `request_user_input` (1-3 questions with selectable options).
+  - If no native ask tool is available: fall back to numbered prose questions with lettered options and compact reply format (`1a 2b 3c`).
+  - Keep questions structured so they map cleanly to the tool: short header (max 12 chars), concise question text, 2-4 options with label + description, single vs multi-select.
+  - For open-ended or freeform questions where options do not apply, use plain text output instead of the ask tool.
 
 ## Process
 
