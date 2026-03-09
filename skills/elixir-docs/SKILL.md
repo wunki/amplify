@@ -1,23 +1,25 @@
 ---
 name: elixir-docs
 description: >-
-  Document Elixir modules to a strict 6-question standard using the tech-docs-writer agent.
-  Writes @moduledoc, @doc, and @typedoc annotations answering Role in flow, Owns what,
-  Reads/Writes, Failure behavior, Observability, and Non-goals. Uses ExDoc conventions
-  (cross-references, admonitions, doctests, summary lines). Parallelizes across modules.
+  Writes production-quality @moduledoc, @doc, and @typedoc annotations for Elixir modules.
+  Scales doc shape to module complexity: one-line docs for simple wrappers, multi-section
+  guides with examples for core concepts. Applies ExDoc conventions including cross-references,
+  admonitions, doctests, tables, options lists, and return contracts.
   Use when asked to "document modules", "add moduledocs", "write elixir docs", "doc standard",
-  or when Elixir modules need consistent, engineer-facing documentation.
-  Don't use for README files, user guides, API docs, or non-Elixir projects.
+  "add @doc", "improve documentation", or when Elixir modules have thin, missing, or
+  inconsistent documentation.
+  Don't use for README files, user-facing guides, ExDoc configuration, hex.pm publishing,
+  mix docs generation, non-Elixir projects, or LiveBook notebooks.
 ---
 
 # Elixir Module Documentation
 
-Write `@moduledoc`, `@doc`, and `@typedoc` annotations for Elixir modules following a strict 6-question standard and ExDoc conventions. Delegate to the `tech-docs-writer` agent for the actual writing.
+Write `@moduledoc`, `@doc`, and `@typedoc` annotations for Elixir modules. Doc shape follows module shape: scale documentation length and structure to match the module's complexity and public surface area. Delegate to the `tech-docs-writer` agent for the actual writing.
 
 ## When to Use
 
-- User asks to document one or more Elixir modules
-- User wants consistent doc quality across a namespace
+- Documenting one or more Elixir modules
+- Bringing consistent doc quality across a namespace
 - Modules have thin or missing `@moduledoc`
 
 ## Workflow
@@ -26,116 +28,108 @@ Write `@moduledoc`, `@doc`, and `@typedoc` annotations for Elixir modules follow
 
 Determine which modules need documentation.
 
-- If the user names specific modules, use those.
-- If the user says "all modules in X", scan the directory:
+- Named modules → use those directly.
+- "All modules in X" → scan the directory. For umbrella apps, check `apps/*/lib/` instead of `lib/`:
 
 ```bash
 find lib/path/to/namespace -name '*.ex' | sort
 ```
 
-Audit current doc quality to find gaps:
+Audit current doc quality. Check for missing `@moduledoc`, misuse of `@moduledoc false`, or thin/outdated docs:
 
 ```bash
+# Find modules with no @moduledoc at all
 while IFS= read -r -d '' f; do
-  missing=0
-  grep -q 'Role in flow' "$f" || missing=1
-  grep -q 'Owns what' "$f" || missing=1
-  grep -q 'Reads / Writes' "$f" || missing=1
-  grep -q 'Failure behavior' "$f" || missing=1
-  grep -q 'Observability' "$f" || missing=1
-  grep -q 'Non-goals' "$f" || missing=1
-  [ "$missing" -eq 1 ] && echo "NEEDS DOCS: $f"
+  grep -q '@moduledoc' "$f" || echo "NO MODULEDOC: $f"
 done < <(find lib/path -name '*.ex' -print0)
+
+# Find modules with @moduledoc false that might deserve docs
+grep -rl '@moduledoc false' lib/path/to/namespace/
 ```
 
-If you already have a known target list, validate only those files to avoid noise from unrelated modules.
+Categorize each module before writing. Respect the project's existing conventions for what gets documented. If the project already uses `@moduledoc false` consistently, follow that boundary. Otherwise, use these defaults:
 
-```bash
-# one file path per line
-while IFS= read -r f; do
-  missing=0
-  grep -q 'Role in flow' "$f" || missing=1
-  grep -q 'Owns what' "$f" || missing=1
-  grep -q 'Reads / Writes' "$f" || missing=1
-  grep -q 'Failure behavior' "$f" || missing=1
-  grep -q 'Observability' "$f" || missing=1
-  grep -q 'Non-goals' "$f" || missing=1
-  [ "$missing" -eq 1 ] && echo "NEEDS DOCS: $f"
-done < targets.txt
-```
+- **Public API** — modules developers intentionally navigate to. Full docs.
+- **Internal plumbing** — query modules, helpers, framework callbacks, `*HTML` view modules. Use `@moduledoc false`.
+- **Web layer** — apply the same complexity-scaling rule. Plugs with non-trivial logic, controllers with multi-step flows or significant API surface get brief docs. Boilerplate controllers, view modules, and single-action delegates stay undocumented.
+- **Already well-documented** — skip unless a refresh is requested.
 
-### 2. Group for Parallelism
+### 2. Read the Codebase
+
+Before writing any docs, understand the project:
+
+- Find well-documented modules by scanning for long `@moduledoc` blocks. Learn the project's voice and conventions from these.
+- Map the module hierarchy and call graph for the target namespace.
+- Note which modules emit telemetry, define behaviours, or have complex failure modes.
+- Check for existing guides in `docs/` that should be cross-referenced.
+
+Documentation that contradicts the codebase is worse than no documentation.
+
+### 3. Group for Parallelism
 
 Group modules by domain proximity (3-7 modules per agent). Modules that reference each other belong in the same group so the agent can read context.
 
 Good groupings:
 - Pipeline stages that share a Context struct
-- A parent module and its sub-modules
-- Tools that follow the same behaviour
+- A parent behaviour and its implementations
+- A core module and its supporting types/exceptions
+- Plugins that follow the same pattern
 
-### 3. Launch Doc Writers
+### 4. Launch Doc Writers
 
-For each group, launch a `tech-docs-writer` agent in the background when sub-agents are available. Include the full documentation standard in every prompt.
+Read `references/doc-standard.md` now. Skip if the standard is already loaded in context. If the file is missing or empty, use the ExDoc conventions and quality bar sections below as the fallback standard.
 
-If sub-agents/background execution are not available, process groups sequentially in the current session using the same prompt template and quality bar.
+For each group, launch a `tech-docs-writer` agent using the Agent tool (subagent_type: `tech-docs-writer`, run_in_background: true). Paste the full documentation standard into every agent prompt — the standard is designed to fit in a single prompt alongside the module source.
 
-Read `references/doc-standard.md` now. Paste the full standard into each agent prompt.
+If the Agent tool is not available or background execution is not supported, process groups sequentially in the current session using the same prompt template and quality bar.
 
-Template for agent prompts:
+Agent prompt template:
 
 ```
-Write documentation for these modules to match the project's documentation standard:
+Write documentation for these Elixir modules following the documentation
+standard below. Read each module fully before writing. For context, also
+read [list related modules the agent should understand].
+
+Modules to document:
 
 1. `path/to/module_a.ex` — one-line role description
 2. `path/to/module_b.ex` — one-line role description
 
-[PASTE FULL DOC STANDARD FROM references/doc-standard.md]
+IMPORTANT:
+- Do NOT change any code logic — only add or update documentation.
+- Scale doc length to module complexity. Do not force structure on simple modules.
+- Every public function needs at least one example.
+- Use the `* :name` — description format for options.
+- Use ExDoc cross-references, not plain backticks, for module/function refs.
 
-Read each module fully. For context, also read [related modules].
-Do NOT change any code logic — only documentation.
+[PASTE FULL DOC STANDARD FROM references/doc-standard.md]
 ```
 
-### 4. Verify
+### 5. Verify
 
 After all agents complete:
 
-1. Compile: `mix compile --warnings-as-errors`
-2. Run targeted tests for touched areas first (including doctests for changed modules where applicable), for example: `mix test test/my_app/billing/`
-3. Run full `mix test` only when requested, or when changes are broad enough that targeted scope is unclear.
-4. Spot-check strict structure (all 6 required sections):
+1. Compile: `mix compile --warnings-as-errors`. If this fails due to pre-existing warnings unrelated to documentation changes, fall back to `mix compile` without `--warnings-as-errors` and note the pre-existing warnings separately.
+2. Run targeted tests for touched areas (including doctests): `mix test test/my_app/billing/`. For umbrella apps, run from the appropriate app directory.
+3. Run full `mix test` only when requested or when scope is unclear.
+4. Spot-check documentation quality:
 
 ```bash
+# Find documented modules missing examples (checks ## Example headers and iex> doctests)
 while IFS= read -r -d '' f; do
-  missing=""
-  grep -q 'Role in flow' "$f" || missing="$missing Role in flow;"
-  grep -q 'Owns what' "$f" || missing="$missing Owns what;"
-  grep -q 'Reads / Writes' "$f" || missing="$missing Reads / Writes;"
-  grep -q 'Failure behavior' "$f" || missing="$missing Failure behavior;"
-  grep -q 'Observability' "$f" || missing="$missing Observability;"
-  grep -q 'Non-goals' "$f" || missing="$missing Non-goals;"
-  [ -n "$missing" ] && echo "MISSING: $f ->$missing"
+  has_moduledoc=$(grep -c '@moduledoc' "$f")
+  has_doc_false=$(grep -c '@moduledoc false' "$f")
+  has_example=$(grep -cE '(## Example|iex>)' "$f")
+  if [ "$has_moduledoc" -gt 0 ] && [ "$has_doc_false" -eq 0 ] && [ "$has_example" -eq 0 ]; then
+    echo "NO EXAMPLES: $f"
+  fi
 done < <(find lib/path -name '*.ex' -print0)
 ```
 
-If checking only target files:
+5. Verify cross-references use `Module.function/arity` syntax, not plain backtick text.
+6. Verify doc length matches module complexity. One-line modules get one-line docs. Core concepts get comprehensive guides.
 
-```bash
-# one file path per line
-while IFS= read -r f; do
-  missing=""
-  grep -q 'Role in flow' "$f" || missing="$missing Role in flow;"
-  grep -q 'Owns what' "$f" || missing="$missing Owns what;"
-  grep -q 'Reads / Writes' "$f" || missing="$missing Reads / Writes;"
-  grep -q 'Failure behavior' "$f" || missing="$missing Failure behavior;"
-  grep -q 'Observability' "$f" || missing="$missing Observability;"
-  grep -q 'Non-goals' "$f" || missing="$missing Non-goals;"
-  [ -n "$missing" ] && echo "MISSING: $f ->$missing"
-done < targets.txt
-```
-
-5. Spot-check ExDoc features: verify cross-references use `Module.function/arity` syntax, not plain backtick text.
-
-If any module is missing sections, resume the relevant agent or launch a new one.
+If modules still have quality gaps after one round of fixes, flag them to the user rather than retrying indefinitely.
 
 ## ExDoc Conventions
 
@@ -145,36 +139,40 @@ Elixir documentation lives in BEAM files and is consumed three ways:
 2. **IEx shell** — `h Module` or `h Module.function` prints plain text
 3. **Editor tooltips** — LSP shows `@doc` on hover
 
-Write docs that work well in all three. The doc standard in `references/doc-standard.md` covers the specific ExDoc features to use:
+Write docs that work well in all three. Read `references/doc-standard.md` for the full set of ExDoc features. Skip if already loaded.
+
+Summary of key features:
 
 - **Summary line** — first paragraph stands alone in module listings and search
 - **Cross-references** — `Pipeline.run/2`, `t:Context.t/0`, `c:GenServer.init/1` auto-link in hexdocs
-- **Admonitions** — `> #### Warning {: .warning}` for callouts (use sparingly)
+- **Admonitions** — `> #### Warning {: .warning}` for callouts, gotchas, and audience scoping
+- **Tables** — for structured reference data like telemetry events, options, error codes
 - **Doctests** — `iex>` examples in `@doc` run as ExUnit tests; use for pure functions only
-- **Metadata** — `@doc since:`, `@doc deprecated:` rendered by ExDoc
+- **Metadata** — `@moduledoc since:`, `@doc since:`, `@doc deprecated:` rendered by ExDoc
 
 ## Quality Bar
 
-**Audience:** An engineer who joined the team this week. They know Elixir but not this codebase.
+**Audience:** An engineer who joined the team this week. Knows Elixir but not this codebase.
 
-A first-time engineer opens any documented module and answers these in under 60 seconds, whether reading hexdocs, running `h Module` in IEx, or hovering in their editor:
+A first-time engineer opens any documented module and answers these in under 60 seconds:
 
 - What does this module do?
-- What inputs does it need?
-- What outputs does it guarantee?
-- How can it fail or degrade?
-- What telemetry or reason codes should I expect?
+- How do I use it?
+- What inputs does it need and what outputs does it guarantee?
+- How can it fail?
+- Can I call this function safely right now?
 
-**Friction log test:** After all agents complete, open 2-3 documented modules cold. Try to answer "Can I call this function safely?" using only the docs. If you need to read source code, send the module back for a rewrite.
+**Friction log test:** Open 2-3 documented modules cold. Answer "Can I call this function safely?" using only the docs. If source code is needed, send the module back for a rewrite.
 
-**Docs rot:** Remind agents that docs must be updated in the same change that modifies behavior. Stale docs actively mislead.
+**Docs rot:** Docs must be updated in the same change that modifies behavior. Stale docs actively mislead.
 
 ## Anti-patterns
 
-- Do not narrate implementation ("This function iterates over..."). State the contract.
-- Do not document private functions unless the logic is non-obvious.
-- Do not add `@doc` to trivial accessors or delegations.
-- Do not use filler phrases ("This module is responsible for..."). Lead with the verb.
-- Do not add doctests for functions with side effects or complex setup requirements.
-- Do not reference modules with plain backticks when ExDoc cross-reference syntax works.
-- Do not write explanatory narrative in `@moduledoc`. It is reference docs, not a guide. Extract explanations to `docs/`.
+- Narrating implementation ("This function iterates over...") — state the contract instead.
+- Filler openings ("This module is responsible for...", "A module that provides...") — lead with the verb.
+- Documenting private functions — skip unless the logic is genuinely dangerous.
+- Adding `@doc` to trivial getters, delegations, or single-line wrappers.
+- Adding doctests for functions with side effects or complex setup.
+- Referencing modules with plain backticks when ExDoc cross-reference syntax works.
+- Forcing multi-section structure on simple modules — a one-line wrapper does not need Usage, Options, and Examples.
+- Writing docs that require reading source code to understand — if docs cannot stand alone, they are incomplete.
