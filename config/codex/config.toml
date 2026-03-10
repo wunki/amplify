@@ -70,6 +70,9 @@ trust_level = "trusted"
 [projects."/Users/petar/.agents/skills"]
 trust_level = "trusted"
 
+[projects."/Users/petar/Code/bytebottom/turso_ex"]
+trust_level = "trusted"
+
 [mcp_servers.linear]
 url = "https://mcp.linear.app/mcp"
 
