@@ -18,7 +18,11 @@ Use this workflow for Elixir projects that use Mix + Hex.
 ### 1. Baseline And Scope
 
 1. Run `git status --short`.
-   - If there are uncommitted changes: report them and ask the user whether to stash, abort, or proceed. Do not silently proceed with a dirty tree.
+   - If there are uncommitted changes: report them and ask via `AskUserQuestion` (single-select):
+     - "Stash changes" — stash and continue
+     - "Abort" — stop the upgrade
+     - "Proceed anyway" — continue with dirty tree
+   Do not silently proceed with a dirty tree.
 2. Verify Hex is available: `mix hex.info` (no args). If Hex is not installed, run `mix local.hex --force` first.
 3. Identify outdated dependencies: `mix hex.outdated`.
 4. Split findings into:

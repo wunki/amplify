@@ -101,21 +101,26 @@ Bad: "Fixed null pointer exception in handleUpload." (too technical)
 
 ## Step 4: Get User Confirmation
 
-Ask the user how to proceed. Present the options as a simple prose question:
+Ask the user how to proceed using the native `AskUserQuestion` tool:
 
 ```
-How would you like to proceed with these N commits?
-- Proceed — commit all groups as planned
-- Skip some — choose which commits to skip
-- Edit grouping — adjust how changes are grouped
-- Or type specific instructions
+question: "How would you like to proceed with these N commits?"
+options:
+  - label: "Proceed"
+    description: "Commit all groups as planned"
+  - label: "Skip some"
+    description: "Choose which commits to skip"
+  - label: "Edit grouping"
+    description: "Adjust how changes are grouped"
+  - label: "Custom"
+    description: "Type specific instructions"
 ```
 
 Handle responses:
-- **Proceed** (or "y", "yes", "do it"): Execute all commits as planned.
-- **Skip some**: Ask which commit numbers to skip, then execute the rest.
+- **Proceed**: Execute all commits as planned.
+- **Skip some**: Follow up asking which commit numbers to skip, then execute the rest.
 - **Edit grouping**: Ask what to change, revise the plan, present it again, confirm once more before executing.
-- **Custom instruction**: Apply the instruction to the plan, show the updated plan, confirm again.
+- **Custom**: Ask for the instruction, apply it to the plan, show the updated plan, confirm again.
 
 Do not execute any commits until the user has explicitly confirmed.
 

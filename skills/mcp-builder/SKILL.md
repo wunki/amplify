@@ -22,9 +22,10 @@ Creating an MCP server involves four phases. Phases 1-3 apply when building or e
 
 #### 1.1 Determine implementation language
 
-Ask the user which language to use if not already specified:
-- Python (FastMCP) — single-file or modular, decorator-based
-- Node/TypeScript (MCP TypeScript SDK) — project-based, build step required
+Ask the user which language to use via `AskUserQuestion` (single-select) if not already specified:
+
+- "Python (FastMCP)" — single-file or modular, decorator-based
+- "Node/TypeScript (MCP SDK)" — project-based, build step required
 
 All steps below branch by language where relevant.
 

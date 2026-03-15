@@ -78,7 +78,11 @@ Do not continue interviewing indefinitely. When coverage is sufficient across al
 
 ### 5) Hand Off
 
-After confirmation, determine the next action based on what the user has asked for. If not stated, ask: "What's next — write the spec, build the plan, or jump straight to implementation?"
+After confirmation, determine the next action based on what the user has asked for. If not stated, ask via `AskUserQuestion` (single-select):
+
+- "Write the spec" — invoke `create-spec` skill
+- "Build the plan" — invoke `create-plan` skill
+- "Jump to implementation" — proceed directly
 
 - User asked for a spec, or SPEC.md exists and needs updating → invoke the `create-spec` skill
 - User asked for a task plan or implementation steps → invoke the `create-plan` skill

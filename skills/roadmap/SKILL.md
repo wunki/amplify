@@ -25,7 +25,9 @@ Analyze the project before asking questions:
 
 ### 2) Check for existing ROADMAP.md
 
-- If `ROADMAP.md` already exists: read it, then ask the user whether to **update in place** or **replace entirely**. Default to updating in place unless told otherwise.
+- If `ROADMAP.md` already exists: read it, then ask via `AskUserQuestion` (single-select):
+  - "Update in place" — preserve structure, revise content (default)
+  - "Replace entirely" — start fresh
 - If it does not exist: proceed to Clarify.
 
 ### 3) Clarify
